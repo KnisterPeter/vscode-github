@@ -55,4 +55,12 @@ interface PullRequest {
   state: 'open' | 'closed';
   title: string;
   body: string;
+  head: {
+    label: string;
+    ref: string;
+  };
+  base: {
+    label: string;
+    ref: string;
+  };
 }
