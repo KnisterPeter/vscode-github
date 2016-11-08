@@ -23,7 +23,7 @@
       },
       {
         "command": "extension.listPullRequests",
-        "title": "List GitHub Repositories"
+        "title": "List GitHub Pull Requests"
       }
     ]
   },

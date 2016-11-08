@@ -50,8 +50,13 @@ async function listPullRequests(): Promise<void> {
     return;
   }
   try {
-    const reponse = await github.listPullRequests('KnisterPeter', 'vscode-github');
-    console.log('repos', reponse.body);
+    const response = await github.listPullRequests('KnisterPeter', 'vscode-github');
+    const pullRequests = response.body.map(pullRequest => ({
+      label: pullRequest.title,
+      description: `#${pullRequest.number}`,
+      detail: pullRequest.body
+    }));
+    vscode.window.showQuickPick(pullRequests);
   } catch (err) {
     console.error(err);
     vscode.window.showErrorMessage('Failed to execute GitHub request');
