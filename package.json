@@ -12,18 +12,23 @@
   ],
   "activationEvents": [
     "onCommand:extension.setGitHubToken",
-    "onCommand:extension.listPullRequests"
+    "onCommand:extension.createPullRequest",
+    "onCommand:extension.checkoutPullRequests"
   ],
   "main": "./out/src/extension",
   "contributes": {
     "commands": [
       {
         "command": "extension.setGitHubToken",
-        "title": "Set GitHub Personal Access Token"
+        "title": "GitHub: Set Personal Access Token"
       },
       {
-        "command": "extension.listPullRequests",
-        "title": "List GitHub Pull Requests"
+        "command": "extension.createPullRequest",
+        "title": "GitHub: Create pull request from current branch"
+      },
+      {
+        "command": "extension.checkoutPullRequests",
+        "title": "GitHub: Checkout open pull requests"
       }
     ]
   },
@@ -47,7 +52,8 @@
     "vscode": "^1.0.0"
   },
   "dependencies": {
-    "pretend": "^0.2.3"
+    "execa": "0.5.0",
+    "pretend": "^0.3.0"
   },
   "repository": {
     "type": "git",
