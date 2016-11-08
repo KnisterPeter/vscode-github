@@ -1,29 +1,64 @@
 'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import {Pretend, Get, Post} from 'pretend';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+class GitHub {
+    @Get('/user/repos')
+    public async listRepositories(): Promise<GitHubResonse<Repository[]>> { return undefined; }
+
+    @Post('/repos/{owner}/{repo}/pulls')
+    public async createPullRequest(owner: string, repo: string, body: any) { return undefined; }
+}
+
+interface GitHubResonse<T> {
+    headers: any;
+    body: T;
+}
+
+interface Repository {
+    id: number;
+    owner: any;
+    name: string;
+    full_name: string;
+    default_branch: string;
+}
+
 export function activate(context: vscode.ExtensionContext) {
+    let token = context.globalState.get<string>('key');
+    if (!token) {
+        vscode.window.showInputBox({
+            ignoreFocusOut: true,
+            password: true,
+            placeHolder: 'GitHub Personal Access Token'
+        }).then(input => {
+            context.globalState.update('key', input);
+            token = input;
+        });
+    }
+    const github = Pretend
+        .builder()
+        .requestInterceptor(request => {
+            request.options.headers['Authorization'] = `token ${token}`;
+            return request;
+        })
+        .decode(async response => {
+            return {
+                headers: response.headers,
+                body: await response.json()
+            };
+        })
+        .target(GitHub, 'https://api.github.com')
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "vscode-github" is now active!');
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        // The code you place here will be executed every time your command is executed
-
-        // Display a message box to the user
+    let disposable = vscode.commands.registerCommand('extension.sayHello', async () => {
         vscode.window.showInformationMessage('Hello World!');
+        console.log('request...');
+        const reponse = await github.listRepositories();
+        console.log('...done');
+        console.log('repos', reponse.headers, reponse.body[0]);
     });
 
     context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {
 }
