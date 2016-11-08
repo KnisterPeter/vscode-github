@@ -2,7 +2,7 @@
   "name": "vscode-github",
   "displayName": "vscode-github",
   "description": "GitHub Support",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "knisterpeter",
   "engines": {
     "vscode": "^1.5.0"
@@ -11,30 +11,63 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.sayHello"
+    "onCommand:extension.setGitHubToken",
+    "onCommand:extension.listPullRequests"
   ],
   "main": "./out/src/extension",
   "contributes": {
     "commands": [
       {
-        "command": "extension.sayHello",
-        "title": "Hello World"
+        "command": "extension.setGitHubToken",
+        "title": "Set GitHub Personal Access Token"
+      },
+      {
+        "command": "extension.listPullRequests",
+        "title": "List GitHub Repositories"
       }
     ]
   },
   "scripts": {
+    "linter": "tslint '{src,test}/**/*.ts'",
+    "test": "node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "commitmsg": "conventional-changelog-lint -e"
   },
   "devDependencies": {
-    "typescript": "^2.0.3",
-    "vscode": "^1.0.0",
-    "mocha": "^3.1.2",
+    "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
-    "@types/mocha": "^2.2.32"
+    "conventional-changelog-lint": "1.1.0",
+    "cz-customizable": "4.0.0",
+    "husky": "0.11.9",
+    "mocha": "^3.1.2",
+    "tslint": "3.15.1",
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.0"
   },
   "dependencies": {
-    "pretend": "^0.2.2"
+    "pretend": "^0.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "KnisterPeter/vscode-github"
+  },
+  "author": {
+    "name": "Markus Wolf",
+    "email": "knister.peter@shadowrun-clan.de"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KnisterPeter/vscode-github/issues"
+  },
+  "homepage": "https://github.com/KnisterPeter/vscode-github#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "./.cz-config.js"
+    }
   }
 }
