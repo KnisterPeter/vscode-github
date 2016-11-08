@@ -18,12 +18,20 @@ function githubTokenAuthenticator(token: string): IPretendRequestInterceptor {
   };
 }
 
+export class GitHubError extends Error {
+
+  public readonly response: Response;
+
+  constructor(message: string, response: Response) {
+    super(message);
+    this.response = response;
+  }
+}
+
 function githubDecoder(): IPretendDecoder {
   return async response => {
     if (response.status >= 400) {
-      const err = new Error('GitHub request failed');
-      (err as any).response = response;
-      throw err;
+      throw new GitHubError('GitHub request failed', response);
     }
     return {
       headers: response.headers,
@@ -34,14 +42,29 @@ function githubDecoder(): IPretendDecoder {
 
 export class GitHub {
 
-  @Get('/repos/{owner}/{repo}/pulls')
-  public async listPullRequests(_owner: string, _repo: string):
+  @Get('/repos/{owner}/{repo}/pulls', true)
+  public async listPullRequests(_owner: string, _repo: string, _parameters?: ListPullRequestsParameters):
     Promise<GitHubResonse<PullRequest[]>> { return undefined as any; }
 
   @Post('/repos/{owner}/{repo}/pulls')
   public async createPullRequest(_owner: string, _repo: string, _body: any):
     Promise<void> { return undefined as any; }
 
+}
+
+export interface ListPullRequestsParameters {
+  state?: 'open' | 'close' | 'all';
+  head?: string;
+  base?: string;
+  sort?: 'created' | 'updated' | 'popularity' | 'long-running';
+  direction?: 'asc' | 'desc';
+}
+
+export interface CreatePullRequestBody {
+  title: string;
+  head: string;
+  base: string;
+  body?: string;
 }
 
 interface GitHubResonse<T> {
