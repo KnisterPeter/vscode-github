@@ -1,18 +1,18 @@
 'use strict';
 import * as vscode from 'vscode';
-import * as execa from 'execa';
+
+import * as git from './git';
 
 import {getClient, GitHub, GitHubError, ListPullRequestsParameters, CreatePullRequestBody} from './github';
 
-let github: GitHub;
 let cwd: string;
+let token: string;
+let github: GitHub;
 
 export function activate(context: vscode.ExtensionContext): void {
   cwd = vscode.workspace.rootPath;
-  getToken(context).then(token => {
-    if (!github) {
-      github = getClient(token);
-    }
+  getToken(context).then(_token => {
+    token = _token;
   });
 
   context.subscriptions.push(
@@ -20,20 +20,33 @@ export function activate(context: vscode.ExtensionContext): void {
       createGithubTokenCommand(context)));
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.createPullRequest',
-      createPullRequest));
+      wrapCommand(createPullRequest)));
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.checkoutPullRequests',
-      checkoutPullRequests));
+      wrapCommand(checkoutPullRequests)));
+}
+
+function wrapCommand<T>(command: T): T {
+  const wrap: any = (...args: any[]) => {
+    if (Boolean(token) && Boolean(cwd)) {
+      return (command as any).apply(null, args);
+    } else {
+      vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
+        + 'and open a GitHub project in your workspace');
+    }
+  };
+  return wrap;
 }
 
 function getToken(context: vscode.ExtensionContext): PromiseLike<string> {
-  let token = context.globalState.get<string>('token');
-  if (token) {
-    return Promise.resolve(token);
+  return Promise.resolve(context.globalState.get<string>('token'));
+}
+
+function getGitHubClient(): GitHub {
+  if (!github) {
+    github = getClient(token);
   }
-  return createGithubTokenCommand(context)().then(() => {
-    return context.globalState.get<string>('token');
-  });
+  return github;
 }
 
 function createGithubTokenCommand(context: vscode.ExtensionContext): () => PromiseLike<void> {
@@ -44,69 +57,36 @@ function createGithubTokenCommand(context: vscode.ExtensionContext): () => Promi
       placeHolder: 'GitHub Personal Access Token'
     };
     return vscode.window.showInputBox(options)
-      .then(input => context.globalState.update('token', input))
-      .then(() => getToken(context))
-      .then(token => {
-        github = getClient(token);
+      .then(input => {
+        context.globalState.update('token', input);
+        token = input;
       });
   };
 }
 
-async function getGitHubOwnerAndRepository(): Promise<string[]> {
-  return execa('git', ['config', '--get-regexp', 'remote\\.origin\\.url'], {cwd})
-    .then(result => {
-      const match = result.stdout.match(/^remote.origin.url git@github.com:(.*?)\/(.*?)(?:.git)?$/);
-      if (!match) {
-        throw new Error('Not a github project?');
-      }
-      return [match[1], match[2]];
-    });
-}
-
-async function getCurrentBranch(): Promise<string|undefined> {
-  return execa('git', ['status', '--porcelain', '--branch'], {cwd})
-    .then(result => {
-      const match = result.stdout.match(/^## (.+?)(?:\.\.\..*)?/);
-      return match ? match[1] : undefined;
-    });
-}
-
-async function getCommitMessage(): Promise<string> {
-  return execa('git', ['log', '--oneline', '-1'], {cwd})
-    .then(result => {
-      const match = result.stdout.match(/^(?:.+?) (.*)/);
-      return match ? match[1] : result.stdout;
-    });
-}
-
-async function checkout(branch: string): Promise<void> {
-  return execa('git', ['checkout', branch], {cwd})
-    .then(() => undefined);
-}
-
-async function hasPullRequests(): Promise<boolean> {
-  const [owner, repository] = await getGitHubOwnerAndRepository();
-  const branch = await getCurrentBranch();
+async function hasPullRequestForCurrentBranch(): Promise<boolean> {
+  const [owner, repository] = await git.getGitHubOwnerAndRepository(cwd);
+  const branch = await git.getCurrentBranch(cwd);
   const parameters: ListPullRequestsParameters = {
     state: 'open',
     head: `${owner}:${branch}`
   };
-  const response = await github.listPullRequests(owner, repository, parameters);
+  const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
   return response.body.length > 0;
 }
 
 async function createPullRequest(): Promise<void> {
   try {
-    if (!await hasPullRequests()) {
-      const [owner, repository] = await getGitHubOwnerAndRepository();
-      const branch = await getCurrentBranch();
+    if (!await hasPullRequestForCurrentBranch()) {
+      const [owner, repository] = await git.getGitHubOwnerAndRepository(cwd);
+      const branch = await git.getCurrentBranch(cwd);
       console.log('orb', owner, repository, branch);
       const body: CreatePullRequestBody = {
-        title: await getCommitMessage(),
+        title: await git.getCommitMessage(cwd),
         head: `${owner}:${branch}`,
         base: `master`
       };
-      const result = await github.createPullRequest(owner, repository, body);
+      const result = await getGitHubClient().createPullRequest(owner, repository, body);
       console.log('result', result);
     }
   } catch (e) {
@@ -120,18 +100,18 @@ async function createPullRequest(): Promise<void> {
 
 async function checkoutPullRequests(): Promise<void> {
   try {
-    const [owner, repository] = await getGitHubOwnerAndRepository();
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(cwd);
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
-    const response = await github.listPullRequests(owner, repository, parameters);
+    const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
     vscode.window.showQuickPick(response.body.map(pullRequest => ({
       label: pullRequest.title,
       description: `#${pullRequest.number}`,
       pullRequest
     }))).then(selected => {
       if (selected) {
-        checkout(selected.pullRequest.head.ref);
+        git.checkout(cwd, selected.pullRequest.head.ref);
       }
     });
   } catch (e) {
