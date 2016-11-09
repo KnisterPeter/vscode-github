@@ -1,7 +1,12 @@
 {
   "name": "vscode-github",
-  "displayName": "vscode-github",
-  "description": "GitHub Support",
+  "displayName": "Visual Studio Code GitHub Support",
+  "description": "Integrates github workflows into vscode - like pull requests",
+  "icon": "./images/octocat.png",
+	"galleryBanner": {
+		"color": "#ffffff",
+		"theme": "dark"
+	},
   "version": "0.1.1",
   "publisher": "KnisterPeter",
   "engines": {
@@ -71,7 +76,7 @@
   "bugs": {
     "url": "https://github.com/KnisterPeter/vscode-github/issues"
   },
-  "homepage": "https://github.com/KnisterPeter/vscode-github#readme",
+  "homepage": "https://github.com/KnisterPeter/vscode-github",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-customizable"
