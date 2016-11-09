@@ -78,6 +78,7 @@ interface PullRequest {
   state: 'open' | 'closed';
   title: string;
   body: string;
+  html_url: string;
   head: {
     label: string;
     ref: string;

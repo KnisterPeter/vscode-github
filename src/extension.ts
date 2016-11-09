@@ -29,6 +29,9 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.checkoutPullRequests',
       wrapCommand(checkoutPullRequests)));
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.browserPullRequest',
+      wrapCommand(browserPullRequest)));
 }
 
 function wrapCommand<T>(command: T): T {
@@ -123,6 +126,27 @@ async function checkoutPullRequests(): Promise<void> {
     }))).then(selected => {
       if (selected) {
         git.checkout(cwd, selected.pullRequest.head.ref);
+      }
+    });
+  } catch (e) {
+    logAndShowError(e);
+  }
+}
+
+async function browserPullRequest(): Promise<void> {
+  try {
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(cwd);
+    const parameters: ListPullRequestsParameters = {
+      state: 'open'
+    };
+    const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
+    vscode.window.showQuickPick(response.body.map(pullRequest => ({
+      label: pullRequest.title,
+      description: `#${pullRequest.number}`,
+      pullRequest
+    }))).then(selected => {
+      if (selected) {
+        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(selected.pullRequest.html_url));
       }
     });
   } catch (e) {
