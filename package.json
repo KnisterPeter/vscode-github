@@ -23,7 +23,7 @@
     "commands": [
       {
         "command": "extension.setGitHubToken",
-        "title": "GitHub: Set Personal Access Token"
+        "title": "GitHub: Set Personal Access Token..."
       },
       {
         "command": "extension.createPullRequest",
@@ -31,7 +31,11 @@
       },
       {
         "command": "extension.checkoutPullRequests",
-        "title": "GitHub: Checkout open pull requests"
+        "title": "GitHub: Checkout open pull requests..."
+      },
+      {
+        "command": "extension.browserPullRequest",
+        "title": "GitHub: Browser open pull request..."
       }
     ]
   },

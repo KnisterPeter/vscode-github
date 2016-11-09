@@ -23,3 +23,4 @@ The 'GitHub: Set Personal Access Token' should be executed for that.
 ![Create pull request](./images/create-pull-request.png)
 
 * Checkout one of the open pull requests
+* Browser one of the open pull requests in your default browser
