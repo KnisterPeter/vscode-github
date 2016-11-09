@@ -3,11 +3,11 @@
   "displayName": "Visual Studio Code GitHub Support",
   "description": "Integrates github workflows into vscode - like pull requests",
   "icon": "./images/octocat.png",
-	"galleryBanner": {
-		"color": "#ffffff",
-		"theme": "dark"
-	},
-  "version": "0.1.1",
+  "galleryBanner": {
+    "color": "#ffffff",
+    "theme": "dark"
+  },
+  "version": "0.2.0",
   "publisher": "KnisterPeter",
   "engines": {
     "vscode": "^1.5.0"
