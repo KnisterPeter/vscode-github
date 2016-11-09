@@ -105,7 +105,8 @@ async function createPullRequest(): Promise<void> {
       };
       channel.appendLine('Create pull request:');
       channel.appendLine(JSON.stringify(body, undefined, ' '));
-      await getGitHubClient().createPullRequest(owner, repository, body);
+      const pullRequest = await getGitHubClient().createPullRequest(owner, repository, body);
+      vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
     }
   } catch (e) {
     logAndShowError(e);

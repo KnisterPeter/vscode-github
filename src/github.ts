@@ -48,7 +48,7 @@ export class GitHub {
 
   @Post('/repos/{owner}/{repo}/pulls')
   public async createPullRequest(_owner: string, _repo: string, _body: any):
-    Promise<void> { return undefined as any; }
+    Promise<PullRequest> { return undefined as any; }
 
 }
 
