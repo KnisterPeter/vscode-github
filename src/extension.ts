@@ -8,12 +8,17 @@ import {getClient, GitHub, GitHubError, ListPullRequestsParameters, CreatePullRe
 let cwd: string;
 let token: string;
 let github: GitHub;
+let channel: vscode.OutputChannel;
 
 export function activate(context: vscode.ExtensionContext): void {
   cwd = vscode.workspace.rootPath;
   getToken(context).then(_token => {
     token = _token;
   });
+
+  channel = vscode.window.createOutputChannel('github');
+  context.subscriptions.push(channel);
+  channel.appendLine('Visual Studio Code GitHub Extension');
 
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.setGitHubToken',
@@ -49,6 +54,16 @@ function getGitHubClient(): GitHub {
   return github;
 }
 
+function logAndShowError(e: Error): void {
+    channel.appendLine(e.message);
+    if (e instanceof GitHubError) {
+      console.error(e.response);
+      vscode.window.showErrorMessage('GitHub error: ' + e.message);
+    } else {
+      vscode.window.showErrorMessage('Error: ' + e.message);
+    }
+}
+
 function createGithubTokenCommand(context: vscode.ExtensionContext): () => PromiseLike<void> {
   return () => {
     const options = {
@@ -80,21 +95,17 @@ async function createPullRequest(): Promise<void> {
     if (!await hasPullRequestForCurrentBranch()) {
       const [owner, repository] = await git.getGitHubOwnerAndRepository(cwd);
       const branch = await git.getCurrentBranch(cwd);
-      console.log('orb', owner, repository, branch);
       const body: CreatePullRequestBody = {
         title: await git.getCommitMessage(cwd),
         head: `${owner}:${branch}`,
         base: `master`
       };
-      const result = await getGitHubClient().createPullRequest(owner, repository, body);
-      console.log('result', result);
+      channel.appendLine('Create pull request:');
+      channel.appendLine(JSON.stringify(body, undefined, ' '));
+      await getGitHubClient().createPullRequest(owner, repository, body);
     }
   } catch (e) {
-    console.log(e);
-    if (e instanceof GitHubError) {
-      console.error(e.response);
-    }
-    vscode.window.showErrorMessage('Some git error ' + e.message);
+    logAndShowError(e);
   }
 }
 
@@ -115,10 +126,6 @@ async function checkoutPullRequests(): Promise<void> {
       }
     });
   } catch (e) {
-    console.log(e);
-    if (e instanceof GitHubError) {
-      console.error(e.response);
-    }
-    vscode.window.showErrorMessage('Some git error ' + e.message);
+    logAndShowError(e);
   }
 }
