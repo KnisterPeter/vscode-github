@@ -3,7 +3,7 @@
   "displayName": "vscode-github",
   "description": "GitHub Support",
   "version": "0.1.0",
-  "publisher": "knisterpeter",
+  "publisher": "KnisterPeter",
   "engines": {
     "vscode": "^1.5.0"
   },
