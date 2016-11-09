@@ -16,7 +16,10 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onCommand:extension.setGitHubToken",
+    "onCommand:extension.createPullRequest",
+    "onCommand:extension.checkoutPullRequests",
+    "onCommand:extension.browserPullRequest"
   ],
   "main": "./out/src/extension",
   "contributes": {
