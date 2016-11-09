@@ -31,7 +31,7 @@ export class GitHubError extends Error {
 function githubDecoder(): IPretendDecoder {
   return async response => {
     if (response.status >= 400) {
-      throw new GitHubError('GitHub request failed', response);
+      throw new GitHubError(`${response.statusText}`, response);
     }
     return {
       headers: response.headers,
