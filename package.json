@@ -5,7 +5,7 @@
   "icon": "images/octocat.png",
   "galleryBanner": {
     "color": "#ffffff",
-    "theme": "dark"
+    "theme": "light"
   },
   "version": "0.2.0",
   "publisher": "KnisterPeter",
