@@ -31,11 +31,11 @@
       },
       {
         "command": "extension.checkoutPullRequests",
-        "title": "GitHub: Checkout open pull requests..."
+        "title": "GitHub: Checkout open pull request..."
       },
       {
         "command": "extension.browserPullRequest",
-        "title": "GitHub: Browser open pull request..."
+        "title": "GitHub: Browse open pull request..."
       }
     ]
   },
