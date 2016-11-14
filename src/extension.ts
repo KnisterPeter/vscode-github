@@ -9,12 +9,17 @@ let cwd: string;
 let token: string;
 let github: GitHub;
 let channel: vscode.OutputChannel;
+let statusBar: vscode.StatusBarItem;
 
 export function activate(context: vscode.ExtensionContext): void {
   cwd = vscode.workspace.rootPath;
-  getToken(context).then(_token => {
-    token = _token;
-  });
+  getToken(context)
+    .then(_token => {
+      token = _token;
+      if (token) {
+        updatePullRequestStatus();
+      }
+    });
 
   channel = vscode.window.createOutputChannel('github');
   context.subscriptions.push(channel);
@@ -32,6 +37,17 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     vscode.commands.registerCommand('extension.browserPullRequest',
       wrapCommand(browserPullRequest)));
+
+  statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+  context.subscriptions.push(statusBar);
+  statusBar.text = '$(git-pull-request)';
+  statusBar.color = '#888';
+  statusBar.show();
+}
+
+async function updatePullRequestStatus(forceState?: boolean): Promise<void> {
+  const hasPullRequest = await hasPullRequestForCurrentBranch();
+  statusBar.color = forceState || hasPullRequest ? '#fff' : '#888';
 }
 
 function wrapCommand<T>(command: T): T {
@@ -106,6 +122,7 @@ async function createPullRequest(): Promise<void> {
       channel.appendLine('Create pull request:');
       channel.appendLine(JSON.stringify(body, undefined, ' '));
       const pullRequest = await getGitHubClient().createPullRequest(owner, repository, body);
+      updatePullRequestStatus(true);
       vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
     }
   } catch (e) {
