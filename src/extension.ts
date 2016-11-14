@@ -39,15 +39,24 @@ export function activate(context: vscode.ExtensionContext): void {
       wrapCommand(browserPullRequest)));
 
   statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-  context.subscriptions.push(statusBar);
+  statusBar.command = 'extension.statusBarCommand';
   statusBar.text = '$(git-pull-request)';
   statusBar.color = '#888';
   statusBar.show();
+  context.subscriptions.push(statusBar);
 }
 
 async function updatePullRequestStatus(forceState?: boolean): Promise<void> {
   const hasPullRequest = await hasPullRequestForCurrentBranch();
-  statusBar.color = forceState || hasPullRequest ? '#fff' : '#888';
+  if (forceState || hasPullRequest) {
+    statusBar.color = '#fff';
+    statusBar.tooltip = '';
+    statusBar.command = '';
+  } else {
+    statusBar.color = '#888';
+    statusBar.tooltip = 'Create pull-request for current branch';
+    statusBar.command = 'extension.createPullRequest';
+  }
 }
 
 function wrapCommand<T>(command: T): T {
