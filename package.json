@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "execa": "0.5.0",
-    "pretend": "^0.3.0"
+    "pretend": "^0.4.0"
   },
   "repository": {
     "type": "git",
