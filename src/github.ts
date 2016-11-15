@@ -1,6 +1,6 @@
 import {Pretend, Get, Post, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
-import {LRUCache} from 'lru-fast';
+import * as LRUCache from 'lru-cache';
 
 export interface GitHub {
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
@@ -63,7 +63,7 @@ namespace impl {
 
   export function githubCache(): Interceptor {
     // Cache at most 100 requests
-    const cache = new LRUCache<string, {etag: string, response: any}>(100);
+    const cache = LRUCache<{etag: string, response: any}>(100);
     return async (chain, request) => {
       const entry = cache.get(request.url);
       if (entry) {
@@ -74,9 +74,10 @@ namespace impl {
         request.options.headers['If-None-Match'] = entry.etag;
       }
       const response = await chain(request);
+      console.log('res', response);
       if (!entry || response.status !== 304) {
         // If no cache hit or response modified, cache and respond
-        cache.put(request.url, {
+        cache.set(request.url, {
           etag: response.headers.etag,
           response
         });
