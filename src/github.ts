@@ -6,6 +6,13 @@ export interface GitHub {
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
     Promise<PullRequest[]>;
   createPullRequest(owner: string, repo: string, body: any): Promise<PullRequest>;
+  getStatusForRef(owner: string, repo: string, ref: string): Promise<CombinedStatus>;
+}
+
+export interface CombinedStatus {
+  state: 'failure' | 'pending' | 'success';
+  total_count: number;
+  statuses: any[];
 }
 
 export interface ListPullRequestsParameters {
@@ -116,13 +123,18 @@ namespace impl {
 
   export class GitHubBlueprint implements GitHub {
 
-    @Get('/repos/{owner}/{repo}/pulls', true)
+    @Get('/repos/:owner/:repo/pulls', true)
     public listPullRequests(_owner: string, _repo: string, _parameters?: ListPullRequestsParameters): any {
       //
     }
 
-    @Post('/repos/{owner}/{repo}/pulls')
+    @Post('/repos/:owner/:repo/pulls')
     public createPullRequest(_owner: string, _repo: string, _body: any): any {
+      //
+    }
+
+    @Get('/repos/:owner/:repo/commits/:ref/status')
+    public getStatusForRef(_owner: string, _repo: string, _ref: string): any {
       //
     }
 
