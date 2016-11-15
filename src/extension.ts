@@ -1,8 +1,5 @@
-'use strict';
 import * as vscode from 'vscode';
-
 import * as git from './git';
-
 import {getClient, GitHub, GitHubError, ListPullRequestsParameters, CreatePullRequestBody} from './github';
 
 let cwd: string;
@@ -115,7 +112,7 @@ async function hasPullRequestForCurrentBranch(): Promise<boolean> {
     head: `${owner}:${branch}`
   };
   const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
-  return response.body.length > 0;
+  return response.length > 0;
 }
 
 async function createPullRequest(): Promise<void> {
@@ -146,7 +143,7 @@ async function checkoutPullRequests(): Promise<void> {
       state: 'open'
     };
     const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
-    vscode.window.showQuickPick(response.body.map(pullRequest => ({
+    vscode.window.showQuickPick(response.map(pullRequest => ({
       label: pullRequest.title,
       description: `#${pullRequest.number}`,
       pullRequest
@@ -167,7 +164,7 @@ async function browserPullRequest(): Promise<void> {
       state: 'open'
     };
     const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
-    vscode.window.showQuickPick(response.body.map(pullRequest => ({
+    vscode.window.showQuickPick(response.map(pullRequest => ({
       label: pullRequest.title,
       description: `#${pullRequest.number}`,
       pullRequest

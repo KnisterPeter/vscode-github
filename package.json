@@ -52,6 +52,7 @@
     "publish-extension": "vsce publish $(node -e \"console.log(require('./package.json').version)\")"
   },
   "devDependencies": {
+    "@types/lru-cache": "2.5.32",
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
     "conventional-changelog-lint": "1.1.0",
@@ -65,7 +66,8 @@
   },
   "dependencies": {
     "execa": "0.5.0",
-    "pretend": "^0.4.0"
+    "lru-cache": "4.0.1",
+    "pretend": "0.4.0"
   },
   "repository": {
     "type": "git",
