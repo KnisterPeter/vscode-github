@@ -4,7 +4,7 @@
   "description": "Integrates github workflows into vscode - like pull requests",
   "icon": "images/octocat.png",
   "galleryBanner": {
-    "color": "#ffffff",
+    "color": "#dddddd",
     "theme": "light"
   },
   "version": "0.3.0",
