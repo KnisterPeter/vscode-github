@@ -3,7 +3,8 @@ import * as execa from 'execa';
 export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
   return execa('git', ['config', '--get-regexp', 'remote\\.origin\\.url'], {cwd})
     .then(result => {
-      const match = result.stdout.match(/^remote.origin.url git@github.com:(.*?)\/(.*?)(?:.git)?$/);
+      const match = result.stdout.match(
+        /^remote\.origin\.url (?:git@github\.com:|https:\/\/github.com\/)(.*?)\/(.*?)(?:.git)?$/);
       if (!match) {
         throw new Error('Not a github project?');
       }
