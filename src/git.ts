@@ -13,9 +13,9 @@ export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]
 }
 
 export async function getCurrentBranch(cwd: string): Promise<string|undefined> {
-  return execa('git', ['status', '--porcelain', '--branch'], {cwd})
+  return execa('git', ['branch'], {cwd})
     .then(result => {
-      const match = result.stdout.match(/^## ([^.]+)(?:\.\.\..*)?/);
+      const match = result.stdout.match(/^\* (.*)$/m);
       return match ? match[1] : undefined;
     });
 }

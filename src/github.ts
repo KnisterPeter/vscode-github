@@ -74,7 +74,6 @@ namespace impl {
         request.options.headers['If-None-Match'] = entry.etag;
       }
       const response = await chain(request);
-      console.log('res', response);
       if (!entry || response.status !== 304) {
         // If no cache hit or response modified, cache and respond
         cache.set(request.url, {
