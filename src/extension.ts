@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext): void {
   getToken(context)
     .then(_token => {
       token = _token;
+      refreshPullRequestStatus();
     });
 
   channel = vscode.window.createOutputChannel('github');
@@ -37,7 +38,6 @@ export function activate(context: vscode.ExtensionContext): void {
   statusBar.text = '$(git-pull-request)';
   statusBar.color = '#888';
   context.subscriptions.push(statusBar);
-  refreshPullRequestStatus();
 }
 
 async function refreshPullRequestStatus(): Promise<void> {
