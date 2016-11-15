@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/KnisterPeter/vscode-github/compare/v0.4.0...v0.5.0) (2016-11-15)
+
+
+### Features
+
+* add merge button (currently no squash and rebase) ([12ead05](https://github.com/KnisterPeter/vscode-github/commit/12ead05))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/KnisterPeter/vscode-github/compare/v0.3.0...v0.4.0) (2016-11-15)
 
