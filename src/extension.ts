@@ -1,18 +1,22 @@
+import {join} from 'path';
+import * as sander from 'sander';
 import * as vscode from 'vscode';
 import * as git from './git';
 import {getClient, GitHub, GitHubError, ListPullRequestsParameters, CreatePullRequestBody} from './github';
 
 let cwd: string;
-let token: string;
+let storedToken: string;
 let github: GitHub;
 let channel: vscode.OutputChannel;
 let statusBar: vscode.StatusBarItem;
 
 export function activate(context: vscode.ExtensionContext): void {
+  checkVersionAndToken(context);
+
   cwd = vscode.workspace.rootPath;
   getToken(context)
     .then(_token => {
-      token = _token;
+      storedToken = _token;
       refreshPullRequestStatus();
     });
 
@@ -40,8 +44,26 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(statusBar);
 }
 
+function checkVersionAndToken(context: vscode.ExtensionContext): void {
+  sander.readFile(join(context.extensionPath, 'package.json'))
+    .then(content => JSON.parse(content))
+    .then(json => json.version as string)
+    .then(version => {
+      return getToken(context)
+        .then(token => ({token, version}));
+    })
+    .then(({version, token}) => {
+      const storedVersion = context.globalState.get('version-test');
+      if (version !== storedVersion && !Boolean(token)) {
+        context.globalState.update('version-test', version);
+        vscode.window.showInformationMessage(
+          'To enable the Visual Studio Code GitHub Support, please set a Personal Access Token');
+      }
+    });
+}
+
 async function refreshPullRequestStatus(): Promise<void> {
-  if (token) {
+  if (storedToken) {
     await updatePullRequestStatus();
   }
   setTimeout(refreshPullRequestStatus, 5000);
@@ -74,7 +96,7 @@ async function updatePullRequestStatus(forceState?: boolean): Promise<void> {
 
 function wrapCommand<T>(command: T): T {
   const wrap: any = (...args: any[]) => {
-    if (Boolean(token) && Boolean(cwd)) {
+    if (Boolean(storedToken) && Boolean(cwd)) {
       return (command as any).apply(null, args);
     } else {
       vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
@@ -90,7 +112,7 @@ function getToken(context: vscode.ExtensionContext): PromiseLike<string> {
 
 function getGitHubClient(): GitHub {
   if (!github) {
-    github = getClient(token);
+    github = getClient(storedToken);
   }
   return github;
 }
@@ -115,7 +137,7 @@ function createGithubTokenCommand(context: vscode.ExtensionContext): () => Promi
     return vscode.window.showInputBox(options)
       .then(input => {
         context.globalState.update('token', input);
-        token = input;
+        storedToken = input;
       });
   };
 }
