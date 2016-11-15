@@ -1,5 +1,9 @@
 # vscode-github README
 
+[![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://github.com/KnisterPeter/vscode-github)
+[![Marketplace Version](http://vsmarketplacebadge.apphb.com/version/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
+[![Installs](http://vsmarketplacebadge.apphb.com/installs/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
+
 This vscode extension integrates with GitHub.
 
 ## Features
@@ -25,3 +29,7 @@ The 'GitHub: Set Personal Access Token' should be executed for that.
 * Checkout one of the open pull requests
 * Browse one of the open pull requests in your default browser
 * Show if the current branch has an associated pull-request on github in the status bar
+* Support github https origin urls
+* Refresh pull request status every 5 seconds
+* Respect github caching headers
+* Show status of current pull request
