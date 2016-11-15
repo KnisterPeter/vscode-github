@@ -51,7 +51,18 @@ async function updatePullRequestStatus(forceState?: boolean): Promise<void> {
   const hasPullRequest = await hasPullRequestForCurrentBranch();
   statusBar.show();
   if (forceState || hasPullRequest) {
-    statusBar.color = '#fff';
+    const status = await getCombinedStatusForPullRequest();
+    switch (status) {
+      case 'failure':
+        statusBar.color = '#f00';
+        break;
+      case 'success':
+        statusBar.color = '#0f0';
+        break;
+      default:
+        statusBar.color = '#fff';
+        break;
+    }
     statusBar.tooltip = '';
     statusBar.command = '';
   } else {
@@ -118,6 +129,16 @@ async function hasPullRequestForCurrentBranch(): Promise<boolean> {
   };
   const response = await getGitHubClient().listPullRequests(owner, repository, parameters);
   return response.length > 0;
+}
+
+async function getCombinedStatusForPullRequest(): Promise<'failure' | 'pending' | 'success' |undefined> {
+  const [owner, repository] = await git.getGitHubOwnerAndRepository(cwd);
+  const branch = await git.getCurrentBranch(cwd);
+  if (!branch) {
+    return undefined;
+  }
+  const response = await getGitHubClient().getStatusForRef(owner, repository, branch);
+  return response.state;
 }
 
 async function createPullRequest(): Promise<void> {
