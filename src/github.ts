@@ -30,7 +30,7 @@ export interface CreatePullRequestBody {
   body?: string;
 }
 
-interface PullRequest {
+export interface PullRequest {
   id: number;
   number: number;
   state: 'open' | 'closed';
