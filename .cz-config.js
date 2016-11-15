@@ -16,7 +16,9 @@ module.exports = {
   ],
 
   scopes: [
-    {name: 'vscode-github'}
+    {},
+    {name: 'vscode-github'},
+    {name: 'extension'}
   ],
 
   allowCustomScopes: false,
