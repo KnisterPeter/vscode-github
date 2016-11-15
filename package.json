@@ -36,6 +36,10 @@
       {
         "command": "extension.browserPullRequest",
         "title": "GitHub: Browse open pull request..."
+      },
+      {
+        "command": "extension.mergePullRequest",
+        "title": "GitHub: Merge open pull request..."
       }
     ]
   },

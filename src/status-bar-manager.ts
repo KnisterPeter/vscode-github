@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
+import {PullRequest, PullRequestStatus} from './github';
 import {GitHubManager} from './github-manager';
 
 const colors = {
   'none': '#888',
   'success': '#0f0',
   'failure': '#f00',
-  'pending': '#fff',
-  'unknown': '#fff'
+  'pending': '#fff'
 };
 
 export class StatusBarManager {
@@ -34,19 +34,36 @@ export class StatusBarManager {
     setTimeout(() => { this.refreshPullRequestStatus(); }, 5000);
   }
 
-  public async updatePullRequestStatus(forceState?: boolean): Promise<void> {
-    const hasPullRequest = await this.githubManager.hasPullRequestForCurrentBranch();
+  public async updatePullRequestStatus(): Promise<void> {
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
     this.statusBar.show();
-    if (forceState || hasPullRequest) {
-      const status = await this.githubManager.getCombinedStatusForPullRequest();
-      this.statusBar.color = colors[status || 'unknown'];
-      this.statusBar.tooltip = '';
-      this.statusBar.command = '';
+    if (pullRequest) {
+      const status = await this.calculateMergableStatus(pullRequest);
+      this.statusBar.color = colors[status];
+      this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
+      this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
     } else {
       this.statusBar.color = colors.none;
       this.statusBar.tooltip = 'Create pull-request for current branch';
       this.statusBar.command = 'extension.createPullRequest';
     }
+  }
+
+  private async calculateMergableStatus(pullRequest: PullRequest): Promise<PullRequestStatus> {
+    let status: PullRequestStatus = 'pending';
+    if (typeof pullRequest.mergeable === 'undefined') {
+      status = 'failure';
+    } else {
+      const combinedStatus = await this.githubManager.getCombinedStatusForPullRequest();
+      if (combinedStatus) {
+        status = combinedStatus;
+      } else if (pullRequest.mergeable) {
+        status = 'success';
+      } else {
+        status = 'failure';
+      }
+    }
+    return status;
   }
 
 }

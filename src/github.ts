@@ -1,16 +1,48 @@
-import {Pretend, Get, Post, Interceptor, IPretendRequestInterceptor,
+import {Pretend, Get, Post, Put, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
 import * as LRUCache from 'lru-cache';
 
 export interface GitHub {
+
+  getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequest>>;
+
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
-    Promise<PullRequest[]>;
-  createPullRequest(owner: string, repo: string, body: any): Promise<PullRequest>;
-  getStatusForRef(owner: string, repo: string, ref: string): Promise<CombinedStatus>;
+    Promise<GitHubResponse<PullRequest[]>>;
+
+  createPullRequest(owner: string, repo: string, body: CreatePullRequestBody): Promise<GitHubResponse<PullRequest>>;
+
+  getStatusForRef(owner: string, repo: string, ref: string): Promise<GitHubResponse<CombinedStatus>>;
+
+  mergePullRequest(owner: string, repo: string, number: number, body: Merge): Promise<GitHubResponse<MergeResult>>;
+
 }
 
+export interface GitHubResponse<T> {
+  status: number;
+  headers: {[name: string]: string[]};
+  body: T;
+}
+
+export type MergeMethod = 'merge' | 'squash' | 'rebase';
+
+export interface Merge {
+  commit_title?: string;
+  commit_message?: string;
+  sha?: string;
+  merge_method?: MergeMethod;
+}
+
+export interface MergeResult {
+  sha?: string;
+  merged?: boolean;
+  message: string;
+  documentation_url?: string;
+}
+
+export type PullRequestStatus = 'failure' | 'pending' | 'success';
+
 export interface CombinedStatus {
-  state: 'failure' | 'pending' | 'success';
+  state: PullRequestStatus;
   total_count: number;
   statuses: any[];
 }
@@ -45,6 +77,7 @@ export interface PullRequest {
     label: string;
     ref: string;
   };
+  mergeable?: boolean|null;
 }
 
 export function getClient(token: string): GitHub {
@@ -52,6 +85,7 @@ export function getClient(token: string): GitHub {
     .builder()
     .interceptor(impl.githubCache())
     .requestInterceptor(impl.githubTokenAuthenticator(token))
+    .interceptor(impl.logger())
     .decode(impl.githubDecoder())
     .target(impl.GitHubBlueprint, 'https://api.github.com');
 }
@@ -67,6 +101,15 @@ export class GitHubError extends Error {
 }
 
 namespace impl {
+
+  export function logger(): Interceptor {
+    return async (chain, request) => {
+      // console.log('github-request: ', request);
+      const response = await chain(request);
+      // console.log('response', response);
+      return response;
+    };
+  }
 
   export function githubCache(): Interceptor {
     // Cache at most 100 requests
@@ -87,10 +130,10 @@ namespace impl {
           etag: response.headers.etag,
           response
         });
-        return response.body;
+        return response;
       }
       // Respond from cache
-      return entry.response.body;
+      return entry.response;
     };
   }
 
@@ -111,7 +154,7 @@ namespace impl {
       }
       let headers = {};
       response.headers.forEach((value, index) => {
-        headers[index] = value;
+        headers[index] = [...(headers[index] || []), value];
       });
       return {
         status: response.status,
@@ -123,20 +166,20 @@ namespace impl {
 
   export class GitHubBlueprint implements GitHub {
 
+    @Get('/repos/:owner/:repo/pulls/:number')
+    public getPullRequest(): any {/* */}
+
     @Get('/repos/:owner/:repo/pulls', true)
-    public listPullRequests(_owner: string, _repo: string, _parameters?: ListPullRequestsParameters): any {
-      //
-    }
+    public listPullRequests(): any {/* */}
 
     @Post('/repos/:owner/:repo/pulls')
-    public createPullRequest(_owner: string, _repo: string, _body: any): any {
-      //
-    }
+    public createPullRequest(): any {/* */}
 
     @Get('/repos/:owner/:repo/commits/:ref/status')
-    public getStatusForRef(_owner: string, _repo: string, _ref: string): any {
-      //
-    }
+    public getStatusForRef(): any {/* */}
+
+    @Put('/repos/:owner/:repo/pulls/:number/merge')
+    public mergePullRequest(): any {/* */}
 
   }
 }

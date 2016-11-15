@@ -2,7 +2,7 @@ import {join} from 'path';
 import * as sander from 'sander';
 import * as vscode from 'vscode';
 import * as git from './git';
-import {GitHubError, PullRequest} from './github';
+import {GitHubError, PullRequest, MergeMethod} from './github';
 import {StatusBarManager} from './status-bar-manager';
 import {GitHubManager} from './github-manager';
 
@@ -31,22 +31,20 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('extension.setGitHubToken', createGithubTokenCommand(context)),
     vscode.commands.registerCommand('extension.createPullRequest', wrapCommand(createPullRequest)),
     vscode.commands.registerCommand('extension.checkoutPullRequests', wrapCommand(checkoutPullRequests)),
-    vscode.commands.registerCommand('extension.browserPullRequest', wrapCommand(browserPullRequest))
+    vscode.commands.registerCommand('extension.browserPullRequest', wrapCommand(browserPullRequest)),
+    vscode.commands.registerCommand('extension.mergePullRequest', wrapCommand(mergePullRequest))
   );
 }
 
-function checkVersionAndToken(context: vscode.ExtensionContext, token: string|undefined): void {
-  sander.readFile(join(context.extensionPath, 'package.json'))
-    .then(content => JSON.parse(content))
-    .then(json => json.version as string)
-    .then((version) => {
-      const storedVersion = context.globalState.get('version-test');
-      if (version !== storedVersion && !Boolean(token)) {
-        context.globalState.update('version-test', version);
-        vscode.window.showInformationMessage(
-          'To enable the Visual Studio Code GitHub Support, please set a Personal Access Token');
-      }
-    });
+async function checkVersionAndToken(context: vscode.ExtensionContext, token: string|undefined): Promise<void> {
+  const content = await sander.readFile(join(context.extensionPath, 'package.json'));
+  const version = JSON.parse(content).version as string;
+  const storedVersion = context.globalState.get<string|undefined>('version-test');
+  if (version !== storedVersion && !Boolean(token)) {
+    context.globalState.update('version-test', version);
+    vscode.window.showInformationMessage(
+      'To enable the Visual Studio Code GitHub Support, please set a Personal Access Token');
+  }
 }
 
 function wrapCommand<T>(command: T): T {
@@ -75,40 +73,38 @@ function logAndShowError(e: Error): void {
     }
 }
 
-function createGithubTokenCommand(context: vscode.ExtensionContext): () => PromiseLike<void> {
-  return () => {
+function createGithubTokenCommand(context: vscode.ExtensionContext): () => void {
+  return async () => {
     const options = {
       ignoreFocusOut: true,
       password: true,
       placeHolder: 'GitHub Personal Access Token'
     };
-    return vscode.window.showInputBox(options)
-      .then(input => {
-        context.globalState.update('token', input);
-        githubManager.connect(input);
-      });
+    const input = await vscode.window.showInputBox(options);
+    context.globalState.update('token', input);
+    githubManager.connect(input);
   };
 }
 
 async function createPullRequest(): Promise<void> {
   const pullRequest = await githubManager.createPullRequest();
   if (pullRequest) {
-    statusBarManager.updatePullRequestStatus(true);
+    statusBarManager.updatePullRequestStatus();
     vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
   }
 }
 
 async function selectPullRequest(doSomething: (pullRequest: PullRequest) => void): Promise<void> {
   const pullRequests = await githubManager.listPullRequests();
-  vscode.window.showQuickPick(pullRequests.map(pullRequest => ({
+  const items = pullRequests.map(pullRequest => ({
     label: pullRequest.title,
     description: `#${pullRequest.number}`,
     pullRequest
-  }))).then(selected => {
-    if (selected) {
-      doSomething(selected.pullRequest);
-    }
-  });
+  }));
+  const selected = await vscode.window.showQuickPick(items);
+  if (selected) {
+    doSomething(selected.pullRequest);
+  }
 }
 
 async function checkoutPullRequests(): Promise<void> {
@@ -122,4 +118,34 @@ async function browserPullRequest(): Promise<void> {
   selectPullRequest(pullRequest => {
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.html_url));
   });
+}
+
+type MergeOptionItems = { label: string; description: string; method: MergeMethod; };
+async function mergePullRequest(): Promise<void> {
+  const items: MergeOptionItems[] = [
+    {
+      label: 'Create merge commit',
+      description: '',
+      method: 'merge'
+    },
+    {
+      label: 'Squash and merge',
+      description: '',
+      method: 'squash'
+    },
+    {
+      label: 'Rebase and merge',
+      description: '',
+      method: 'rebase'
+    }
+  ];
+  const selected = await vscode.window.showQuickPick(items);
+  if (selected) {
+    if (await githubManager.mergePullRequest(selected.method)) {
+      statusBarManager.updatePullRequestStatus();
+      vscode.window.showInformationMessage(`Successfully merged`);
+    } else {
+      vscode.window.showInformationMessage(`Merge failed for unknown reason`);
+    }
+  }
 }
