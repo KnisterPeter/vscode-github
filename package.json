@@ -39,7 +39,7 @@
       },
       {
         "command": "extension.mergePullRequest",
-        "title": "GitHub: Merge open pull request..."
+        "title": "GitHub: Merge pull request (current branch)..."
       }
     ]
   },

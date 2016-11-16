@@ -83,7 +83,8 @@ export class GitHubManager {
 
   public async mergePullRequest(method: MergeMethod): Promise<boolean|undefined> {
     try {
-      if (await this.hasPullRequestForCurrentBranch()) {
+      const pullRequest = await this.getPullRequestForCurrentBranch();
+      if (pullRequest && pullRequest.mergeable) {
         const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
         const pullRequest = await this.getPullRequestForCurrentBranch();
         if (pullRequest) {
@@ -99,6 +100,10 @@ export class GitHubManager {
       if (!(e instanceof GitHubError)) {
         throw e;
       }
+      console.log(e);
+      console.log(e.response);
+      console.log(await e.response.json());
+      // status 405 (method not allowed)
       // TODO...
       return false;
     }
