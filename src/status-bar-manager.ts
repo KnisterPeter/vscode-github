@@ -3,10 +3,10 @@ import {PullRequest, PullRequestStatus} from './github';
 import {GitHubManager} from './github-manager';
 
 const colors = {
-  'none': '#888',
-  'success': '#0f0',
-  'failure': '#f00',
-  'pending': '#fff'
+  'none': '#ffffff',
+  'success': '#56e39f',
+  'failure': '#f24236',
+  'pending': '#f6f5ae'
 };
 
 export class StatusBarManager {
