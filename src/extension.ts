@@ -26,7 +26,7 @@ class Extension {
     this.channel.appendLine('Visual Studio Code GitHub Extension');
 
     this.githubManager = new GitHubManager(this.cwd, this.channel);
-    this.statusBarManager = new StatusBarManager(context, this.githubManager);
+    this.statusBarManager = new StatusBarManager(context, this.githubManager, this.channel);
 
     const token = context.globalState.get<string|undefined>('token');
     if (token) {

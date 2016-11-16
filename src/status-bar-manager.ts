@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {PullRequest, PullRequestStatus} from './github';
+import {GitHubError, PullRequest, PullRequestStatus} from './github';
 import {GitHubManager} from './github-manager';
 
 const colors = {
@@ -15,8 +15,11 @@ export class StatusBarManager {
 
   private githubManager: GitHubManager;
 
-  constructor(context: vscode.ExtensionContext, githubManager: GitHubManager) {
+  private channel: vscode.OutputChannel;
+
+  constructor(context: vscode.ExtensionContext, githubManager: GitHubManager, channel: vscode.OutputChannel) {
     this.githubManager = githubManager;
+    this.channel = channel;
 
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.statusBar.command = '';
@@ -35,17 +38,26 @@ export class StatusBarManager {
   }
 
   public async updatePullRequestStatus(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-    this.statusBar.show();
-    if (pullRequest) {
-      const status = await this.calculateMergableStatus(pullRequest);
-      this.statusBar.color = colors[status];
-      this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
-      this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
-    } else {
-      this.statusBar.color = colors.none;
-      this.statusBar.tooltip = 'Create pull-request for current branch';
-      this.statusBar.command = 'extension.createPullRequest';
+    try {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      this.statusBar.show();
+      if (pullRequest) {
+        const status = await this.calculateMergableStatus(pullRequest);
+        this.statusBar.color = colors[status];
+        this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
+        this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
+      } else {
+        this.statusBar.color = colors.none;
+        this.statusBar.tooltip = 'Create pull-request for current branch';
+        this.statusBar.command = 'extension.createPullRequest';
+      }
+    } catch (e) {
+      if (e instanceof GitHubError) {
+        console.log(e);
+        this.channel.appendLine('Update pull request status error:');
+        this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
+      }
+      throw e;
     }
   }
 

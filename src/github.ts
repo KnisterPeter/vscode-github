@@ -118,10 +118,7 @@ namespace impl {
       const entry = cache.get(request.url);
       if (entry) {
         // When we have a cache hit, send etag
-        if (!request.options.headers) {
-          request.options.headers = {};
-        }
-        request.options.headers['If-None-Match'] = entry.etag;
+        (request.options.headers as any).set('If-None-Match', entry.etag);
       }
       const response = await chain(request);
       if (!entry || response.status !== 304) {
@@ -139,10 +136,7 @@ namespace impl {
 
   export function githubTokenAuthenticator(token: string): IPretendRequestInterceptor {
     return request => {
-      if (!request.options.headers) {
-        request.options.headers = {};
-      }
-      request.options.headers['Authorization'] = `token ${token}`;
+      (request.options.headers as any).set('Authorization', `token ${token}`);
       return request;
     };
   }

@@ -66,11 +66,20 @@ export class GitHubManager {
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
 
-    const result = await this.github.createPullRequest(owner, repository, body);
-    // TODO: Pretend should optionally redirect
-    const number = result.headers['location'][0]
-      .match(/https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/pulls\/([0-9]+)/) as RegExpMatchArray;
-    return (await this.github.getPullRequest(owner, repository, parseInt(number[1] as string, 10))).body;
+    try {
+      const result = await this.github.createPullRequest(owner, repository, body);
+      // TODO: Pretend should optionally redirect
+      const number = result.headers['location'][0]
+        .match(/https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/pulls\/([0-9]+)/) as RegExpMatchArray;
+      return (await this.github.getPullRequest(owner, repository, parseInt(number[1] as string, 10))).body;
+    } catch (e) {
+      if (e instanceof GitHubError) {
+        console.log(e);
+        this.channel.appendLine('Create pull request error:');
+        this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
+      }
+      throw e;
+    }
   }
 
   public async listPullRequests(): Promise<PullRequest[]> {
