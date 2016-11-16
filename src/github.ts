@@ -1,4 +1,4 @@
-import {Pretend, Get, Post, Put, Interceptor, IPretendRequestInterceptor,
+import {Pretend, Get, Post, Put, Headers, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
 import * as LRUCache from 'lru-cache';
 
@@ -178,6 +178,7 @@ namespace impl {
     @Get('/repos/:owner/:repo/commits/:ref/status')
     public getStatusForRef(): any {/* */}
 
+    @Headers('Accept: application/vnd.github.polaris-preview+json')
     @Put('/repos/:owner/:repo/pulls/:number/merge')
     public mergePullRequest(): any {/* */}
 
