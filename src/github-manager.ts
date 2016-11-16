@@ -81,28 +81,23 @@ export class GitHubManager {
     return (await this.github.listPullRequests(owner, repository, parameters)).body;
   }
 
-  public async mergePullRequest(method: MergeMethod): Promise<boolean|undefined> {
+  public async mergePullRequest(pullRequest: PullRequest, method: MergeMethod): Promise<boolean|undefined> {
     try {
-      const pullRequest = await this.getPullRequestForCurrentBranch();
-      if (pullRequest && pullRequest.mergeable) {
+      if (pullRequest.mergeable) {
         const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-        const pullRequest = await this.getPullRequestForCurrentBranch();
-        if (pullRequest) {
-          const body: Merge = {
-            merge_method: method
-          };
-          const result = await this.github.mergePullRequest(owner, repository, pullRequest.number, body);
-          return result.body.merged;
-        }
+        const body: Merge = {
+          merge_method: method
+        };
+        const result = await this.github.mergePullRequest(owner, repository, pullRequest.number, body);
+        return result.body.merged;
       }
       return undefined;
     } catch (e) {
       if (!(e instanceof GitHubError)) {
         throw e;
       }
-      console.log(e);
-      console.log(e.response);
-      console.log(await e.response.json());
+      this.channel.appendLine('Error while merging:');
+      this.channel.appendLine(JSON.stringify(await e.response.json(), undefined, ' '));
       // status 405 (method not allowed)
       // TODO...
       return false;

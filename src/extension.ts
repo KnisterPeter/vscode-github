@@ -132,31 +132,37 @@ class Extension {
   }
 
   private async mergePullRequest(): Promise<void> {
-    const items: MergeOptionItems[] = [
-      {
-        label: 'Create merge commit',
-        description: '',
-        method: 'merge'
-      },
-      {
-        label: 'Squash and merge',
-        description: '',
-        method: 'squash'
-      },
-      {
-        label: 'Rebase and merge',
-        description: '',
-        method: 'rebase'
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    if (pullRequest && pullRequest.mergeable) {
+      const items: MergeOptionItems[] = [
+        {
+          label: 'Create merge commit',
+          description: '',
+          method: 'merge'
+        },
+        {
+          label: 'Squash and merge',
+          description: '',
+          method: 'squash'
+        },
+        {
+          label: 'Rebase and merge',
+          description: '',
+          method: 'rebase'
+        }
+      ];
+      const selected = await vscode.window.showQuickPick(items);
+      if (selected) {
+        if (await this.githubManager.mergePullRequest(pullRequest, selected.method)) {
+          this.statusBarManager.updatePullRequestStatus();
+          vscode.window.showInformationMessage(`Successfully merged`);
+        } else {
+          vscode.window.showInformationMessage(`Merge failed for unknown reason`);
+        }
       }
-    ];
-    const selected = await vscode.window.showQuickPick(items);
-    if (selected) {
-      if (await this.githubManager.mergePullRequest(selected.method)) {
-        this.statusBarManager.updatePullRequestStatus();
-        vscode.window.showInformationMessage(`Successfully merged`);
-      } else {
-        vscode.window.showInformationMessage(`Merge failed for unknown reason`);
-      }
+    } else {
+      vscode.window.showWarningMessage(
+        'Either no pull request for current brach, or the pull request is not mergable');
     }
   }
 
