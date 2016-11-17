@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as git from './git';
 import {GitHubError, PullRequest, PullRequestStatus} from './github';
 import {GitHubManager} from './github-manager';
 
@@ -11,13 +12,17 @@ const colors = {
 
 export class StatusBarManager {
 
+  private cwd: string;
+
   private statusBar: vscode.StatusBarItem;
 
   private githubManager: GitHubManager;
 
   private channel: vscode.OutputChannel;
 
-  constructor(context: vscode.ExtensionContext, githubManager: GitHubManager, channel: vscode.OutputChannel) {
+  constructor(context: vscode.ExtensionContext, cwd: string, githubManager: GitHubManager,
+      channel: vscode.OutputChannel) {
+    this.cwd = cwd;
     this.githubManager = githubManager;
     this.channel = channel;
 
@@ -49,26 +54,34 @@ export class StatusBarManager {
   }
 
   public async updatePullRequestStatus(): Promise<void> {
-    try {
-      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const branch = await git.getCurrentBranch(this.cwd);
+    if (branch !== vscode.workspace.getConfiguration('github').get<string>('defaultBranch', 'master')) {
+      try {
+        const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+        this.statusBar.show();
+        if (pullRequest) {
+          const status = await this.calculateMergableStatus(pullRequest);
+          this.statusBar.color = colors[status];
+          this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
+          this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
+        } else {
+          this.statusBar.color = colors.none;
+          this.statusBar.tooltip = 'Create pull-request for current branch';
+          this.statusBar.command = 'extension.createPullRequest';
+        }
+      } catch (e) {
+        if (e instanceof GitHubError) {
+          console.log(e);
+          this.channel.appendLine('Update pull request status error:');
+          this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
+        }
+        throw e;
+      }
+    } else {
       this.statusBar.show();
-      if (pullRequest) {
-        const status = await this.calculateMergableStatus(pullRequest);
-        this.statusBar.color = colors[status];
-        this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
-        this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
-      } else {
-        this.statusBar.color = colors.none;
-        this.statusBar.tooltip = 'Create pull-request for current branch';
-        this.statusBar.command = 'extension.createPullRequest';
-      }
-    } catch (e) {
-      if (e instanceof GitHubError) {
-        console.log(e);
-        this.channel.appendLine('Update pull request status error:');
-        this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
-      }
-      throw e;
+      this.statusBar.color = colors.none;
+      this.statusBar.tooltip = '';
+      this.statusBar.command = '';
     }
   }
 
