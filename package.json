@@ -32,6 +32,11 @@
         "github.preferedMergeMethod": {
           "type": "string",
           "description": "By default the extension asks the user during merge process. This could be set to on of 'merge', 'squash' or 'rebase' to define the prefered method and not to be asked every time."
+        },
+        "github.defaultBranch": {
+          "type": "string",
+          "default": "master",
+          "description": "The branch to create pull requests against."
         }
       }
     },

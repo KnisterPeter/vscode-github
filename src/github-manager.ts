@@ -61,7 +61,7 @@ export class GitHubManager {
     const body: CreatePullRequestBody = {
       title: await git.getCommitMessage(this.cwd),
       head: `${owner}:${branch}`,
-      base: `master`
+      base: vscode.workspace.getConfiguration('github').get<string>('defaultBranch', 'master')
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
