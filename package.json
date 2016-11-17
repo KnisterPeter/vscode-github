@@ -10,16 +10,31 @@
   "version": "0.5.0",
   "publisher": "KnisterPeter",
   "engines": {
-    "vscode": "^1.5.0"
+    "vscode": "^1.7.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "git",
+    "github",
+    "pull-request",
+    "pull request"
   ],
   "activationEvents": [
     "*"
   ],
   "main": "./out/src/extension",
   "contributes": {
+    "configuration": {
+      "title": "GitHub configuration",
+      "properties": {
+        "github.preferedMergeMethod": {
+          "type": "string",
+          "description": "By default the extension asks the user during merge process. This could be set to on of 'merge', 'squash' or 'rebase' to define the prefered method and not to be asked every time."
+        }
+      }
+    },
     "commands": [
       {
         "command": "extension.setGitHubToken",

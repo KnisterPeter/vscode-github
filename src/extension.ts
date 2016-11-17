@@ -131,29 +131,36 @@ class Extension {
     });
   }
 
+  private async getMergeMethdod(): Promise<MergeMethod> {
+    if (vscode.workspace.getConfiguration('github').has('preferedMergeMethod')) {
+      return vscode.workspace.getConfiguration('github').get<MergeMethod>('preferedMergeMethod');
+    }
+    const items: MergeOptionItems[] = [
+      {
+        label: 'Create merge commit',
+        description: '',
+        method: 'merge'
+      },
+      {
+        label: 'Squash and merge',
+        description: '',
+        method: 'squash'
+      },
+      {
+        label: 'Rebase and merge',
+        description: '',
+        method: 'rebase'
+      }
+    ];
+    return (await vscode.window.showQuickPick(items)).method;
+  }
+
   private async mergePullRequest(): Promise<void> {
     const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
     if (pullRequest && pullRequest.mergeable) {
-      const items: MergeOptionItems[] = [
-        {
-          label: 'Create merge commit',
-          description: '',
-          method: 'merge'
-        },
-        {
-          label: 'Squash and merge',
-          description: '',
-          method: 'squash'
-        },
-        {
-          label: 'Rebase and merge',
-          description: '',
-          method: 'rebase'
-        }
-      ];
-      const selected = await vscode.window.showQuickPick(items);
-      if (selected) {
-        if (await this.githubManager.mergePullRequest(pullRequest, selected.method)) {
+      const method = await this.getMergeMethdod();
+      if (method) {
+        if (await this.githubManager.mergePullRequest(pullRequest, method)) {
           this.statusBarManager.updatePullRequestStatus();
           vscode.window.showInformationMessage(`Successfully merged`);
         } else {
