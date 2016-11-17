@@ -37,6 +37,11 @@
           "type": "string",
           "default": "master",
           "description": "The branch to create pull requests against."
+        },
+        "github.refreshPullRequestStatus": {
+          "type": "number",
+          "default": 5,
+          "description": "Interval in seconds to refresh the current pull request status."
         }
       }
     },

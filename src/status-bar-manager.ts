@@ -31,10 +31,21 @@ export class StatusBarManager {
   }
 
   private async refreshPullRequestStatus(): Promise<void> {
-    if (this.githubManager.connected) {
-      await this.updatePullRequestStatus();
+    try {
+      if (this.githubManager.connected) {
+        await this.updatePullRequestStatus();
+      }
+    } catch (e) {
+      if (e instanceof GitHubError) {
+        console.log(e);
+        this.channel.appendLine('Failed to update pull request status:');
+        this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
+      } else {
+        throw e;
+      }
     }
-    setTimeout(() => { this.refreshPullRequestStatus(); }, 5000);
+    setTimeout(() => { this.refreshPullRequestStatus(); },
+      vscode.workspace.getConfiguration('github').get<number>('refreshPullRequestStatus', 5) * 1000);
   }
 
   public async updatePullRequestStatus(): Promise<void> {
