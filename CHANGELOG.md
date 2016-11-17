@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/KnisterPeter/vscode-github/compare/v0.5.0...v0.6.0) (2016-11-17)
+
+
+### Bug Fixes
+
+* handling of headers ([589ba74](https://github.com/KnisterPeter/vscode-github/commit/589ba74))
+
+### Features
+
+* add configuration for default branch ([12867be](https://github.com/KnisterPeter/vscode-github/commit/12867be))
+* add configuration for prefered merge method ([5b826a4](https://github.com/KnisterPeter/vscode-github/commit/5b826a4))
+* add configuration for refresh interval ([911fbd6](https://github.com/KnisterPeter/vscode-github/commit/911fbd6))
+* enable support for squash and rebase merges ([8409d61](https://github.com/KnisterPeter/vscode-github/commit/8409d61))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/KnisterPeter/vscode-github/compare/v0.4.0...v0.5.0) (2016-11-15)
 
