@@ -29,6 +29,22 @@ export class GitHubManager {
     return (await this.github.getRepository(owner, repository)).body.default_branch;
   }
 
+  public async getEnabledMergeMethods(): Promise<Set<MergeMethod>> {
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const repo = await this.github.getRepository(owner, repository);
+    const set = new Set();
+    if (repo.body.allow_merge_commit) {
+      set.add('merge');
+    }
+    if (repo.body.allow_squash_merge) {
+      set.add('squash');
+    }
+    if (repo.body.allow_rebase_merge) {
+      set.add('rebase');
+    }
+    return set;
+  }
+
   public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
