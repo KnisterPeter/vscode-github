@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/KnisterPeter/vscode-github/compare/v0.6.0...v0.7.0) (2016-11-18)
+
+
+### Bug Fixes
+
+* do not create pull request on default branch ([d6e1a8a](https://github.com/KnisterPeter/vscode-github/commit/d6e1a8a))
+* leverage github default branch ([#22](https://github.com/KnisterPeter/vscode-github/issues/22)) ([693da3f](https://github.com/KnisterPeter/vscode-github/commit/693da3f))
+
+
+### Features
+
+* display only enabled merge methods ([#23](https://github.com/KnisterPeter/vscode-github/issues/23)) ([b1ef991](https://github.com/KnisterPeter/vscode-github/commit/b1ef991))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/KnisterPeter/vscode-github/compare/v0.5.0...v0.6.0) (2016-11-17)
 
