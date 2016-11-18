@@ -55,7 +55,7 @@ export class StatusBarManager {
 
   public async updatePullRequestStatus(): Promise<void> {
     const branch = await git.getCurrentBranch(this.cwd);
-    if (branch !== vscode.workspace.getConfiguration('github').get<string>('defaultBranch', 'master')) {
+    if (branch !== await this.githubManager.getDefaultBranch()) {
       try {
         const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
         this.statusBar.show();
