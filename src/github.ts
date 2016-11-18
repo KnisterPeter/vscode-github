@@ -27,6 +27,9 @@ export interface GitHubResponse<T> {
 
 export interface Repository {
   default_branch: string;
+  allow_rebase_merge: boolean;
+  allow_squash_merge: boolean;
+  allow_merge_commit: boolean;
 }
 
 export type MergeMethod = 'merge' | 'squash' | 'rebase';
@@ -166,6 +169,7 @@ namespace impl {
 
   export class GitHubBlueprint implements GitHub {
 
+    @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
     public getRepository(_owner: string, _repo: string): any {/* */}
 
