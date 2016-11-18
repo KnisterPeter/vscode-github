@@ -24,6 +24,11 @@ export class GitHubManager {
     this.github = getClient(token);
   }
 
+  public async getDefaultBranch(): Promise<string> {
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
+    return (await this.github.getRepository(owner, repository)).body.default_branch;
+  }
+
   public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
@@ -61,7 +66,7 @@ export class GitHubManager {
     const body: CreatePullRequestBody = {
       title: await git.getCommitMessage(this.cwd),
       head: `${owner}:${branch}`,
-      base: vscode.workspace.getConfiguration('github').get<string>('defaultBranch', 'master')
+      base: await this.getDefaultBranch()
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));

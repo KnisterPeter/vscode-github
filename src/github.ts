@@ -4,6 +4,8 @@ import * as LRUCache from 'lru-cache';
 
 export interface GitHub {
 
+  getRepository(owner: string, repo: string): Promise<GitHubResponse<Repository>>;
+
   getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequest>>;
 
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
@@ -21,6 +23,10 @@ export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface Repository {
+  default_branch: string;
 }
 
 export type MergeMethod = 'merge' | 'squash' | 'rebase';
@@ -159,6 +165,9 @@ namespace impl {
   }
 
   export class GitHubBlueprint implements GitHub {
+
+    @Get('/repos/:owner/:repo')
+    public getRepository(_owner: string, _repo: string): any {/* */}
 
     @Get('/repos/:owner/:repo/pulls/:number')
     public getPullRequest(): any {/* */}
