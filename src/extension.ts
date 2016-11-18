@@ -131,28 +131,36 @@ class Extension {
     });
   }
 
-  private async getMergeMethdod(): Promise<MergeMethod> {
-    if (vscode.workspace.getConfiguration('github').has('preferedMergeMethod')) {
-      return vscode.workspace.getConfiguration('github').get<MergeMethod>('preferedMergeMethod');
+  private async getMergeMethdod(): Promise<MergeMethod|undefined> {
+    const preferedMethod = vscode.workspace.getConfiguration('github').get<MergeMethod>('preferedMergeMethod');
+    if (preferedMethod) {
+      return preferedMethod;
     }
-    const items: MergeOptionItems[] = [
-      {
+    const items: MergeOptionItems[] = [];
+    const enabledMethods = await this.githubManager.getEnabledMergeMethods();
+    if (enabledMethods.has('merge')) {
+      items.push({
         label: 'Create merge commit',
         description: '',
         method: 'merge'
-      },
-      {
+      });
+    }
+    if (enabledMethods.has('squash')) {
+      items.push({
         label: 'Squash and merge',
         description: '',
         method: 'squash'
-      },
-      {
+      });
+    }
+    if (enabledMethods.has('rebase')) {
+      items.push({
         label: 'Rebase and merge',
         description: '',
         method: 'rebase'
-      }
-    ];
-    return (await vscode.window.showQuickPick(items)).method;
+      });
+    }
+    const selected = await vscode.window.showQuickPick(items);
+    return selected ? selected.method : undefined;
   }
 
   private async mergePullRequest(): Promise<void> {
