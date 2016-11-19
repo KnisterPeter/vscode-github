@@ -64,7 +64,7 @@
     ]
   },
   "scripts": {
-    "linter": "tslint '{src,test}/**/*.ts'",
+    "linter": "tslint --project ./tsconfig.json --type-check",
     "test": "node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
@@ -84,7 +84,7 @@
     "husky": "0.11.9",
     "mocha": "^3.1.2",
     "standard-version": "3.0.0",
-    "tslint": "3.15.1",
+    "tslint": "4.0.0",
     "typescript": "^2.0.3",
     "vscode": "^1.0.0"
   },

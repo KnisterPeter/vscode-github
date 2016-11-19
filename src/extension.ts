@@ -1,10 +1,11 @@
 import {join} from 'path';
 import * as sander from 'sander';
 import * as vscode from 'vscode';
+
 import * as git from './git';
 import {GitHubError, PullRequest, MergeMethod} from './github';
-import {StatusBarManager} from './status-bar-manager';
 import {GitHubManager} from './github-manager';
+import {StatusBarManager} from './status-bar-manager';
 
 export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(new Extension(context));
@@ -100,7 +101,7 @@ class Extension {
   private async createPullRequest(): Promise<void> {
     const pullRequest = await this.githubManager.createPullRequest();
     if (pullRequest) {
-      this.statusBarManager.updatePullRequestStatus();
+      this.statusBarManager.updateStatus();
       vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
     }
   }
@@ -121,7 +122,7 @@ class Extension {
   private async checkoutPullRequests(): Promise<void> {
     this.selectPullRequest(async pullRequest => {
       await git.checkout(this.cwd, pullRequest.head.ref);
-      this.statusBarManager.updatePullRequestStatus();
+      this.statusBarManager.updateStatus();
     });
   }
 
@@ -169,7 +170,7 @@ class Extension {
       const method = await this.getMergeMethdod();
       if (method) {
         if (await this.githubManager.mergePullRequest(pullRequest, method)) {
-          this.statusBarManager.updatePullRequestStatus();
+          this.statusBarManager.updateStatus();
           vscode.window.showInformationMessage(`Successfully merged`);
         } else {
           vscode.window.showInformationMessage(`Merge failed for unknown reason`);
