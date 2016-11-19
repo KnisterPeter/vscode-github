@@ -64,7 +64,7 @@
     ]
   },
   "scripts": {
-    "linter": "tslint '{src,test}/**/*.ts'",
+    "linter": "tslint --project ./tsconfig.json --type-check",
     "test": "node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",

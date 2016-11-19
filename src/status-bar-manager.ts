@@ -1,13 +1,14 @@
 import * as vscode from 'vscode';
+
 import * as git from './git';
 import {GitHubError, PullRequest, PullRequestStatus} from './github';
 import {GitHubManager} from './github-manager';
 
 const colors = {
-  'none': '#ffffff',
-  'success': '#56e39f',
-  'failure': '#f24236',
-  'pending': '#f6f5ae'
+  none: '#ffffff',
+  success: '#56e39f',
+  failure: '#f24236',
+  pending: '#f6f5ae'
 };
 
 export class StatusBarManager {
@@ -32,13 +33,13 @@ export class StatusBarManager {
     this.statusBar.color = colors.none;
     context.subscriptions.push(this.statusBar);
 
-    this.refreshPullRequestStatus();
+    this.refreshStatus();
   }
 
-  private async refreshPullRequestStatus(): Promise<void> {
+  private async refreshStatus(): Promise<void> {
     try {
       if (this.githubManager.connected) {
-        await this.updatePullRequestStatus();
+        await this.updateStatus();
       }
     } catch (e) {
       if (e instanceof GitHubError) {
@@ -49,39 +50,43 @@ export class StatusBarManager {
         throw e;
       }
     }
-    setTimeout(() => { this.refreshPullRequestStatus(); },
+    setTimeout(() => { this.refreshStatus(); },
       vscode.workspace.getConfiguration('github').get<number>('refreshPullRequestStatus', 5) * 1000);
   }
 
-  public async updatePullRequestStatus(): Promise<void> {
+  public async updateStatus(): Promise<void> {
     const branch = await git.getCurrentBranch(this.cwd);
     if (branch !== await this.githubManager.getDefaultBranch()) {
-      try {
-        const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-        this.statusBar.show();
-        if (pullRequest) {
-          const status = await this.calculateMergableStatus(pullRequest);
-          this.statusBar.color = colors[status];
-          this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
-          this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
-        } else {
-          this.statusBar.color = colors.none;
-          this.statusBar.tooltip = 'Create pull-request for current branch';
-          this.statusBar.command = 'extension.createPullRequest';
-        }
-      } catch (e) {
-        if (e instanceof GitHubError) {
-          console.log(e);
-          this.channel.appendLine('Update pull request status error:');
-          this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
-        }
-        throw e;
-      }
+      this.updatePullRequestStatus();
     } else {
       this.statusBar.show();
       this.statusBar.color = colors.none;
       this.statusBar.tooltip = '';
       this.statusBar.command = '';
+    }
+  }
+
+  private async updatePullRequestStatus(): Promise<void> {
+    try {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      this.statusBar.show();
+      if (pullRequest) {
+        const status = await this.calculateMergableStatus(pullRequest);
+        this.statusBar.color = colors[status];
+        this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
+        this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
+      } else {
+        this.statusBar.color = colors.none;
+        this.statusBar.tooltip = 'Create pull-request for current branch';
+        this.statusBar.command = 'extension.createPullRequest';
+      }
+    } catch (e) {
+      if (e instanceof GitHubError) {
+        console.log(e);
+        this.channel.appendLine('Update pull request status error:');
+        this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
+      }
+      throw e;
     }
   }
 

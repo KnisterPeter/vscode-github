@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+
 import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
   PullRequestStatus, Merge, MergeMethod} from './github';
@@ -89,6 +90,7 @@ export class GitHubManager {
 
     try {
       const result = await this.github.createPullRequest(owner, repository, body);
+      // tslint:disable-next-line:comment-format
       // TODO: Pretend should optionally redirect
       const number = result.headers['location'][0]
         .match(/https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/pulls\/([0-9]+)/) as RegExpMatchArray;
@@ -129,6 +131,7 @@ export class GitHubManager {
       this.channel.appendLine('Error while merging:');
       this.channel.appendLine(JSON.stringify(await e.response.json(), undefined, ' '));
       // status 405 (method not allowed)
+      // tslint:disable-next-line:comment-format
       // TODO...
       return false;
     }
