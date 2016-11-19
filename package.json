@@ -76,6 +76,7 @@
     "publish-extension": "vsce publish $(node -e \"console.log(require('./package.json').version)\")"
   },
   "devDependencies": {
+    "@knisterpeter/standard-tslint": "1.0.0",
     "@types/lru-cache": "2.5.32",
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
