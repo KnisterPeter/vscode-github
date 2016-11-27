@@ -93,7 +93,7 @@
     "execa": "0.5.0",
     "lru-cache": "4.0.1",
     "pretend": "0.5.0",
-    "sander": "0.5.1"
+    "sander": "0.6.0"
   },
   "repository": {
     "type": "git",
