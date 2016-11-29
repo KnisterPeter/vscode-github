@@ -1,15 +1,24 @@
 import * as execa from 'execa';
-
 import { parse } from 'url';
+import * as vscode from 'vscode';
 
 /**
- * Look in .git/config for a remote origin and parses it to get username and repository.
+ * Check config for a default upstream and if none found look in .git/config for a remote origin and
+ * parses it to get username and repository.
  *
  * @param {string} cwd The directory to find the .git/config file in.
  * @return {Promise<string[]>} A tuple of username and repository (e.g. KnisterPeter/vscode-github)
  * @throws Throws if the could not be parsed as a github url
  */
 export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
+  const defaultUpstream = vscode.workspace.getConfiguration('github').get<string>('upstream', undefined);
+  if (defaultUpstream) {
+    return Promise.resolve(defaultUpstream.split('/'));
+  }
+  return getGitHubOwnerAndRepositoryFromGitConfig(cwd);
+}
+
+async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<string[]> {
   // as we expect this function to throw on non-Github repos we can chain
   // whatever calls and they will thrown on non-correct remotes
   const remote = (await execa('git', 'config --local --get remote.origin.url'.split(' '), {cwd})).stdout.trim();
