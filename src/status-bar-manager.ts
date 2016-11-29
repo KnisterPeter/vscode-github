@@ -11,6 +11,8 @@ const colors = {
   pending: '#f6f5ae'
 };
 
+const githubPullRequestIcon = '$(git-pull-request)';
+
 export class StatusBarManager {
 
   private cwd: string;
@@ -29,7 +31,7 @@ export class StatusBarManager {
 
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.statusBar.command = '';
-    this.statusBar.text = '$(git-pull-request)';
+    this.statusBar.text = `${githubPullRequestIcon} ...`;
     this.statusBar.color = colors.none;
     context.subscriptions.push(this.statusBar);
 
@@ -61,6 +63,7 @@ export class StatusBarManager {
     } else {
       this.statusBar.show();
       this.statusBar.color = colors.none;
+      this.statusBar.text = `${githubPullRequestIcon}`;
       this.statusBar.tooltip = '';
       this.statusBar.command = '';
     }
@@ -73,10 +76,12 @@ export class StatusBarManager {
       if (pullRequest) {
         const status = await this.calculateMergableStatus(pullRequest);
         this.statusBar.color = colors[status];
+        this.statusBar.text = `${githubPullRequestIcon} #${pullRequest.number} ${status}`;
         this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
         this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
       } else {
         this.statusBar.color = colors.none;
+        this.statusBar.text = `${githubPullRequestIcon} Create PR`;
         this.statusBar.tooltip = 'Create pull-request for current branch';
         this.statusBar.command = 'extension.createPullRequest';
       }
