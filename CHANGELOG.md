@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.1"></a>
+## [0.7.1](https://github.com/KnisterPeter/vscode-github/compare/v0.7.0...v0.7.1) (2016-11-29)
+
+
+### Bug Fixes
+
+* correctly obtain Git remote and parse it (#38) ([adb243b](https://github.com/KnisterPeter/vscode-github/commit/adb243b))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/KnisterPeter/vscode-github/compare/v0.6.0...v0.7.0) (2016-11-18)
 
