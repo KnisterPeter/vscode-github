@@ -5,15 +5,21 @@ import { parse } from 'url';
 export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
   // As we expect this function to throw on non-Github repos we can chain whatever calls and they will thrown on non-correct remotes
   const remote = (await execa('git', 'config --local --get remote.origin.url'.split(' '), {cwd})).stdout.trim();
-  if (!remote.length) throw new Error('Git remote is empty!');
+  if (!remote.length) {
+    throw new Error('Git remote is empty!');
+  }
 
   // Git protocol remotes, may be git@github or git://github, GITHUB domain name is not case-sensetive
-  if(remote.startsWith('git')) return remote.match(/^git(@|\:\/\/)github.com\/(.*?)\/(.*?)(?:.git)?$/i).slice(2, 4);
+  if(remote.startsWith('git')) {
+    return remote.match(/^git(@|\:\/\/)github.com\/(.*?)\/(.*?)(?:.git)?$/i).slice(2, 4);
+  }
 
   // it must be http or https based remote
   const { hostname, pathname } = parse(remote);
   // Github.com domain name is not case-sensetive
-  if (!/^github\.com$/i.test(hostname)) throw new Error('Not a Github remote!');
+  if (!pathname || !hostname || !/^github\.com$/i.test(hostname)) {
+    throw new Error('Not a Github remote!');
+  }
   return pathname.match(/\/(.*?)\/(.*?)(?:.git)?$/).slice(1, 3);
 }
 
