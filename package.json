@@ -37,6 +37,10 @@
           "type": "number",
           "default": 5,
           "description": "Interval in seconds to refresh the current pull request status."
+        },
+        "github.upstream": {
+          "type": "string",
+          "description": "By default the extension get the repository and user from .git/config. For forks where upstream is a different repository this could be configured here (e.g. microsoft/typescript)."
         }
       }
     },

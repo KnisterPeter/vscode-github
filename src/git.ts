@@ -1,6 +1,11 @@
 import * as execa from 'execa';
+import * as vscode from 'vscode';
 
 export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
+  const defaultUpstream = vscode.workspace.getConfiguration('github').get<string>('upstream', undefined);
+  if (defaultUpstream) {
+    return Promise.resolve(defaultUpstream.split('/'));
+  }
   return execa('git', ['config', '--get-regexp', 'remote\\.origin\\.url'], {cwd})
     .then(result => {
       const match = result.stdout.match(
