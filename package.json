@@ -47,23 +47,28 @@
     "commands": [
       {
         "command": "extension.setGitHubToken",
-        "title": "GitHub: Set Personal Access Token..."
+        "title": "Set Personal Access Token...",
+        "category": "GitHub"
       },
       {
         "command": "extension.createPullRequest",
-        "title": "GitHub: Create pull request from current branch"
+        "title": "Create pull request from current branch",
+        "category": "GitHub"
       },
       {
         "command": "extension.checkoutPullRequests",
-        "title": "GitHub: Checkout open pull request..."
+        "title": "Checkout open pull request...",
+        "category": "GitHub"
       },
       {
         "command": "extension.browserPullRequest",
-        "title": "GitHub: Browse open pull request..."
+        "title": "Browse open pull request...",
+        "category": "GitHub"
       },
       {
         "command": "extension.mergePullRequest",
-        "title": "GitHub: Merge pull request (current branch)..."
+        "title": "Merge pull request (current branch)...",
+        "category": "GitHub"
       }
     ]
   },
