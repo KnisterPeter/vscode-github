@@ -17,6 +17,11 @@ export class GitHubManager {
     this.channel = channel;
   }
 
+  private log(message: string): void {
+    this.channel.appendLine(message);
+    console.log(message);
+  }
+
   get connected(): boolean {
     return Boolean(this.github);
   }
@@ -80,10 +85,17 @@ export class GitHubManager {
     }
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
+    if (!branch) {
+      throw new Error('No current branch');
+    }
+    this.log(`Create pull request on branch ${branch}`);
+    const firstCommit = await git.getFirstCommitOnBranch(branch, this.cwd);
+    this.log(`First commit on branch ${firstCommit}`);
     const body: CreatePullRequestBody = {
-      title: await git.getCommitMessage(this.cwd),
+      title: await git.getCommitMessage(firstCommit, this.cwd),
       head: `${owner}:${branch}`,
-      base: await this.getDefaultBranch()
+      base: await this.getDefaultBranch(),
+      body: await git.getCommitBody(firstCommit, this.cwd)
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
