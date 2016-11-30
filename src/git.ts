@@ -42,22 +42,24 @@ async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<st
 }
 
 export async function getCurrentBranch(cwd: string): Promise<string|undefined> {
-  return execa('git', ['branch'], {cwd})
-    .then(result => {
-      const match = result.stdout.match(/^\* (.*)$/m);
-      return match ? match[1] : undefined;
-    });
+  const stdout = (await execa('git', ['branch'], {cwd})).stdout;
+  const match = stdout.match(/^\* (.*)$/m);
+  return match ? match[1] : undefined;
 }
 
-export async function getCommitMessage(cwd: string): Promise<string> {
-  return execa('git', ['log', '--oneline', '-1'], {cwd})
-    .then(result => {
-      const match = result.stdout.match(/^(?:.+?) (.*)/);
-      return match ? match[1] : result.stdout;
-    });
+export async function getCommitMessage(sha: string, cwd: string): Promise<string> {
+  return (await execa('git', ['log', '-n', '1', '--format=%s', sha], {cwd})).stdout.trim();
+}
+
+export async function getFirstCommitOnBranch(branch: string, cwd: string): Promise<string> {
+  return (await execa('git', ['log', '--reverse', '--right-only', '--format=%h',
+    `origin/master..origin/${branch}`], {cwd})).stdout.trim().split('\n')[0];
+}
+
+export async function getCommitBody(sha: string, cwd: string): Promise<string> {
+  return (await execa('git', ['log', '--format=%b', '-n', '1', sha], {cwd})).stdout.trim();
 }
 
 export async function checkout(cwd: string, branch: string): Promise<void> {
-  return execa('git', ['checkout', branch], {cwd})
-    .then(() => undefined);
+  await execa('git', ['checkout', branch], {cwd});
 }

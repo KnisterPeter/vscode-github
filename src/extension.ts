@@ -81,6 +81,7 @@ class Extension {
         console.error(e.response);
         vscode.window.showErrorMessage('GitHub error: ' + e.message);
       } else {
+        console.error(e);
         vscode.window.showErrorMessage('Error: ' + e.message);
       }
   }
