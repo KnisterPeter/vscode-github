@@ -13,6 +13,33 @@ export function activate(context: vscode.ExtensionContext): void {
 
 type MergeOptionItems = { label: string; description: string; method: MergeMethod; };
 
+const GITHUB_REVIEW_COMMENT_DECORATION = vscode.window.createTextEditorDecorationType({
+  isWholeLine: true,
+  overviewRulerLane: vscode.OverviewRulerLane.Left,
+  after: {
+    contentText: 'Review Comment',
+    margin: '0 0 0 3em'
+  },
+  dark: {
+    overviewRulerColor: 'rgba(128, 128, 128, .5)',
+    color: '#eee',
+    backgroundColor: '#333',
+    after: {
+      color: '#333',
+      backgroundColor: '#eee'
+    }
+  },
+  light: {
+    overviewRulerColor: 'rgba(128, 128, 128, .5)',
+    color: '#333',
+    backgroundColor: '#ccc',
+    after: {
+      color: '#eee',
+      backgroundColor: '#999'
+    }
+  }
+});
+
 class Extension {
 
   private channel: vscode.OutputChannel;
@@ -32,8 +59,12 @@ class Extension {
     const token = context.globalState.get<string|undefined>('token');
     if (token) {
       this.githubManager.connect(token);
+      this.addReviewCommentsToVisibleEditors(vscode.window.visibleTextEditors);
     }
     this.checkVersionAndToken(context, token);
+
+    vscode.window.onDidChangeVisibleTextEditors(visibleEditors =>
+      this.addReviewCommentsToVisibleEditors(visibleEditors));
 
     context.subscriptions.push(
       vscode.commands.registerCommand('extension.setGitHubToken', this.createGithubTokenCommand(context)),
@@ -84,6 +115,30 @@ class Extension {
         console.error(e);
         vscode.window.showErrorMessage('Error: ' + e.message);
       }
+  }
+
+  private async addReviewCommentsToVisibleEditors(visibleEditors: vscode.TextEditor[]): Promise<void> {
+    if (!this.githubManager.connected) {
+      return;
+    }
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    if (!pullRequest) {
+      return;
+    }
+    const comments = (await this.githubManager
+      .getPullRequestReviewComments(pullRequest))
+      .map(comment => {
+        const line = parseInt(comment.diff_hunk.match(/^@@ -[^ ]+ \+(\d+)[^ ]+ @@$/m)![1], 10);
+        return {
+            file: join(vscode.workspace.rootPath, comment.path),
+            range: new vscode.Range(new vscode.Position(line, 0), new vscode.Position(line, 100)),
+            hoverMessage: comment.body
+        };
+      });
+    visibleEditors.forEach(visibleEditor => {
+      visibleEditor.setDecorations(GITHUB_REVIEW_COMMENT_DECORATION,
+        comments.filter(comment => comment.file === visibleEditor.document.fileName));
+    });
   }
 
   private createGithubTokenCommand(context: vscode.ExtensionContext): () => void {

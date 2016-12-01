@@ -8,6 +8,8 @@ export interface GitHub {
 
   getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequest>>;
 
+  getPullRequestComments(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestComment[]>>;
+
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
     Promise<GitHubResponse<PullRequest[]>>;
 
@@ -87,6 +89,13 @@ export interface PullRequest {
     ref: string;
   };
   mergeable?: boolean|null;
+}
+
+export interface PullRequestComment {
+  diff_hunk: string;
+  path: string;
+  position: number;
+  body: string;
 }
 
 export function getClient(token: string): GitHub {
@@ -171,10 +180,13 @@ namespace impl {
 
     @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
-    public getRepository(_owner: string, _repo: string): any {/* */}
+    public getRepository(): any {/* */}
 
     @Get('/repos/:owner/:repo/pulls/:number')
     public getPullRequest(): any {/* */}
+
+    @Get('/repos/:owner/:repo/pulls/:number/comments')
+    public getPullRequestComments(): any {/* */}
 
     @Get('/repos/:owner/:repo/pulls', true)
     public listPullRequests(): any {/* */}
