@@ -1,4 +1,6 @@
 import * as execa from 'execa';
+import { resolve } from 'path';
+import { readFile, unlink } from 'sander';
 import { parse } from 'url';
 import * as vscode from 'vscode';
 
@@ -62,4 +64,35 @@ export async function getCommitBody(sha: string, cwd: string): Promise<string> {
 
 export async function checkout(cwd: string, branch: string): Promise<void> {
   await execa('git', ['checkout', branch], {cwd});
+}
+
+export async function getPullRequestBody(sha: string, cwd: string): Promise<string> {
+  const bodyMethod = vscode.workspace.getConfiguration('github').get<string>('customPullRequestDescription');
+
+  switch (bodyMethod) {
+    case 'singleLine':
+      return getSingleLinePullRequestBody();
+    case 'gitEditor':
+      return getGitEditorPullRequestBody(cwd);
+    case 'off':
+    default:
+      return getCommitBody(sha, cwd);
+  }
+}
+
+async function getSingleLinePullRequestBody(): Promise<string> {
+  return await vscode.window.showInputBox({prompt: 'Pull request description'});
+}
+
+async function getGitEditorPullRequestBody(cwd: string): Promise<string> {
+  const path = resolve(cwd, 'PR_EDITMSG');
+
+  const [editorName, ...params] = (await execa('git', ['config', '--get', 'core.editor'])).stdout.split(' ');
+  await execa(editorName, [...params, path]);
+
+  const fileContents = (await readFile(path)).toString();
+
+  await unlink(path);
+
+  return fileContents;
 }

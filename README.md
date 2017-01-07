@@ -13,9 +13,9 @@ Current it is possible to do the following:
 * Checkout one of the open pull requests
 * Browse one of the open pull requests in your default browser
 * Display pull request and current status (e.g. mergeable, travis build done, ...) in the StatusBar
-* Create a new pull request based on the current branch and the last commit  
-  The current branch will be requested to merge into master and the pull request title is the commit message summary.
-* Merge current pull rqeuest with either of 'merge', 'squash' or 'rebase' method.
+* Create a new pull request based on the current branch and the last commit
+  The current branch will be requested to merge into master and the pull request title is the commit message summary, or a custom message if configured that way.
+* Merge current pull request with either of 'merge', 'squash' or 'rebase' method.
 * Configure default branch, merge method and refresh interval.
 
 ![Create pull request](images/create-pull-request.png)

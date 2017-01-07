@@ -41,6 +41,16 @@
         "github.upstream": {
           "type": "string",
           "description": "By default the extension get the repository and user from .git/config. For forks where upstream is a different repository this could be configured here (e.g. microsoft/typescript)."
+        },
+        "github.customPullRequestDescription": {
+          "type": "string",
+          "enum": [
+            "off",
+            "singleLine",
+            "gitEditor"
+          ],
+          "default": "off",
+          "description": "By default the pull request description is the first commit message. When this property is set, the user is asked for a description when creating the PR. This can be a single-line description via an input dialog ('singleLine') or a multi-line markdown description via the editor configured in git ('gitEditor')."
         }
       }
     },

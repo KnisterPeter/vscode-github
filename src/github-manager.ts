@@ -95,7 +95,7 @@ export class GitHubManager {
       title: await git.getCommitMessage(firstCommit, this.cwd),
       head: `${owner}:${branch}`,
       base: await this.getDefaultBranch(),
-      body: await git.getCommitBody(firstCommit, this.cwd)
+      body: await git.getPullRequestBody(firstCommit, this.cwd)
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
