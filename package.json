@@ -99,7 +99,7 @@
     "vscode": "^1.0.0"
   },
   "dependencies": {
-    "execa": "0.5.0",
+    "execa": "0.5.1",
     "lru-cache": "4.0.2",
     "pretend": "0.5.0",
     "sander": "0.6.0"
