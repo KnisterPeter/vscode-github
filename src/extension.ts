@@ -50,7 +50,7 @@ class Extension {
 
   private async checkVersionAndToken(context: vscode.ExtensionContext, token: string|undefined): Promise<void> {
     const content = await sander.readFile(join(context.extensionPath, 'package.json'));
-    const version = JSON.parse(content).version as string;
+    const version = JSON.parse(content.toString()).version as string;
     const storedVersion = context.globalState.get<string|undefined>('version-test');
     if (version !== storedVersion && !Boolean(token)) {
       context.globalState.update('version-test', version);
