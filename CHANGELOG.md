@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.9.0"></a>
+# [0.9.0](https://github.com/KnisterPeter/vscode-github/compare/v0.8.0...v0.9.0) (2017-01-09)
+
+
+### Bug Fixes
+
+* **package:** update execa to version 0.5.1 ([#49](https://github.com/KnisterPeter/vscode-github/issues/49)) ([1e3aec1](https://github.com/KnisterPeter/vscode-github/commit/1e3aec1))
+* **package:** update execa to version 0.6.0 ([#50](https://github.com/KnisterPeter/vscode-github/issues/50)) ([8a70e5c](https://github.com/KnisterPeter/vscode-github/commit/8a70e5c))
+
+
+### Features
+
+* add pull request body ([#39](https://github.com/KnisterPeter/vscode-github/issues/39)) ([af07d40](https://github.com/KnisterPeter/vscode-github/commit/af07d40))
+* allow pr body input via dialog or git editor ([#48](https://github.com/KnisterPeter/vscode-github/issues/48)) ([f3e126e](https://github.com/KnisterPeter/vscode-github/commit/f3e126e))
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/KnisterPeter/vscode-github/compare/v0.7.1...v0.8.0) (2016-11-29)
 
