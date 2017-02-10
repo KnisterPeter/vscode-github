@@ -87,7 +87,7 @@ class Extension {
   }
 
   private createGithubTokenCommand(context: vscode.ExtensionContext): () => void {
-    return async () => {
+    return async() => {
       const options = {
         ignoreFocusOut: true,
         password: true,

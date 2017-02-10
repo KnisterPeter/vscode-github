@@ -112,7 +112,7 @@ export class GitHubError extends Error {
 namespace impl {
 
   export function logger(): Interceptor {
-    return async (chain, request) => {
+    return async(chain, request) => {
       // console.log('github-request: ', request);
       const response = await chain(request);
       // console.log('response', response);
@@ -123,7 +123,7 @@ namespace impl {
   export function githubCache(): Interceptor {
     // cache at most 100 requests
     const cache = LRUCache<{etag: string, response: any}>(100);
-    return async (chain, request) => {
+    return async(chain, request) => {
       const entry = cache.get(request.url);
       if (entry) {
         // when we have a cache hit, send etag
@@ -155,7 +155,7 @@ namespace impl {
       if (response.status >= 400) {
         throw new GitHubError(`${response.statusText}`, response);
       }
-      let headers = {};
+      const headers = {};
       response.headers.forEach((value, index) => {
         headers[index] = [...(headers[index] || []), value];
       });
