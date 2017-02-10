@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
-  PullRequestStatus, Merge, MergeMethod} from './github';
+import {getClient, GitHub, GitHubError, PullRequest, PullRequestComment, ListPullRequestsParameters,
+  CreatePullRequestBody, PullRequestStatus, Merge, MergeMethod} from './github';
 
 export class GitHubManager {
 
@@ -63,6 +63,11 @@ export class GitHubManager {
       return undefined;
     }
     return (await this.github.getPullRequest(owner, repository, list.body[0].number)).body;
+  }
+
+  public async getPullRequestReviewComments(pullRequest: PullRequest): Promise<PullRequestComment[]> {
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
+    return (await this.github.getPullRequestComments(owner, repository, pullRequest.number)).body;
   }
 
   public async hasPullRequestForCurrentBranch(): Promise<boolean> {
