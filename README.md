@@ -30,3 +30,32 @@ The 'GitHub: Set Personal Access Token' should be executed for that.
 ![GitHub Personal Access Token](images/github-personal-access-token2.png)
 
 ![Set GitHub Personal Access Token](images/set-personal-access-token.png)
+
+## Usage
+
+### Create a new pull request
+
+1. Create a new local branch from the commit you wanted to start developing with
+1. Do you code changes
+1. Commit your changes
+1. Push your changes to your remote
+1. Then execute `Create pull request from current branch`
+1. In the status bar you can then see the status of your created pull request and if you'd like to open it
+
+### Checkout pull request
+
+1. Execute `Checkout open pull request...`
+1. Select a pull request from the list
+1. The pull request is checked out and your working copy switches to that branch
+
+### Browser pull request
+
+1. Execute `Browse open pull request...`
+1. Select a pull request from the list
+1. Your default browser opens the pull request on github
+
+### Merge pull request
+
+1. Execute `Merge pull request (current branch)...`
+1. Select your merge strategy from the shown list (merge, squash, rebase)
+1. The pull request associated with your current branch is then merged
