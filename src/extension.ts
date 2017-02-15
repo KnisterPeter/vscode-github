@@ -110,26 +110,35 @@ class Extension {
   }
 
   private async createPullRequest(): Promise<void> {
+    let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     const repository = await this.githubManager.getRepository();
+    let pullRequest;
     if (repository.parent) {
+      let branch: string;
       const items = [{
         label: repository.full_name,
-        description: ''
+        description: '',
+        branch: repository.default_branch
       }, {
         label: repository.parent.full_name,
-        description: ''
+        description: '',
+        branch: repository.parent.default_branch
       }];
-      const selectedRepository = await vscode.window.showQuickPick(items);
-      if (selectedRepository) {
-        console.log(selectedRepository);
+      const selectedRepository = await vscode.window.showQuickPick(items,
+        {placeHolder: 'Select a repository to create the pull request in'});
+      if (!selectedRepository) {
+        return;
       }
+      [owner, repo] = selectedRepository.label.split('/');
+      branch = selectedRepository.branch;
+      pullRequest = await this.githubManager.createPullRequest({
+        owner,
+        repository: repo,
+        branch
+      });
+    } else {
+      pullRequest = await this.githubManager.createPullRequest();
     }
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    console.log('o', owner, 'repo', repo);
-    if (1 + 1 === 2) {
-      return;
-    }
-    const pullRequest = await this.githubManager.createPullRequest();
     if (pullRequest) {
       this.statusBarManager.updateStatus();
       vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);

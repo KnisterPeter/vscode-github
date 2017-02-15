@@ -82,7 +82,8 @@ export class GitHubManager {
     return response.body.total_count > 0 ? response.body.state : undefined;
   }
 
-  public async createPullRequest(): Promise<PullRequest|undefined> {
+  public async createPullRequest(upstream?: {owner: string, repository: string, branch: string}):
+      Promise<PullRequest|undefined> {
     if (await this.hasPullRequestForCurrentBranch()) {
       return undefined;
     }
@@ -97,19 +98,29 @@ export class GitHubManager {
     const body: CreatePullRequestBody = {
       title: await git.getCommitMessage(firstCommit, this.cwd),
       head: `${owner}:${branch}`,
-      base: await this.getDefaultBranch(),
+      base: upstream ? upstream.branch : await this.getDefaultBranch(),
       body: await git.getPullRequestBody(firstCommit, this.cwd)
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
 
+    if (upstream) {
+      return await this.doCreatePullRequest(upstream.owner, upstream.repository, body);
+    }
+    return await this.doCreatePullRequest(owner, repository, body);
+  }
+
+  private async doCreatePullRequest(upstreamOwner: string, upstreamRepository: string,
+      body: CreatePullRequestBody): Promise<PullRequest|undefined> {
     try {
-      const result = await this.github.createPullRequest(owner, repository, body);
+      const result = await this.github.createPullRequest(upstreamOwner, upstreamRepository, body);
       // tslint:disable-next-line:comment-format
       // TODO: Pretend should optionally redirect
       const number = result.headers['location'][0]
         .match(/https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/pulls\/([0-9]+)/) as RegExpMatchArray;
-      return (await this.github.getPullRequest(owner, repository, parseInt(number[1] as string, 10))).body;
+      return (await this.github
+        .getPullRequest(upstreamOwner, upstreamRepository, parseInt(number[1] as string, 10)))
+        .body;
     } catch (e) {
       if (e instanceof GitHubError) {
         console.log(e);
