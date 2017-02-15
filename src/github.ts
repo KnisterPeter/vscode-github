@@ -26,10 +26,15 @@ export interface GitHubResponse<T> {
 }
 
 export interface Repository {
+  full_name: string;
   default_branch: string;
   allow_rebase_merge: boolean;
   allow_squash_merge: boolean;
   allow_merge_commit: boolean;
+  parent?: {
+    full_name: string;
+    default_branch: string;
+  };
 }
 
 export type MergeMethod = 'merge' | 'squash' | 'rebase';

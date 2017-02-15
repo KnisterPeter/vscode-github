@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
-  PullRequestStatus, Merge, MergeMethod} from './github';
+  PullRequestStatus, Merge, MergeMethod, Repository} from './github';
 
 export class GitHubManager {
 
@@ -30,22 +30,25 @@ export class GitHubManager {
     this.github = getClient(token);
   }
 
-  public async getDefaultBranch(): Promise<string> {
+  public async getRepository(): Promise<Repository> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    return (await this.github.getRepository(owner, repository)).body.default_branch;
+    return (await this.github.getRepository(owner, repository)).body;
+  }
+
+  public async getDefaultBranch(): Promise<string> {
+    return (await this.getRepository()).default_branch;
   }
 
   public async getEnabledMergeMethods(): Promise<Set<MergeMethod>> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    const repo = await this.github.getRepository(owner, repository);
+    const repo = await this.getRepository();
     const set = new Set();
-    if (repo.body.allow_merge_commit) {
+    if (repo.allow_merge_commit) {
       set.add('merge');
     }
-    if (repo.body.allow_squash_merge) {
+    if (repo.allow_squash_merge) {
       set.add('squash');
     }
-    if (repo.body.allow_rebase_merge) {
+    if (repo.allow_rebase_merge) {
       set.add('rebase');
     }
     return set;
@@ -79,7 +82,8 @@ export class GitHubManager {
     return response.body.total_count > 0 ? response.body.state : undefined;
   }
 
-  public async createPullRequest(): Promise<PullRequest|undefined> {
+  public async createPullRequest(upstream?: {owner: string, repository: string, branch: string}):
+      Promise<PullRequest|undefined> {
     if (await this.hasPullRequestForCurrentBranch()) {
       return undefined;
     }
@@ -94,19 +98,29 @@ export class GitHubManager {
     const body: CreatePullRequestBody = {
       title: await git.getCommitMessage(firstCommit, this.cwd),
       head: `${owner}:${branch}`,
-      base: await this.getDefaultBranch(),
+      base: upstream ? upstream.branch : await this.getDefaultBranch(),
       body: await git.getPullRequestBody(firstCommit, this.cwd)
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
 
+    if (upstream) {
+      return await this.doCreatePullRequest(upstream.owner, upstream.repository, body);
+    }
+    return await this.doCreatePullRequest(owner, repository, body);
+  }
+
+  private async doCreatePullRequest(upstreamOwner: string, upstreamRepository: string,
+      body: CreatePullRequestBody): Promise<PullRequest|undefined> {
     try {
-      const result = await this.github.createPullRequest(owner, repository, body);
+      const result = await this.github.createPullRequest(upstreamOwner, upstreamRepository, body);
       // tslint:disable-next-line:comment-format
       // TODO: Pretend should optionally redirect
       const number = result.headers['location'][0]
         .match(/https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/pulls\/([0-9]+)/) as RegExpMatchArray;
-      return (await this.github.getPullRequest(owner, repository, parseInt(number[1] as string, 10))).body;
+      return (await this.github
+        .getPullRequest(upstreamOwner, upstreamRepository, parseInt(number[1] as string, 10)))
+        .body;
     } catch (e) {
       if (e instanceof GitHubError) {
         console.log(e);

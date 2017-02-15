@@ -37,6 +37,8 @@ class Extension {
 
     context.subscriptions.push(
       vscode.commands.registerCommand('extension.setGitHubToken', this.createGithubTokenCommand(context)),
+      vscode.commands.registerCommand('extension.createSimplePullRequest',
+        this.wrapCommand(this.createSimplePullRequest)),
       vscode.commands.registerCommand('extension.createPullRequest', this.wrapCommand(this.createPullRequest)),
       vscode.commands.registerCommand('extension.checkoutPullRequests', this.wrapCommand(this.checkoutPullRequests)),
       vscode.commands.registerCommand('extension.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
@@ -99,8 +101,44 @@ class Extension {
     };
   }
 
-  private async createPullRequest(): Promise<void> {
+  private async createSimplePullRequest(): Promise<void> {
     const pullRequest = await this.githubManager.createPullRequest();
+    if (pullRequest) {
+      this.statusBarManager.updateStatus();
+      vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
+    }
+  }
+
+  private async createPullRequest(): Promise<void> {
+    let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const repository = await this.githubManager.getRepository();
+    let pullRequest: PullRequest|undefined;
+    if (repository.parent) {
+      let branch: string;
+      const items = [{
+        label: repository.full_name,
+        description: '',
+        branch: repository.default_branch
+      }, {
+        label: repository.parent.full_name,
+        description: '',
+        branch: repository.parent.default_branch
+      }];
+      const selectedRepository = await vscode.window.showQuickPick(items,
+        {placeHolder: 'Select a repository to create the pull request in'});
+      if (!selectedRepository) {
+        return;
+      }
+      [owner, repo] = selectedRepository.label.split('/');
+      branch = selectedRepository.branch;
+      pullRequest = await this.githubManager.createPullRequest({
+        owner,
+        repository: repo,
+        branch
+      });
+    } else {
+      pullRequest = await this.githubManager.createPullRequest();
+    }
     if (pullRequest) {
       this.statusBarManager.updateStatus();
       vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
