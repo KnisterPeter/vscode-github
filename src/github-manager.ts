@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
-  PullRequestStatus, Merge, MergeMethod} from './github';
+  PullRequestStatus, Merge, MergeMethod, Repository} from './github';
 
 export class GitHubManager {
 
@@ -30,22 +30,25 @@ export class GitHubManager {
     this.github = getClient(token);
   }
 
-  public async getDefaultBranch(): Promise<string> {
+  public async getRepository(): Promise<Repository> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    return (await this.github.getRepository(owner, repository)).body.default_branch;
+    return (await this.github.getRepository(owner, repository)).body;
+  }
+
+  public async getDefaultBranch(): Promise<string> {
+    return (await this.getRepository()).default_branch;
   }
 
   public async getEnabledMergeMethods(): Promise<Set<MergeMethod>> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    const repo = await this.github.getRepository(owner, repository);
+    const repo = await this.getRepository();
     const set = new Set();
-    if (repo.body.allow_merge_commit) {
+    if (repo.allow_merge_commit) {
       set.add('merge');
     }
-    if (repo.body.allow_squash_merge) {
+    if (repo.allow_squash_merge) {
       set.add('squash');
     }
-    if (repo.body.allow_rebase_merge) {
+    if (repo.allow_rebase_merge) {
       set.add('rebase');
     }
     return set;

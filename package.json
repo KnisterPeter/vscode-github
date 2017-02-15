@@ -61,8 +61,13 @@
         "category": "GitHub"
       },
       {
+        "command": "extension.createSimplePullRequest",
+        "title": "Create pull request from current branch (quick)",
+        "category": "GitHub"
+      },
+      {
         "command": "extension.createPullRequest",
-        "title": "Create pull request from current branch",
+        "title": "Create pull request...",
         "category": "GitHub"
       },
       {

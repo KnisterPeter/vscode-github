@@ -37,6 +37,8 @@ class Extension {
 
     context.subscriptions.push(
       vscode.commands.registerCommand('extension.setGitHubToken', this.createGithubTokenCommand(context)),
+      vscode.commands.registerCommand('extension.createSimplePullRequest',
+        this.wrapCommand(this.createSimplePullRequest)),
       vscode.commands.registerCommand('extension.createPullRequest', this.wrapCommand(this.createPullRequest)),
       vscode.commands.registerCommand('extension.checkoutPullRequests', this.wrapCommand(this.checkoutPullRequests)),
       vscode.commands.registerCommand('extension.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
@@ -99,7 +101,34 @@ class Extension {
     };
   }
 
+  private async createSimplePullRequest(): Promise<void> {
+    const pullRequest = await this.githubManager.createPullRequest();
+    if (pullRequest) {
+      this.statusBarManager.updateStatus();
+      vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
+    }
+  }
+
   private async createPullRequest(): Promise<void> {
+    const repository = await this.githubManager.getRepository();
+    if (repository.parent) {
+      const items = [{
+        label: repository.full_name,
+        description: ''
+      }, {
+        label: repository.parent.full_name,
+        description: ''
+      }];
+      const selectedRepository = await vscode.window.showQuickPick(items);
+      if (selectedRepository) {
+        console.log(selectedRepository);
+      }
+    }
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    console.log('o', owner, 'repo', repo);
+    if (1 + 1 === 2) {
+      return;
+    }
     const pullRequest = await this.githubManager.createPullRequest();
     if (pullRequest) {
       this.statusBarManager.updateStatus();
