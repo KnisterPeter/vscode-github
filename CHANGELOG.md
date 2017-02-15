@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/KnisterPeter/vscode-github/compare/v0.9.1...v0.10.0) (2017-02-15)
+
+
+### Features
+
+* create PR for fork ([d1e3794](https://github.com/KnisterPeter/vscode-github/commit/d1e3794))
+* select upstream repo and create PR ([1e4fb30](https://github.com/KnisterPeter/vscode-github/commit/1e4fb30))
+
+
+
 <a name="0.9.1"></a>
 ## [0.9.1](https://github.com/KnisterPeter/vscode-github/compare/v0.9.0...v0.9.1) (2017-02-10)
 
