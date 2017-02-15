@@ -112,7 +112,7 @@ class Extension {
   private async createPullRequest(): Promise<void> {
     let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     const repository = await this.githubManager.getRepository();
-    let pullRequest;
+    let pullRequest: PullRequest|undefined;
     if (repository.parent) {
       let branch: string;
       const items = [{
