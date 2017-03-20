@@ -11,6 +11,7 @@ This vscode extension integrates with GitHub.
 Current it is possible to do the following:
 
 * Checkout one of the open pull requests
+* Open github page for the current project in your default browser
 * Browse one of the open pull requests in your default browser
 * Display pull request and current status (e.g. mergeable, travis build done, ...) in the StatusBar
 * Create a new pull request based on the current branch and the last commit
