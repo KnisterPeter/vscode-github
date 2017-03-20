@@ -163,4 +163,9 @@ export class GitHubManager {
     }
   }
 
+  public async getGithubSlug(): Promise<string> {
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    return `${owner}/${repo}`;
+  }
+
 }

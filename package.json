@@ -61,6 +61,11 @@
         "category": "GitHub"
       },
       {
+        "command": "extension.browseProject",
+        "title": "Browse project",
+        "category": "GitHub"
+      },
+      {
         "command": "extension.createPullRequest",
         "title": "Create pull request...",
         "category": "GitHub"

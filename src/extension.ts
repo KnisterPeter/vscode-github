@@ -36,6 +36,7 @@ class Extension {
     this.checkVersionAndToken(context, token);
 
     context.subscriptions.push(
+      vscode.commands.registerCommand('extension.browseProject', this.wrapCommand(this.browseProject)),
       vscode.commands.registerCommand('extension.setGitHubToken', this.createGithubTokenCommand(context)),
       vscode.commands.registerCommand('extension.createSimplePullRequest',
         this.wrapCommand(this.createSimplePullRequest)),
@@ -163,6 +164,11 @@ class Extension {
       await git.checkout(this.cwd, pullRequest.head.ref);
       this.statusBarManager.updateStatus();
     });
+  }
+
+  private async browseProject(): Promise<void> {
+    const slug = await this.githubManager.getGithubSlug();
+    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(`https://github.com/${slug}`));
   }
 
   private async browserPullRequest(): Promise<void> {
