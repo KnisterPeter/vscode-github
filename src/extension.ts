@@ -106,7 +106,7 @@ class Extension {
     const pullRequest = await this.githubManager.createPullRequest();
     if (pullRequest) {
       this.statusBarManager.updateStatus();
-      vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
+      this.showPullRequestNotification(pullRequest);
     }
   }
 
@@ -142,7 +142,15 @@ class Extension {
     }
     if (pullRequest) {
       this.statusBarManager.updateStatus();
-      vscode.window.showInformationMessage(`Successfully created #${pullRequest.number}`);
+      this.showPullRequestNotification(pullRequest);
+    }
+  }
+
+  private async showPullRequestNotification(pullRequest: PullRequest): Promise<void> {
+    const result = await vscode.window.showInformationMessage(
+      `Successfully created #${pullRequest.number}`, 'Open on Github');
+    if (result) {
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.html_url));
     }
   }
 
