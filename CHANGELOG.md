@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/KnisterPeter/vscode-github/compare/v0.10.0...v0.11.0) (2017-03-22)
+
+
+### Bug Fixes
+
+* update dependencies ([af38214](https://github.com/KnisterPeter/vscode-github/commit/af38214))
+* **package:** update execa to version 0.6.1 ([c371fa7](https://github.com/KnisterPeter/vscode-github/commit/c371fa7))
+* **package:** update execa to version 0.6.2 ([8020305](https://github.com/KnisterPeter/vscode-github/commit/8020305))
+* **package:** update execa to version 0.6.3 ([6513ee5](https://github.com/KnisterPeter/vscode-github/commit/6513ee5))
+* **vscode-github:** update pretend ([e775b9e](https://github.com/KnisterPeter/vscode-github/commit/e775b9e))
+
+
+### Features
+
+* **vscode-github:** add command to open github page ([b409cd2](https://github.com/KnisterPeter/vscode-github/commit/b409cd2)), closes [#70](https://github.com/KnisterPeter/vscode-github/issues/70)
+* **vscode-github:** allow to open pull request ([b59cab6](https://github.com/KnisterPeter/vscode-github/commit/b59cab6)), closes [#69](https://github.com/KnisterPeter/vscode-github/issues/69)
+
+
+
 <a name="0.10.0"></a>
 # [0.10.0](https://github.com/KnisterPeter/vscode-github/compare/v0.9.1...v0.10.0) (2017-02-15)
 
