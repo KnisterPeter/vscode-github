@@ -1,5 +1,5 @@
 import * as LRUCache from 'lru-cache';
-import {Pretend, Get, Post, Put, Headers, Interceptor, IPretendRequestInterceptor,
+import {Pretend, Get, Post, Put, Delete, Headers, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
 
 export interface GitHub {
@@ -17,12 +17,20 @@ export interface GitHub {
 
   mergePullRequest(owner: string, repo: string, number: number, body: Merge): Promise<GitHubResponse<MergeResult>>;
 
+  addAssignees(owner: string, repo: string, numer: number, body: Assignees): Promise<void>;
+
+  removeAssignees(owner: string, repo: string, numer: number, body: Assignees): Promise<void>;
+
 }
 
 export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface Assignees {
+  assignees: string[];
 }
 
 export interface Repository {
@@ -193,6 +201,12 @@ namespace impl {
     @Headers('Accept: application/vnd.github.polaris-preview+json')
     @Put('/repos/:owner/:repo/pulls/:number/merge')
     public mergePullRequest(): any {/* */}
+
+    @Post('/repos/:owner/:repo/issues/:number/assignees')
+    public addAssignees(): any {/* */}
+
+    @Delete('/repos/:owner/:repo/issues/:number/assignees', true)
+    public removeAssignees(): any {/* */}
 
   }
 }

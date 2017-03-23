@@ -43,7 +43,9 @@ class Extension {
       vscode.commands.registerCommand('extension.createPullRequest', this.wrapCommand(this.createPullRequest)),
       vscode.commands.registerCommand('extension.checkoutPullRequests', this.wrapCommand(this.checkoutPullRequests)),
       vscode.commands.registerCommand('extension.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
-      vscode.commands.registerCommand('extension.mergePullRequest', this.wrapCommand(this.mergePullRequest))
+      vscode.commands.registerCommand('extension.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
+      vscode.commands.registerCommand('extension.addAssignee', this.wrapCommand(this.addAssignee)),
+      vscode.commands.registerCommand('extension.removeAssignee', this.wrapCommand(this.removeAssignee))
     );
   }
 
@@ -233,6 +235,39 @@ class Extension {
       vscode.window.showWarningMessage(
         'Either no pull request for current brach, or the pull request is not mergable');
     }
+  }
+
+  private async addAssignee(): Promise<void> {
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    if (pullRequest) {
+      const user = await this.getUser();
+      if (user) {
+        await this.githubManager.addAssignee(pullRequest.number, user);
+        vscode.window.showInformationMessage(`Successfully added ${user} to the assignees`);
+      }
+    } else {
+      vscode.window.showWarningMessage('No pull request for current brach');
+    }
+  }
+
+  private async removeAssignee(): Promise<void> {
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    if (pullRequest) {
+      const user = await this.getUser();
+      if (user) {
+        await this.githubManager.removeAssignee(pullRequest.number, user);
+        vscode.window.showInformationMessage(`Successfully remove ${user} from the assignees`);
+      }
+    } else {
+      vscode.window.showWarningMessage('No pull request for current brach');
+    }
+  }
+
+  private async getUser(): Promise<string> {
+    return await vscode.window.showInputBox({
+      ignoreFocusOut: true,
+      placeHolder: 'username, email or fullname'
+    });
   }
 
   public dispose(): void {

@@ -89,6 +89,16 @@
         "command": "extension.mergePullRequest",
         "title": "Merge pull request (current branch)...",
         "category": "GitHub"
+      },
+      {
+        "command": "extension.addAssignee",
+        "title": "Add assignee to pull request...",
+        "category": "GitHub"
+      },
+      {
+        "command": "extension.removeAssignee",
+        "title": "Remove assignee from pull request...",
+        "category": "GitHub"
       }
     ]
   },
@@ -121,7 +131,7 @@
   "dependencies": {
     "execa": "^0.6.3",
     "lru-cache": "^4.0.2",
-    "pretend": "^0.5.1",
+    "pretend": "^0.6.0",
     "sander": "^0.6.0"
   },
   "repository": {
