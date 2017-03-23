@@ -168,4 +168,14 @@ export class GitHubManager {
     return `${owner}/${repo}`;
   }
 
+  public async addAssignee(issue: number, name: string): Promise<void> {
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    await this.github.addAssignees(owner, repo, issue, {assignees: [name]});
+  }
+
+  public async removeAssignee(issue: number, name: string): Promise<void> {
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    await this.github.removeAssignees(owner, repo, issue, {assignees: [name]});
+  }
+
 }
