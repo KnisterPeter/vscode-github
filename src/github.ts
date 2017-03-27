@@ -21,6 +21,10 @@ export interface GitHub {
 
   removeAssignees(owner: string, repo: string, numer: number, body: Assignees): Promise<void>;
 
+  requestReview(owner: string, repo: string, numer: number, body: Reviewers): Promise<void>;
+
+  deleteReviewRequest(owner: string, repo: string, numer: number, body: Reviewers): Promise<void>;
+
 }
 
 export interface GitHubResponse<T> {
@@ -31,6 +35,10 @@ export interface GitHubResponse<T> {
 
 export interface Assignees {
   assignees: string[];
+}
+
+export interface Reviewers {
+  reviewers: string[];
 }
 
 export interface Repository {
@@ -207,6 +215,14 @@ namespace impl {
 
     @Delete('/repos/:owner/:repo/issues/:number/assignees', true)
     public removeAssignees(): any {/* */}
+
+    @Headers('Accept: application/vnd.github.black-cat-preview+json')
+    @Post('/repos/:owner/:repo/pulls/:number/requested_reviewers')
+    public requestReview(): any {/* */}
+
+    @Headers('Accept: application/vnd.github.black-cat-preview+json')
+    @Delete('/repos/:owner/:repo/pulls/:number/requested_reviewers', true)
+    public deleteReviewRequest(): any {/* */}
 
   }
 }

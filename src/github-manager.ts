@@ -178,4 +178,14 @@ export class GitHubManager {
     await this.github.removeAssignees(owner, repo, issue, {assignees: [name]});
   }
 
+  public async requestReview(issue: number, name: string): Promise<void> {
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    await this.github.requestReview(owner, repo, issue, {reviewers: [name]});
+  }
+
+  public async deleteReviewRequest(issue: number, name: string): Promise<void> {
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    await this.github.deleteReviewRequest(owner, repo, issue, {reviewers: [name]});
+  }
+
 }

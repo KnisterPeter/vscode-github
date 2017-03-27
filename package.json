@@ -99,6 +99,16 @@
         "command": "extension.removeAssignee",
         "title": "Remove assignee from pull request...",
         "category": "GitHub"
+      },
+      {
+        "command": "extension.requestReview",
+        "title": "Request a review for the current pull request...",
+        "category": "GitHub"
+      },
+      {
+        "command": "extension.deleteReviewRequest",
+        "title": "Cancel a pull request review...",
+        "category": "GitHub"
       }
     ]
   },

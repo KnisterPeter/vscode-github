@@ -20,6 +20,7 @@ Current it is possible to do the following:
 * Merge current pull request with either of 'merge', 'squash' or 'rebase' method.
 * Configure default branch, merge method and refresh interval.
 * Allow to manage assignees for pull requests
+* Allow to create and cancel pull request reviews
 
 ![Create pull request](images/create-pull-request.png)
 
