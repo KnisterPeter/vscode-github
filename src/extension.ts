@@ -45,7 +45,9 @@ class Extension {
       vscode.commands.registerCommand('extension.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
       vscode.commands.registerCommand('extension.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
       vscode.commands.registerCommand('extension.addAssignee', this.wrapCommand(this.addAssignee)),
-      vscode.commands.registerCommand('extension.removeAssignee', this.wrapCommand(this.removeAssignee))
+      vscode.commands.registerCommand('extension.removeAssignee', this.wrapCommand(this.removeAssignee)),
+      vscode.commands.registerCommand('extension.requestReview', this.wrapCommand(this.requestReview)),
+      vscode.commands.registerCommand('extension.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest))
     );
   }
 
@@ -257,6 +259,32 @@ class Extension {
       if (user) {
         await this.githubManager.removeAssignee(pullRequest.number, user);
         vscode.window.showInformationMessage(`Successfully remove ${user} from the assignees`);
+      }
+    } else {
+      vscode.window.showWarningMessage('No pull request for current brach');
+    }
+  }
+
+  private async requestReview(): Promise<void> {
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    if (pullRequest) {
+      const user = await this.getUser();
+      if (user) {
+        await this.githubManager.requestReview(pullRequest.number, user);
+        vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
+      }
+    } else {
+      vscode.window.showWarningMessage('No pull request for current brach');
+    }
+  }
+
+  private async deleteReviewRequest(): Promise<void> {
+    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    if (pullRequest) {
+      const user = await this.getUser();
+      if (user) {
+        await this.githubManager.deleteReviewRequest(pullRequest.number, user);
+        vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);
       }
     } else {
       vscode.window.showWarningMessage('No pull request for current brach');
