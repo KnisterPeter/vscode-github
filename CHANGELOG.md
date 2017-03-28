@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/KnisterPeter/vscode-github/compare/v0.11.0...v0.12.0) (2017-03-28)
+
+
+### Features
+
+* **vscode-github:** allow to manage PR assignees ([2229bf2](https://github.com/KnisterPeter/vscode-github/commit/2229bf2)), closes [#71](https://github.com/KnisterPeter/vscode-github/issues/71)
+* **vscode-github:** manage pull request reviews ([9ac2a9e](https://github.com/KnisterPeter/vscode-github/commit/9ac2a9e)), closes [#83](https://github.com/KnisterPeter/vscode-github/issues/83)
+
+
+
 <a name="0.11.0"></a>
 # [0.11.0](https://github.com/KnisterPeter/vscode-github/compare/v0.10.0...v0.11.0) (2017-03-22)
 
