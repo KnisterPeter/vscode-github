@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.1"></a>
+## [0.12.1](https://github.com/KnisterPeter/vscode-github/compare/v0.12.0...v0.12.1) (2017-03-29)
+
+
+### Bug Fixes
+
+* handle local only branches ([619522e](https://github.com/KnisterPeter/vscode-github/commit/619522e)), closes [#61](https://github.com/KnisterPeter/vscode-github/issues/61)
+
+
+
 <a name="0.12.0"></a>
 # [0.12.0](https://github.com/KnisterPeter/vscode-github/compare/v0.11.0...v0.12.0) (2017-03-28)
 
