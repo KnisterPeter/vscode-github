@@ -96,3 +96,11 @@ async function getGitEditorPullRequestBody(cwd: string): Promise<string> {
 
   return fileContents;
 }
+
+export async function getRemoteTrackingBranch(cwd: string, branch: string): Promise<string|undefined> {
+  try {
+    return (await execa('git', ['config', '--get', `branch.${branch}.merge`], {cwd})).stdout.trim().split('\n')[0];
+  } catch (e) {
+    return undefined;
+  }
+}
