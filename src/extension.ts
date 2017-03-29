@@ -106,7 +106,27 @@ class Extension {
     };
   }
 
+  private async hasRemoteTrackingBranch(): Promise<boolean> {
+    const localBranch = await git.getCurrentBranch(this.cwd);
+    if (!localBranch) {
+      return false;
+    }
+    return Boolean(await git.getRemoteTrackingBranch(this.cwd, localBranch));
+  }
+
+  private async requireRemoteTrackingBranch(): Promise<boolean> {
+    const hasBranch = await this.hasRemoteTrackingBranch();
+    if (!hasBranch) {
+      vscode.window.showWarningMessage(
+        `Cannot create pull request without remote branch. Please push you local branch before creating pull request.`);
+    }
+    return hasBranch;
+  }
+
   private async createSimplePullRequest(): Promise<void> {
+    if (!this.requireRemoteTrackingBranch()) {
+      return;
+    }
     const pullRequest = await this.githubManager.createPullRequest();
     if (pullRequest) {
       this.statusBarManager.updateStatus();
@@ -115,6 +135,9 @@ class Extension {
   }
 
   private async createPullRequest(): Promise<void> {
+    if (!this.requireRemoteTrackingBranch()) {
+      return;
+    }
     let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     const repository = await this.githubManager.getRepository();
     let pullRequest: PullRequest|undefined;
