@@ -1,6 +1,6 @@
 # vscode-github README
 
-[![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://github.com/KnisterPeter/vscode-github)
+[![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://travis-ci.org/KnisterPeter/vscode-github)
 [![Marketplace Version](http://vsmarketplacebadge.apphb.com/version/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 [![Installs](http://vsmarketplacebadge.apphb.com/installs/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 
