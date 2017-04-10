@@ -1,8 +1,9 @@
 # vscode-github README
 
-[![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://travis-ci.org/KnisterPeter/vscode-github)
 [![Marketplace Version](http://vsmarketplacebadge.apphb.com/version/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 [![Installs](http://vsmarketplacebadge.apphb.com/installs/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
+[![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://travis-ci.org/KnisterPeter/vscode-github)
+[![Coverage Status](https://coveralls.io/repos/github/KnisterPeter/vscode-github/badge.svg?branch=master)](https://coveralls.io/github/KnisterPeter/vscode-github?branch=master)
 
 This vscode extension integrates with GitHub.
 
