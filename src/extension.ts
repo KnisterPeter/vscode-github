@@ -36,18 +36,19 @@ class Extension {
     this.checkVersionAndToken(context, token);
 
     context.subscriptions.push(
-      vscode.commands.registerCommand('extension.browseProject', this.wrapCommand(this.browseProject)),
-      vscode.commands.registerCommand('extension.setGitHubToken', this.createGithubTokenCommand(context)),
-      vscode.commands.registerCommand('extension.createSimplePullRequest',
+      vscode.commands.registerCommand('vscode-github.browseProject', this.wrapCommand(this.browseProject)),
+      vscode.commands.registerCommand('vscode-github.setGitHubToken', this.createGithubTokenCommand(context)),
+      vscode.commands.registerCommand('vscode-github.createSimplePullRequest',
         this.wrapCommand(this.createSimplePullRequest)),
-      vscode.commands.registerCommand('extension.createPullRequest', this.wrapCommand(this.createPullRequest)),
-      vscode.commands.registerCommand('extension.checkoutPullRequests', this.wrapCommand(this.checkoutPullRequests)),
-      vscode.commands.registerCommand('extension.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
-      vscode.commands.registerCommand('extension.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
-      vscode.commands.registerCommand('extension.addAssignee', this.wrapCommand(this.addAssignee)),
-      vscode.commands.registerCommand('extension.removeAssignee', this.wrapCommand(this.removeAssignee)),
-      vscode.commands.registerCommand('extension.requestReview', this.wrapCommand(this.requestReview)),
-      vscode.commands.registerCommand('extension.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest))
+      vscode.commands.registerCommand('vscode-github.createPullRequest', this.wrapCommand(this.createPullRequest)),
+      vscode.commands.registerCommand('vscode-github.checkoutPullRequests',
+        this.wrapCommand(this.checkoutPullRequests)),
+      vscode.commands.registerCommand('vscode-github.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
+      vscode.commands.registerCommand('vscode-github.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
+      vscode.commands.registerCommand('vscode-github.addAssignee', this.wrapCommand(this.addAssignee)),
+      vscode.commands.registerCommand('vscode-github.removeAssignee', this.wrapCommand(this.removeAssignee)),
+      vscode.commands.registerCommand('vscode-github.requestReview', this.wrapCommand(this.requestReview)),
+      vscode.commands.registerCommand('vscode-github.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest))
     );
   }
 

@@ -56,57 +56,57 @@
     },
     "commands": [
       {
-        "command": "extension.setGitHubToken",
+        "command": "vscode-github.setGitHubToken",
         "title": "Set Personal Access Token...",
         "category": "GitHub"
       },
       {
-        "command": "extension.browseProject",
+        "command": "vscode-github.browseProject",
         "title": "Browse project",
         "category": "GitHub"
       },
       {
-        "command": "extension.createPullRequest",
+        "command": "vscode-github.createPullRequest",
         "title": "Create pull request...",
         "category": "GitHub"
       },
       {
-        "command": "extension.createSimplePullRequest",
+        "command": "vscode-github.createSimplePullRequest",
         "title": "Create pull request from current branch in current repository (quick)",
         "category": "GitHub"
       },
       {
-        "command": "extension.checkoutPullRequests",
+        "command": "vscode-github.checkoutPullRequests",
         "title": "Checkout open pull request...",
         "category": "GitHub"
       },
       {
-        "command": "extension.browserPullRequest",
+        "command": "vscode-github.browserPullRequest",
         "title": "Browse open pull request...",
         "category": "GitHub"
       },
       {
-        "command": "extension.mergePullRequest",
+        "command": "vscode-github.mergePullRequest",
         "title": "Merge pull request (current branch)...",
         "category": "GitHub"
       },
       {
-        "command": "extension.addAssignee",
+        "command": "vscode-github.addAssignee",
         "title": "Add assignee to pull request...",
         "category": "GitHub"
       },
       {
-        "command": "extension.removeAssignee",
+        "command": "vscode-github.removeAssignee",
         "title": "Remove assignee from pull request...",
         "category": "GitHub"
       },
       {
-        "command": "extension.requestReview",
+        "command": "vscode-github.requestReview",
         "title": "Request a review for the current pull request...",
         "category": "GitHub"
       },
       {
-        "command": "extension.deleteReviewRequest",
+        "command": "vscode-github.deleteReviewRequest",
         "title": "Cancel a pull request review...",
         "category": "GitHub"
       }
