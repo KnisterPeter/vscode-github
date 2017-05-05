@@ -197,7 +197,7 @@ class Extension {
 
   private async checkoutPullRequests(): Promise<void> {
     this.selectPullRequest(async pullRequest => {
-      await git.checkout(this.cwd, pullRequest.head.ref);
+      await vscode.commands.executeCommand('git.checkout', pullRequest.head.ref);
       this.statusBarManager.updateStatus();
     });
   }

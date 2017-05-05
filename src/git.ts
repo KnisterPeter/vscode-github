@@ -62,10 +62,6 @@ export async function getCommitBody(sha: string, cwd: string): Promise<string> {
   return (await execa('git', ['log', '--format=%b', '-n', '1', sha], {cwd})).stdout.trim();
 }
 
-export async function checkout(cwd: string, branch: string): Promise<void> {
-  await execa('git', ['checkout', branch], {cwd});
-}
-
 export async function getPullRequestBody(sha: string, cwd: string): Promise<string> {
   const bodyMethod = vscode.workspace.getConfiguration('github').get<string>('customPullRequestDescription');
 

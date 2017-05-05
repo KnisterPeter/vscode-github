@@ -119,7 +119,7 @@ export class GitHubManager {
       const number = result.headers['location'][0]
         .match(/https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/pulls\/([0-9]+)/) as RegExpMatchArray;
       return (await this.github
-        .getPullRequest(upstreamOwner, upstreamRepository, parseInt(number[1] as string, 10)))
+        .getPullRequest(upstreamOwner, upstreamRepository, parseInt(number[1], 10)))
         .body;
     } catch (e) {
       if (e instanceof GitHubError) {
