@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.13.0"></a>
+# [0.13.0](https://github.com/KnisterPeter/vscode-github/compare/v0.12.1...v0.13.0) (2017-05-05)
+
+
+### Features
+
+* add vscode progress-ui to long running operations ([7b26790](https://github.com/KnisterPeter/vscode-github/commit/7b26790)), closes [#94](https://github.com/KnisterPeter/vscode-github/issues/94)
+* open pull request of current branch ([3d15385](https://github.com/KnisterPeter/vscode-github/commit/3d15385)), closes [#91](https://github.com/KnisterPeter/vscode-github/issues/91)
+* use vscode git extension to checkout treeish ([3998f50](https://github.com/KnisterPeter/vscode-github/commit/3998f50)), closes [#18](https://github.com/KnisterPeter/vscode-github/issues/18)
+
+
+
 <a name="0.12.1"></a>
 ## [0.12.1](https://github.com/KnisterPeter/vscode-github/compare/v0.12.0...v0.12.1) (2017-03-29)
 
