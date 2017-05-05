@@ -110,14 +110,14 @@ export interface PullRequest {
   mergeable?: boolean|null;
 }
 
-export function getClient(token: string): GitHub {
+export function getClient(endpoint: string, token: string): GitHub {
   return Pretend
     .builder()
     .interceptor(impl.githubCache())
     .requestInterceptor(impl.githubTokenAuthenticator(token))
     .interceptor(impl.logger())
     .decode(impl.githubDecoder())
-    .target(impl.GitHubBlueprint, 'https://api.github.com');
+    .target(impl.GitHubBlueprint, endpoint);
 }
 
 export class GitHubError extends Error {

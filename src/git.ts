@@ -12,15 +12,15 @@ import * as vscode from 'vscode';
  * @return {Promise<string[]>} A tuple of username and repository (e.g. KnisterPeter/vscode-github)
  * @throws Throws if the could not be parsed as a github url
  */
-export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
+export async function getGitHubOwnerAndRepository(cwd: string, githubHostname: string): Promise<string[]> {
   const defaultUpstream = vscode.workspace.getConfiguration('github').get<string|undefined>('upstream', undefined);
   if (defaultUpstream) {
     return Promise.resolve(defaultUpstream.split('/'));
   }
-  return getGitHubOwnerAndRepositoryFromGitConfig(cwd);
+  return getGitHubOwnerAndRepositoryFromGitConfig(cwd, githubHostname);
 }
 
-async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<string[]> {
+async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string, githubHostname: string): Promise<string[]> {
   // as we expect this function to throw on non-Github repos we can chain
   // whatever calls and they will thrown on non-correct remotes
   const remote = (await execa('git', 'config --local --get remote.origin.url'.split(' '), {cwd})).stdout.trim();
@@ -29,15 +29,16 @@ async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<st
   }
 
   // git protocol remotes, may be git@github:username/repo.git
-  // or git://github/user/repo.git, GITHUB domain name is not case-sensetive
+  // or git://github/user/repo.git, domain names are not case-sensetive
   if (remote.startsWith('git')) {
-    return remote.match(/^git(?:@|\:\/\/)github.com[\/:](.*?)\/(.*?)(?:.git)?$/i)!.slice(1, 3);
+    const regexp = new RegExp(`^git(?:@|://)${githubHostname}[/:](.*?)/(.*?)(?:.git)?$`, 'i');
+    return regexp.exec(remote)!.slice(1, 3);
   }
 
   // it must be http or https based remote
   const { hostname, pathname } = parse(remote);
-  // github.com domain name is not case-sensetive
-  if (!pathname || !hostname || !/^github\.com$/i.test(hostname)) {
+  // domain names are not case-sensetive
+  if (!pathname || !hostname || !new RegExp(`^${githubHostname}$`, 'i').test(hostname)) {
     throw new Error('Not a Github remote!');
   }
   return pathname.match(/\/(.*?)\/(.*?)(?:.git)?$/)!.slice(1, 3);
