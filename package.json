@@ -81,6 +81,11 @@
         "category": "GitHub"
       },
       {
+        "command": "vscode-github.browserSimplePullRequest",
+        "title": "Browse pull request of current branch",
+        "category": "GitHub"
+      },
+      {
         "command": "vscode-github.browserPullRequest",
         "title": "Browse open pull request...",
         "category": "GitHub"
