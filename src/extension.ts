@@ -43,7 +43,9 @@ class Extension {
       vscode.commands.registerCommand('vscode-github.createPullRequest', this.wrapCommand(this.createPullRequest)),
       vscode.commands.registerCommand('vscode-github.checkoutPullRequests',
         this.wrapCommand(this.checkoutPullRequests)),
-      vscode.commands.registerCommand('vscode-github.browserPullRequest', this.wrapCommand(this.browserPullRequest)),
+      vscode.commands.registerCommand('vscode-github.browserSimplePullRequest',
+        this.wrapCommand(this.browseSimplePullRequest)),
+      vscode.commands.registerCommand('vscode-github.browserPullRequest', this.wrapCommand(this.browsePullRequest)),
       vscode.commands.registerCommand('vscode-github.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
       vscode.commands.registerCommand('vscode-github.addAssignee', this.wrapCommand(this.addAssignee)),
       vscode.commands.registerCommand('vscode-github.removeAssignee', this.wrapCommand(this.removeAssignee)),
@@ -231,7 +233,18 @@ class Extension {
     });
   }
 
-  private async browserPullRequest(): Promise<void> {
+  private async browseSimplePullRequest(): Promise<void> {
+    await this.withinProgressUI(async() => {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      if (pullRequest) {
+        await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.html_url));
+      } else {
+        vscode.window.showInformationMessage('No pull request for current branch found');
+      }
+    });
+  }
+
+  private async browsePullRequest(): Promise<void> {
     this.selectPullRequest(pullRequest => {
       vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.html_url));
     });
