@@ -10,7 +10,7 @@
   "version": "0.12.1",
   "publisher": "KnisterPeter",
   "engines": {
-    "vscode": "^1.7.0"
+    "vscode": "^1.12.0"
   },
   "categories": [
     "Other"
@@ -135,7 +135,7 @@
     "mocha": "^3.2.0",
     "standard-version": "4.0.0",
     "tslint": "^5.2.0",
-    "typescript": "^2.2.1",
+    "typescript": "^2.3.2",
     "vscode": "^1.1.0"
   },
   "dependencies": {
