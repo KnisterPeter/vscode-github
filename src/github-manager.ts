@@ -95,11 +95,17 @@ export class GitHubManager {
     this.log(`Create pull request on branch ${branch}`);
     const firstCommit = await git.getFirstCommitOnBranch(branch, this.cwd);
     this.log(`First commit on branch ${firstCommit}`);
+    const requestBody = await git.getPullRequestBody(firstCommit, this.cwd);
+    if (!requestBody) {
+      vscode.window.showWarningMessage(
+        `For some unknown reason no pull request body could be build; Aborting operation`);
+      return undefined;
+    }
     const body: CreatePullRequestBody = {
       title: await git.getCommitMessage(firstCommit, this.cwd),
       head: `${owner}:${branch}`,
       base: upstream ? upstream.branch : await this.getDefaultBranch(),
-      body: await git.getPullRequestBody(firstCommit, this.cwd)
+      body: requestBody
     };
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));

@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
  * @throws Throws if the could not be parsed as a github url
  */
 export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
-  const defaultUpstream = vscode.workspace.getConfiguration('github').get<string>('upstream', undefined);
+  const defaultUpstream = vscode.workspace.getConfiguration('github').get<string|undefined>('upstream', undefined);
   if (defaultUpstream) {
     return Promise.resolve(defaultUpstream.split('/'));
   }
@@ -62,7 +62,7 @@ export async function getCommitBody(sha: string, cwd: string): Promise<string> {
   return (await execa('git', ['log', '--format=%b', '-n', '1', sha], {cwd})).stdout.trim();
 }
 
-export async function getPullRequestBody(sha: string, cwd: string): Promise<string> {
+export async function getPullRequestBody(sha: string, cwd: string): Promise<string|undefined> {
   const bodyMethod = vscode.workspace.getConfiguration('github').get<string>('customPullRequestDescription');
 
   switch (bodyMethod) {
@@ -76,7 +76,7 @@ export async function getPullRequestBody(sha: string, cwd: string): Promise<stri
   }
 }
 
-async function getSingleLinePullRequestBody(): Promise<string> {
+async function getSingleLinePullRequestBody(): Promise<string|undefined> {
   return await vscode.window.showInputBox({prompt: 'Pull request description'});
 }
 

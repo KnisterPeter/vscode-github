@@ -6,19 +6,18 @@ import * as vscode from 'vscode';
 // import * as myExtension from '../src/extension';
 
 suite('vscode-github extension tests', () => {
-    test('Extension should be active after startup', () => {
-        assert.equal(
-            vscode.extensions.getExtension('KnisterPeter.vscode-github').isActive,
-            true
-        );
-    });
+  test('Extension should be active after startup', () => {
+    const extension = vscode.extensions.getExtension('KnisterPeter.vscode-github');
+    assert.ok(extension);
+    assert.equal(extension!.isActive, true);
+  });
 
-    test('Extension should register commands', done => {
-        vscode.commands.getCommands(true)
-            .then(commands => commands.filter(command => command.startsWith('vscode-github')))
-            .then(commands => {
-                assert.equal(commands.length > 0, true);
-            })
-            .then(() => done());
-    });
+  test('Extension should register commands', done => {
+    vscode.commands.getCommands(true)
+      .then(commands => commands.filter(command => command.startsWith('vscode-github')))
+      .then(commands => {
+        assert.equal(commands.length > 0, true);
+      })
+      .then(() => done());
+  });
 });

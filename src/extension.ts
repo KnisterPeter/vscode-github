@@ -52,7 +52,18 @@ class Extension {
     );
   }
 
+  private async withinProgressUI<R>(task: (progress: vscode.Progress<{message?: string}>) => Promise<R>): Promise<R> {
+    const options: vscode.ProgressOptions = {
+      location: vscode.ProgressLocation.SourceControl,
+      title: 'GitHub'
+    };
+    return vscode.window.withProgress(options, task);
+  }
+
   get cwd(): string {
+    if (!vscode.workspace.rootPath) {
+      throw new Error('No workspace available');
+    }
     return vscode.workspace.rootPath;
   }
 
@@ -102,8 +113,10 @@ class Extension {
         placeHolder: 'GitHub Personal Access Token'
       };
       const input = await vscode.window.showInputBox(options);
-      context.globalState.update('token', input);
-      this.githubManager.connect(input);
+      if (input) {
+        context.globalState.update('token', input);
+        this.githubManager.connect(input);
+      }
     };
   }
 
@@ -125,53 +138,62 @@ class Extension {
   }
 
   private async createSimplePullRequest(): Promise<void> {
-    if (!this.requireRemoteTrackingBranch()) {
-      return;
-    }
-    const pullRequest = await this.githubManager.createPullRequest();
-    if (pullRequest) {
-      this.statusBarManager.updateStatus();
-      this.showPullRequestNotification(pullRequest);
-    }
+    await this.withinProgressUI(async progress => {
+      progress.report(`Check preconditions`);
+      if (!this.requireRemoteTrackingBranch()) {
+        return;
+      }
+      progress.report(`Create pull requets`);
+      const pullRequest = await this.githubManager.createPullRequest();
+      if (pullRequest) {
+        this.statusBarManager.updateStatus();
+        this.showPullRequestNotification(pullRequest);
+      }
+    });
   }
 
   private async createPullRequest(): Promise<void> {
-    if (!this.requireRemoteTrackingBranch()) {
-      return;
-    }
-    let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    const repository = await this.githubManager.getRepository();
-    let pullRequest: PullRequest|undefined;
-    if (repository.parent) {
-      let branch: string;
-      const items = [{
-        label: repository.full_name,
-        description: '',
-        branch: repository.default_branch
-      }, {
-        label: repository.parent.full_name,
-        description: '',
-        branch: repository.parent.default_branch
-      }];
-      const selectedRepository = await vscode.window.showQuickPick(items,
-        {placeHolder: 'Select a repository to create the pull request in'});
-      if (!selectedRepository) {
+    await this.withinProgressUI(async progress => {
+      progress.report(`Check preconditions`);
+      if (!this.requireRemoteTrackingBranch()) {
         return;
       }
-      [owner, repo] = selectedRepository.label.split('/');
-      branch = selectedRepository.branch;
-      pullRequest = await this.githubManager.createPullRequest({
-        owner,
-        repository: repo,
-        branch
-      });
-    } else {
-      pullRequest = await this.githubManager.createPullRequest();
-    }
-    if (pullRequest) {
-      this.statusBarManager.updateStatus();
-      this.showPullRequestNotification(pullRequest);
-    }
+      progress.report(`Gather data`);
+      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+      const repository = await this.githubManager.getRepository();
+      let pullRequest: PullRequest|undefined;
+      if (repository.parent) {
+        let branch: string;
+        const items = [{
+          label: repository.full_name,
+          description: '',
+          branch: repository.default_branch
+        }, {
+          label: repository.parent.full_name,
+          description: '',
+          branch: repository.parent.default_branch
+        }];
+        const selectedRepository = await vscode.window.showQuickPick(items,
+          {placeHolder: 'Select a repository to create the pull request in'});
+        if (!selectedRepository) {
+          return;
+        }
+        [owner, repo] = selectedRepository.label.split('/');
+        branch = selectedRepository.branch;
+        progress.report(`Create pull request`);
+        pullRequest = await this.githubManager.createPullRequest({
+          owner,
+          repository: repo,
+          branch
+        });
+      } else {
+        pullRequest = await this.githubManager.createPullRequest();
+      }
+      if (pullRequest) {
+        this.statusBarManager.updateStatus();
+        this.showPullRequestNotification(pullRequest);
+      }
+    });
   }
 
   private async showPullRequestNotification(pullRequest: PullRequest): Promise<void> {
@@ -203,8 +225,10 @@ class Extension {
   }
 
   private async browseProject(): Promise<void> {
-    const slug = await this.githubManager.getGithubSlug();
-    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(`https://github.com/${slug}`));
+    await this.withinProgressUI(async() => {
+      const slug = await this.githubManager.getGithubSlug();
+      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(`https://github.com/${slug}`));
+    });
   }
 
   private async browserPullRequest(): Promise<void> {
@@ -218,104 +242,118 @@ class Extension {
     if (preferedMethod) {
       return preferedMethod;
     }
-    const items: MergeOptionItems[] = [];
-    const enabledMethods = await this.githubManager.getEnabledMergeMethods();
-    if (enabledMethods.has('merge')) {
-      items.push({
-        label: 'Create merge commit',
-        description: '',
-        method: 'merge'
-      });
-    }
-    if (enabledMethods.has('squash')) {
-      items.push({
-        label: 'Squash and merge',
-        description: '',
-        method: 'squash'
-      });
-    }
-    if (enabledMethods.has('rebase')) {
-      items.push({
-        label: 'Rebase and merge',
-        description: '',
-        method: 'rebase'
-      });
-    }
-    const selected = await vscode.window.showQuickPick(items);
-    return selected ? selected.method : undefined;
+    return await this.withinProgressUI(async() => {
+      const items: MergeOptionItems[] = [];
+      const enabledMethods = await this.githubManager.getEnabledMergeMethods();
+      if (enabledMethods.has('merge')) {
+        items.push({
+          label: 'Create merge commit',
+          description: '',
+          method: 'merge'
+        });
+      }
+      if (enabledMethods.has('squash')) {
+        items.push({
+          label: 'Squash and merge',
+          description: '',
+          method: 'squash'
+        });
+      }
+      if (enabledMethods.has('rebase')) {
+        items.push({
+          label: 'Rebase and merge',
+          description: '',
+          method: 'rebase'
+        });
+      }
+      const selected = await vscode.window.showQuickPick(items);
+      return selected ? selected.method : undefined;
+    });
   }
 
   private async mergePullRequest(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-    if (pullRequest && pullRequest.mergeable) {
-      const method = await this.getMergeMethdod();
-      if (method) {
-        if (await this.githubManager.mergePullRequest(pullRequest, method)) {
-          this.statusBarManager.updateStatus();
-          vscode.window.showInformationMessage(`Successfully merged`);
-        } else {
-          vscode.window.showInformationMessage(`Merge failed for unknown reason`);
+    await this.withinProgressUI(async progress => {
+      progress.report(`Check preconditions`);
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      if (pullRequest && pullRequest.mergeable) {
+        const method = await this.getMergeMethdod();
+        if (method) {
+          progress.report(`Merge pull request`);
+          if (await this.githubManager.mergePullRequest(pullRequest, method)) {
+            this.statusBarManager.updateStatus();
+            vscode.window.showInformationMessage(`Successfully merged`);
+          } else {
+            vscode.window.showInformationMessage(`Merge failed for unknown reason`);
+          }
         }
+      } else {
+        vscode.window.showWarningMessage(
+          'Either no pull request for current brach, or the pull request is not mergable');
       }
-    } else {
-      vscode.window.showWarningMessage(
-        'Either no pull request for current brach, or the pull request is not mergable');
-    }
+    });
   }
 
   private async addAssignee(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-    if (pullRequest) {
-      const user = await this.getUser();
-      if (user) {
-        await this.githubManager.addAssignee(pullRequest.number, user);
-        vscode.window.showInformationMessage(`Successfully added ${user} to the assignees`);
+    await this.withinProgressUI(async() => {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      if (pullRequest) {
+        const user = await this.getUser();
+        if (user) {
+          await this.githubManager.addAssignee(pullRequest.number, user);
+          vscode.window.showInformationMessage(`Successfully added ${user} to the assignees`);
+        }
+      } else {
+        vscode.window.showWarningMessage('No pull request for current brach');
       }
-    } else {
-      vscode.window.showWarningMessage('No pull request for current brach');
-    }
+    });
   }
 
   private async removeAssignee(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-    if (pullRequest) {
-      const user = await this.getUser();
-      if (user) {
-        await this.githubManager.removeAssignee(pullRequest.number, user);
-        vscode.window.showInformationMessage(`Successfully remove ${user} from the assignees`);
+    await this.withinProgressUI(async() => {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      if (pullRequest) {
+        const user = await this.getUser();
+        if (user) {
+          await this.githubManager.removeAssignee(pullRequest.number, user);
+          vscode.window.showInformationMessage(`Successfully remove ${user} from the assignees`);
+        }
+      } else {
+        vscode.window.showWarningMessage('No pull request for current brach');
       }
-    } else {
-      vscode.window.showWarningMessage('No pull request for current brach');
-    }
+    });
   }
 
   private async requestReview(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-    if (pullRequest) {
-      const user = await this.getUser();
-      if (user) {
-        await this.githubManager.requestReview(pullRequest.number, user);
-        vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
+    await this.withinProgressUI(async() => {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      if (pullRequest) {
+        const user = await this.getUser();
+        if (user) {
+          await this.githubManager.requestReview(pullRequest.number, user);
+          vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
+        }
+      } else {
+        vscode.window.showWarningMessage('No pull request for current brach');
       }
-    } else {
-      vscode.window.showWarningMessage('No pull request for current brach');
-    }
+    });
   }
 
   private async deleteReviewRequest(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
-    if (pullRequest) {
-      const user = await this.getUser();
-      if (user) {
-        await this.githubManager.deleteReviewRequest(pullRequest.number, user);
-        vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);
+    await this.withinProgressUI(async() => {
+      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      if (pullRequest) {
+        const user = await this.getUser();
+        if (user) {
+          await this.githubManager.deleteReviewRequest(pullRequest.number, user);
+          vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);
+        }
+      } else {
+        vscode.window.showWarningMessage('No pull request for current brach');
       }
-    } else {
-      vscode.window.showWarningMessage('No pull request for current brach');
-    }
+    });
   }
 
-  private async getUser(): Promise<string> {
+  private async getUser(): Promise<string|undefined> {
     return await vscode.window.showInputBox({
       ignoreFocusOut: true,
       placeHolder: 'username, email or fullname'
