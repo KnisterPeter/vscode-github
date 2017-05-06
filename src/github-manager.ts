@@ -4,6 +4,10 @@ import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
   PullRequestStatus, Merge, MergeMethod, Repository} from './github';
 
+export interface Tokens {
+  [host: string]: string;
+}
+
 export class GitHubManager {
 
   private cwd: string;
@@ -26,8 +30,13 @@ export class GitHubManager {
     return Boolean(this.github);
   }
 
-  public async connect(token: string): Promise<void> {
-    this.github = getClient(await this.getApiEndpoint(), token);
+  public async getGitHubHostname(): Promise<string> {
+    return git.getGitHubHostname(this.cwd);
+  }
+
+  public async connect(tokens: Tokens): Promise<void> {
+    const hostname = await git.getGitHubHostname(this.cwd);
+    this.github = getClient(await this.getApiEndpoint(), tokens[hostname]);
   }
 
   private async getApiEndpoint(): Promise<string> {
