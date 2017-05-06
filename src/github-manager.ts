@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
-  PullRequestStatus, Merge, MergeMethod, Repository} from './github';
+  PullRequestStatus, Merge, MergeMethod, Repository, Issue} from './github';
 
 export interface Tokens {
   [host: string]: string;
@@ -215,6 +215,16 @@ export class GitHubManager {
   public async deleteReviewRequest(issue: number, name: string): Promise<void> {
     const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     await this.github.deleteReviewRequest(owner, repo, issue, {reviewers: [name]});
+  }
+
+  public async issues(): Promise<Issue[]> {
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const result = await this.github.issues(owner, repo, {
+      sort: 'updated',
+      direction: 'asc'
+    });
+    return result.body
+      .filter(issue => !Boolean(issue.pull_request));
   }
 
 }

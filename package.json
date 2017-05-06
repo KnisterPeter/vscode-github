@@ -119,6 +119,11 @@
         "command": "vscode-github.deleteReviewRequest",
         "title": "Cancel a pull request review...",
         "category": "GitHub"
+      },
+      {
+        "command": "vscode-github.browseOpenIssue",
+        "title": "Browse open issue...",
+        "category": "GitHub"
       }
     ]
   },
