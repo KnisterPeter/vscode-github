@@ -15,8 +15,6 @@ type MergeOptionItems = { label: string; description: string; method: MergeMetho
 
 class Extension {
 
-  private githubHostname: string;
-
   private channel: vscode.OutputChannel;
 
   private githubManager: GitHubManager;
@@ -24,13 +22,11 @@ class Extension {
   private statusBarManager: StatusBarManager;
 
   constructor(context: vscode.ExtensionContext) {
-    this.githubHostname = 'github.com';
-
     this.channel = vscode.window.createOutputChannel('github');
     context.subscriptions.push(this.channel);
     this.channel.appendLine('Visual Studio Code GitHub Extension');
 
-    this.githubManager = new GitHubManager(this.cwd, this.githubHostname, 'https://api.github.com', this.channel);
+    this.githubManager = new GitHubManager(this.cwd, this.channel);
     this.statusBarManager = new StatusBarManager(context, this.cwd, this.githubManager, this.channel);
 
     const token = context.globalState.get<string|undefined>('token');
@@ -121,7 +117,7 @@ class Extension {
       const input = await vscode.window.showInputBox(options);
       if (input) {
         context.globalState.update('token', input);
-        this.githubManager.connect(input);
+        await this.githubManager.connect(input);
       }
     };
   }
@@ -165,7 +161,7 @@ class Extension {
         return;
       }
       progress.report(`Gather data`);
-      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.githubHostname);
+      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
       const repository = await this.githubManager.getRepository();
       let pullRequest: PullRequest|undefined;
       if (repository.parent) {
@@ -232,8 +228,8 @@ class Extension {
 
   private async browseProject(): Promise<void> {
     await this.withinProgressUI(async() => {
-      const slug = await this.githubManager.getGithubSlug();
-      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(`https://${this.githubHostname}/${slug}`));
+      const url = await this.githubManager.getGithubUrl();
+      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
     });
   }
 
