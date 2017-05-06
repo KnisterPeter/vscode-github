@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.14.0"></a>
+# [0.14.0](https://github.com/KnisterPeter/vscode-github/compare/v0.13.0...v0.14.0) (2017-05-06)
+
+
+### Features
+
+* add multi token support ([0cc8bd6](https://github.com/KnisterPeter/vscode-github/commit/0cc8bd6))
+* github enterprise support ([94d1cf9](https://github.com/KnisterPeter/vscode-github/commit/94d1cf9)), closes [#59](https://github.com/KnisterPeter/vscode-github/issues/59)
+
+
+
 <a name="0.13.0"></a>
 # [0.13.0](https://github.com/KnisterPeter/vscode-github/compare/v0.12.1...v0.13.0) (2017-05-05)
 
