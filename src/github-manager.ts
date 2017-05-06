@@ -4,22 +4,20 @@ import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
   PullRequestStatus, Merge, MergeMethod, Repository} from './github';
 
+export interface Tokens {
+  [host: string]: string;
+}
+
 export class GitHubManager {
 
   private cwd: string;
-
-  private hostname: string;
-
-  private apiEndpoint: string;
 
   private channel: vscode.OutputChannel;
 
   private github: GitHub;
 
-  constructor(cwd: string, hostname: string, apiEndpoint: string, channel: vscode.OutputChannel) {
+  constructor(cwd: string, channel: vscode.OutputChannel) {
     this.cwd = cwd;
-    this.hostname = hostname;
-    this.apiEndpoint = apiEndpoint;
     this.channel = channel;
   }
 
@@ -32,12 +30,25 @@ export class GitHubManager {
     return Boolean(this.github);
   }
 
-  public connect(token: string): void {
-    this.github = getClient(this.apiEndpoint, token);
+  public async getGitHubHostname(): Promise<string> {
+    return git.getGitHubHostname(this.cwd);
+  }
+
+  public async connect(tokens: Tokens): Promise<void> {
+    const hostname = await git.getGitHubHostname(this.cwd);
+    this.github = getClient(await this.getApiEndpoint(), tokens[hostname]);
+  }
+
+  private async getApiEndpoint(): Promise<string> {
+    const hostname = await git.getGitHubHostname(this.cwd);
+    if (hostname === 'github.com') {
+      return 'https://api.github.com';
+    }
+    return `https://${hostname}/api/v3`;
   }
 
   public async getRepository(): Promise<Repository> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     return (await this.github.getRepository(owner, repository)).body;
   }
 
@@ -61,7 +72,7 @@ export class GitHubManager {
   }
 
   public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
     const parameters: ListPullRequestsParameters = {
       state: 'open',
@@ -79,7 +90,7 @@ export class GitHubManager {
   }
 
   public async getCombinedStatusForPullRequest(): Promise<PullRequestStatus |undefined> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
     if (!branch) {
       return undefined;
@@ -93,7 +104,7 @@ export class GitHubManager {
     if (await this.hasPullRequestForCurrentBranch()) {
       return undefined;
     }
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
     if (!branch) {
       throw new Error('No current branch');
@@ -102,7 +113,7 @@ export class GitHubManager {
     const firstCommit = await git.getFirstCommitOnBranch(branch, this.cwd);
     this.log(`First commit on branch ${firstCommit}`);
     const requestBody = await git.getPullRequestBody(firstCommit, this.cwd);
-    if (!requestBody) {
+    if (requestBody === undefined) {
       vscode.window.showWarningMessage(
         `For some unknown reason no pull request body could be build; Aborting operation`);
       return undefined;
@@ -128,7 +139,7 @@ export class GitHubManager {
       const result = await this.github.createPullRequest(upstreamOwner, upstreamRepository, body);
       // tslint:disable-next-line:comment-format
       // TODO: Pretend should optionally redirect
-      const expr = new RegExp(`${this.apiEndpoint}/repos/[^/]+/[^/]+/pulls/([0-9]+)`);
+      const expr = new RegExp(`${await this.getApiEndpoint()}/repos/[^/]+/[^/]+/pulls/([0-9]+)`);
       const number = expr.exec(result.headers['location'][0]) as RegExpMatchArray;
       return (await this.github
         .getPullRequest(upstreamOwner, upstreamRepository, parseInt(number[1], 10)))
@@ -144,7 +155,7 @@ export class GitHubManager {
   }
 
   public async listPullRequests(): Promise<PullRequest[]> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
@@ -154,7 +165,7 @@ export class GitHubManager {
   public async mergePullRequest(pullRequest: PullRequest, method: MergeMethod): Promise<boolean|undefined> {
     try {
       if (pullRequest.mergeable) {
-        const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+        const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
         const body: Merge = {
           merge_method: method
         };
@@ -176,27 +187,33 @@ export class GitHubManager {
   }
 
   public async getGithubSlug(): Promise<string> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     return `${owner}/${repo}`;
   }
 
+  public async getGithubUrl(): Promise<string> {
+    const hostname = await git.getGitHubHostname(this.cwd);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    return `https://${hostname}/${owner}/${repo}`;
+  }
+
   public async addAssignee(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     await this.github.addAssignees(owner, repo, issue, {assignees: [name]});
   }
 
   public async removeAssignee(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     await this.github.removeAssignees(owner, repo, issue, {assignees: [name]});
   }
 
   public async requestReview(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     await this.github.requestReview(owner, repo, issue, {reviewers: [name]});
   }
 
   public async deleteReviewRequest(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.hostname);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     await this.github.deleteReviewRequest(owner, repo, issue, {reviewers: [name]});
   }
 

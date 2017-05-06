@@ -61,6 +61,11 @@
         "category": "GitHub"
       },
       {
+        "command": "vscode-github.setGitHubEnterpriseToken",
+        "title": "Setup GitHub Enterprise Token...",
+        "category": "GitHub"
+      },
+      {
         "command": "vscode-github.browseProject",
         "title": "Browse project",
         "category": "GitHub"

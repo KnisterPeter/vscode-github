@@ -1,11 +1,11 @@
-import {join} from 'path';
+import { join } from 'path';
 import * as sander from 'sander';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {GitHubError, PullRequest, MergeMethod} from './github';
-import {GitHubManager} from './github-manager';
-import {StatusBarManager} from './status-bar-manager';
+import { GitHubError, PullRequest, MergeMethod } from './github';
+import { GitHubManager, Tokens } from './github-manager';
+import { StatusBarManager } from './status-bar-manager';
 
 export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(new Extension(context));
@@ -15,8 +15,6 @@ type MergeOptionItems = { label: string; description: string; method: MergeMetho
 
 class Extension {
 
-  private githubHostname: string;
-
   private channel: vscode.OutputChannel;
 
   private githubManager: GitHubManager;
@@ -24,24 +22,26 @@ class Extension {
   private statusBarManager: StatusBarManager;
 
   constructor(context: vscode.ExtensionContext) {
-    this.githubHostname = 'github.com';
+    this.migrateToken(context);
 
     this.channel = vscode.window.createOutputChannel('github');
     context.subscriptions.push(this.channel);
     this.channel.appendLine('Visual Studio Code GitHub Extension');
 
-    this.githubManager = new GitHubManager(this.cwd, this.githubHostname, 'https://api.github.com', this.channel);
+    this.githubManager = new GitHubManager(this.cwd, this.channel);
     this.statusBarManager = new StatusBarManager(context, this.cwd, this.githubManager, this.channel);
 
-    const token = context.globalState.get<string|undefined>('token');
-    if (token) {
-      this.githubManager.connect(token);
+    const tokens = context.globalState.get<Tokens>('tokens');
+    if (tokens) {
+      this.githubManager.connect(tokens);
     }
-    this.checkVersionAndToken(context, token);
+    this.checkVersionAndToken(context, tokens);
 
     context.subscriptions.push(
       vscode.commands.registerCommand('vscode-github.browseProject', this.wrapCommand(this.browseProject)),
       vscode.commands.registerCommand('vscode-github.setGitHubToken', this.createGithubTokenCommand(context)),
+      vscode.commands.registerCommand('vscode-github.setGitHubEnterpriseToken',
+        this.createGithubEnterpriseTokenCommand(context)),
       vscode.commands.registerCommand('vscode-github.createSimplePullRequest',
         this.wrapCommand(this.createSimplePullRequest)),
       vscode.commands.registerCommand('vscode-github.createPullRequest', this.wrapCommand(this.createPullRequest)),
@@ -58,7 +58,17 @@ class Extension {
     );
   }
 
-  private async withinProgressUI<R>(task: (progress: vscode.Progress<{message?: string}>) => Promise<R>): Promise<R> {
+  private migrateToken(context: vscode.ExtensionContext): void {
+    const token = context.globalState.get<string | undefined>('token');
+    if (token) {
+      const tokens = context.globalState.get<Tokens>('tokens', {});
+      tokens['github.com'] = token;
+      context.globalState.update('tokens', tokens);
+      context.globalState.update(token, undefined);
+    }
+  }
+
+  private async withinProgressUI<R>(task: (progress: vscode.Progress<{ message?: string }>) => Promise<R>): Promise<R> {
     const options: vscode.ProgressOptions = {
       location: vscode.ProgressLocation.SourceControl,
       title: 'GitHub'
@@ -73,11 +83,11 @@ class Extension {
     return vscode.workspace.rootPath;
   }
 
-  private async checkVersionAndToken(context: vscode.ExtensionContext, token: string|undefined): Promise<void> {
+  private async checkVersionAndToken(context: vscode.ExtensionContext, tokens: Tokens | undefined): Promise<void> {
     const content = await sander.readFile(join(context.extensionPath, 'package.json'));
     const version = JSON.parse(content.toString()).version as string;
-    const storedVersion = context.globalState.get<string|undefined>('version-test');
-    if (version !== storedVersion && !Boolean(token)) {
+    const storedVersion = context.globalState.get<string | undefined>('version-test');
+    if (version !== storedVersion && (!tokens || Object.keys(tokens).length === 0)) {
       context.globalState.update('version-test', version);
       vscode.window.showInformationMessage(
         'To enable the Visual Studio Code GitHub Support, please set a Personal Access Token');
@@ -101,14 +111,14 @@ class Extension {
   }
 
   private logAndShowError(e: Error): void {
-      this.channel.appendLine(e.message);
-      if (e instanceof GitHubError) {
-        console.error(e.response);
-        vscode.window.showErrorMessage('GitHub error: ' + e.message);
-      } else {
-        console.error(e);
-        vscode.window.showErrorMessage('Error: ' + e.message);
-      }
+    this.channel.appendLine(e.message);
+    if (e instanceof GitHubError) {
+      console.error(e.response);
+      vscode.window.showErrorMessage('GitHub error: ' + e.message);
+    } else {
+      console.error(e);
+      vscode.window.showErrorMessage('Error: ' + e.message);
+    }
   }
 
   private createGithubTokenCommand(context: vscode.ExtensionContext): () => void {
@@ -120,8 +130,32 @@ class Extension {
       };
       const input = await vscode.window.showInputBox(options);
       if (input) {
-        context.globalState.update('token', input);
-        this.githubManager.connect(input);
+        const tokens = context.globalState.get<Tokens>('tokens', {});
+        tokens['github.com'] = input;
+        context.globalState.update('tokens', tokens);
+        await this.githubManager.connect(tokens);
+      }
+    };
+  }
+
+  private createGithubEnterpriseTokenCommand(context: vscode.ExtensionContext): () => void {
+    return async() => {
+      const hostInput = await vscode.window.showInputBox({
+        ignoreFocusOut: true,
+        placeHolder: 'GitHub Enterprise Hostname'
+      });
+      if (hostInput) {
+        const tokenInput = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          password: true,
+          placeHolder: 'GitHub Enterprise Token'
+        });
+        if (tokenInput) {
+          const tokens = context.globalState.get<Tokens>('tokens', {});
+          tokens[hostInput] = tokenInput;
+          context.globalState.update('tokens', tokens);
+          this.githubManager.connect(tokens);
+        }
       }
     };
   }
@@ -165,9 +199,9 @@ class Extension {
         return;
       }
       progress.report(`Gather data`);
-      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd, this.githubHostname);
+      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
       const repository = await this.githubManager.getRepository();
-      let pullRequest: PullRequest|undefined;
+      let pullRequest: PullRequest | undefined;
       if (repository.parent) {
         let branch: string;
         const items = [{
@@ -180,7 +214,7 @@ class Extension {
           branch: repository.parent.default_branch
         }];
         const selectedRepository = await vscode.window.showQuickPick(items,
-          {placeHolder: 'Select a repository to create the pull request in'});
+          { placeHolder: 'Select a repository to create the pull request in' });
         if (!selectedRepository) {
           return;
         }
@@ -232,8 +266,8 @@ class Extension {
 
   private async browseProject(): Promise<void> {
     await this.withinProgressUI(async() => {
-      const slug = await this.githubManager.getGithubSlug();
-      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(`https://${this.githubHostname}/${slug}`));
+      const url = await this.githubManager.getGithubUrl();
+      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
     });
   }
 
@@ -254,7 +288,7 @@ class Extension {
     });
   }
 
-  private async getMergeMethdod(): Promise<MergeMethod|undefined> {
+  private async getMergeMethdod(): Promise<MergeMethod | undefined> {
     const preferedMethod = vscode.workspace.getConfiguration('github').get<MergeMethod>('preferedMergeMethod');
     if (preferedMethod) {
       return preferedMethod;
@@ -370,7 +404,7 @@ class Extension {
     });
   }
 
-  private async getUser(): Promise<string|undefined> {
+  private async getUser(): Promise<string | undefined> {
     return await vscode.window.showInputBox({
       ignoreFocusOut: true,
       placeHolder: 'username, email or fullname'
