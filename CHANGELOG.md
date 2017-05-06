@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.15.0"></a>
+# [0.15.0](https://github.com/KnisterPeter/vscode-github/compare/v0.14.0...v0.15.0) (2017-05-06)
+
+
+### Features
+
+* browse open issues ([ab1bff8](https://github.com/KnisterPeter/vscode-github/commit/ab1bff8)), closes [#32](https://github.com/KnisterPeter/vscode-github/issues/32)
+
+
+
 <a name="0.14.0"></a>
 # [0.14.0](https://github.com/KnisterPeter/vscode-github/compare/v0.13.0...v0.14.0) (2017-05-06)
 
