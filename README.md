@@ -24,6 +24,7 @@ Current it is possible to do the following:
 * Allow to manage assignees for pull requests
 * Allow to create and cancel pull request reviews
 * Support for GitHub Enterprise (on-premise installations)
+* Browse open issues
 
 ![Create pull request](images/create-pull-request.png)
 
