@@ -54,7 +54,8 @@ class Extension {
       vscode.commands.registerCommand('vscode-github.addAssignee', this.wrapCommand(this.addAssignee)),
       vscode.commands.registerCommand('vscode-github.removeAssignee', this.wrapCommand(this.removeAssignee)),
       vscode.commands.registerCommand('vscode-github.requestReview', this.wrapCommand(this.requestReview)),
-      vscode.commands.registerCommand('vscode-github.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest))
+      vscode.commands.registerCommand('vscode-github.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest)),
+      vscode.commands.registerCommand('vscode-github.browseOpenIssue', this.wrapCommand(this.browseOpenIssue))
     );
   }
 
@@ -400,6 +401,24 @@ class Extension {
         }
       } else {
         vscode.window.showWarningMessage('No pull request for current brach');
+      }
+    });
+  }
+
+  private async browseOpenIssue(): Promise<void> {
+    await this.withinProgressUI(async() => {
+      const issues = await this.githubManager.issues();
+      if (issues.length > 0) {
+        const selected = await vscode.window.showQuickPick(issues.map(issue => ({
+          label: `${issue.title}`,
+          description: `#${issue.number}`,
+          issue
+        })));
+        if (selected) {
+          vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(selected.issue.html_url));
+        }
+      } else {
+        vscode.window.showInformationMessage(`No open issues found`);
       }
     });
   }

@@ -25,12 +25,30 @@ export interface GitHub {
 
   deleteReviewRequest(owner: string, repo: string, numer: number, body: Reviewers): Promise<void>;
 
+  issues(owner: string, repo: string, parameters?: IssuesParameters): Promise<GitHubResponse<Issue[]>>;
+
 }
 
 export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface Issue {
+  html_url: string;
+  number: number;
+  state: 'open';
+  title: string;
+  pull_request?: object;
+}
+
+export interface IssuesParameters {
+  milestone?: string|number;
+  state?: 'closed' | 'all' | 'open';
+  assignee?: string;
+  sort?: 'created' | 'updated' | 'comments';
+  direction?: 'asc' | 'desc';
 }
 
 export interface Assignees {
@@ -223,6 +241,9 @@ namespace impl {
     @Headers('Accept: application/vnd.github.black-cat-preview+json')
     @Delete('/repos/:owner/:repo/pulls/:number/requested_reviewers', true)
     public deleteReviewRequest(): any {/* */}
+
+    @Get('/repos/:owner/:repo/issues', true)
+    public issues(): any {/* */}
 
   }
 }
