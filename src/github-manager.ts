@@ -224,7 +224,7 @@ export class GitHubManager {
     const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     const result = await this.github.issues(owner, repo, {
       sort: 'updated',
-      direction: 'asc'
+      direction: 'desc'
     });
     return result.body
       .filter(issue => !Boolean(issue.pull_request));
