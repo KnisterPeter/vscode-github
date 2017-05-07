@@ -44,6 +44,9 @@ export class GitHubManager {
     if (hostname === 'github.com') {
       return 'https://api.github.com';
     }
+    if (hostname.startsWith('http')) {
+      return `${hostname}/api/v3`;
+    }
     return `https://${hostname}/api/v3`;
   }
 
