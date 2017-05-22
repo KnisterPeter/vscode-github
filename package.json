@@ -1,7 +1,7 @@
 {
   "name": "vscode-github",
-  "displayName": "Visual Studio Code GitHub Support",
-  "description": "Integrates github workflows into vscode - like pull requests",
+  "displayName": "GitHub",
+  "description": "Integrates github and its workflows into vscode",
   "icon": "images/octocat.png",
   "galleryBanner": {
     "color": "#dddddd",
