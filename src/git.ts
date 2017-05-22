@@ -39,9 +39,8 @@ async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<st
   return getGitHubOwnerAndRepositoryFromHttpUrl(remote);
 }
 
-const githubUrlRegexp = new RegExp('^git(?:@|://)([^:/]+)[:/]([^/]+)/(.+?)(?:.git)?$', 'i').compile();
 export function parseGithubUrl(remote: string): string[] {
-  const match = githubUrlRegexp.exec(remote);
+  const match = new RegExp('^git(?:@|://)([^:/]+)[:/]([^/]+)/(.+?)(?:.git)?$', 'i').exec(remote);
   if (!match) {
     throw new Error(`'${remote}' does not seem to be a valid github url.`);
   }
