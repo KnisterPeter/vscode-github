@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.0"></a>
+# [0.16.0](https://github.com/KnisterPeter/vscode-github/compare/v0.15.1...v0.16.0) (2017-05-22)
+
+
+### Bug Fixes
+
+* issue order should be latest change on top ([0aba3f1](https://github.com/KnisterPeter/vscode-github/commit/0aba3f1))
+* parsing git url ([0af2d3e](https://github.com/KnisterPeter/vscode-github/commit/0af2d3e)), closes [#107](https://github.com/KnisterPeter/vscode-github/issues/107)
+
+
+### Features
+
+* browsing current file ([710a032](https://github.com/KnisterPeter/vscode-github/commit/710a032)), closes [#106](https://github.com/KnisterPeter/vscode-github/issues/106)
+
+
+
 <a name="0.15.1"></a>
 ## [0.15.1](https://github.com/KnisterPeter/vscode-github/compare/v0.15.0...v0.15.1) (2017-05-07)
 
