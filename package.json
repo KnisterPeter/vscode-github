@@ -124,6 +124,11 @@
         "command": "vscode-github.browseOpenIssue",
         "title": "Browse open issue...",
         "category": "GitHub"
+      },
+      {
+        "command": "vscode-github.browseCurrentFile",
+        "title": "Browse current file",
+        "category": "GitHub"
       }
     ]
   },
