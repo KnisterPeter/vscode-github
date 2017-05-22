@@ -25,6 +25,7 @@ Current it is possible to do the following:
 * Allow to create and cancel pull request reviews
 * Support for GitHub Enterprise (on-premise installations)
 * Browse open issues
+* Browse the current open file (including current cursor position)
 
 ![Create pull request](images/create-pull-request.png)
 
