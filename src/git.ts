@@ -32,12 +32,20 @@ async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<st
 
   // git protocol remotes, may be git@github:username/repo.git
   // or git://github/user/repo.git, domain names are not case-sensetive
-  if (remote.startsWith('git')) {
-    const regexp = new RegExp('^git(?:@|://)([^:/]+)[:/]([^/]+)/([^.]+)(?:.git)?$', 'i');
-    return regexp.exec(remote)!.slice(1, 4);
+  if (remote.startsWith('git@') || remote.startsWith('git://')) {
+    return parseGithubUrl(remote);
   }
 
   return getGitHubOwnerAndRepositoryFromHttpUrl(remote);
+}
+
+const githubUrlRegexp = new RegExp('^git(?:@|://)([^:/]+)[:/]([^/]+)/(.+?)(?:.git)?$', 'i').compile();
+export function parseGithubUrl(remote: string): string[] {
+  const match = githubUrlRegexp.exec(remote);
+  if (!match) {
+    throw new Error(`'${remote}' does not seem to be a valid github url.`);
+  }
+  return match.slice(1, 4);
 }
 
 function getGitHubOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
