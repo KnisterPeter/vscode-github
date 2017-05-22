@@ -200,6 +200,13 @@ export class GitHubManager {
     return `https://${hostname}/${owner}/${repo}`;
   }
 
+  public async getGithubFileUrl(file: string, line?: number): Promise<string> {
+    const hostname = await git.getGitHubHostname(this.cwd);
+    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const branch = await git.getCurrentBranch(this.cwd);
+    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${file}#L${(line || 0) + 1}`;
+  }
+
   public async addAssignee(issue: number, name: string): Promise<void> {
     const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
     await this.github.addAssignees(owner, repo, issue, {assignees: [name]});

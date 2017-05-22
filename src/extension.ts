@@ -55,7 +55,8 @@ class Extension {
       vscode.commands.registerCommand('vscode-github.removeAssignee', this.wrapCommand(this.removeAssignee)),
       vscode.commands.registerCommand('vscode-github.requestReview', this.wrapCommand(this.requestReview)),
       vscode.commands.registerCommand('vscode-github.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest)),
-      vscode.commands.registerCommand('vscode-github.browseOpenIssue', this.wrapCommand(this.browseOpenIssue))
+      vscode.commands.registerCommand('vscode-github.browseOpenIssue', this.wrapCommand(this.browseOpenIssue)),
+      vscode.commands.registerCommand('vscode-github.browseCurrentFile', this.wrapCommand(this.browseCurrentFile))
     );
   }
 
@@ -419,6 +420,18 @@ class Extension {
         }
       } else {
         vscode.window.showInformationMessage(`No open issues found`);
+      }
+    });
+  }
+
+  private async browseCurrentFile(): Promise<void> {
+    await this.withinProgressUI(async() => {
+      const editor = vscode.window.activeTextEditor;
+      if (vscode.workspace.rootPath && editor) {
+        const file = editor.document.fileName.substring(vscode.workspace.rootPath.length);
+        const line = editor.selection.active.line;
+        const uri = vscode.Uri.parse(await this.githubManager.getGithubFileUrl(file, line));
+        vscode.commands.executeCommand('vscode.open', uri);
       }
     });
   }
