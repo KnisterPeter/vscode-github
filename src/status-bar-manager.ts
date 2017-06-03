@@ -78,12 +78,12 @@ export class StatusBarManager {
         this.statusBar.color = colors[status];
         this.statusBar.text = `${githubPullRequestIcon} #${pullRequest.number} ${status}`;
         this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
-        this.statusBar.command = status === 'success' ? 'extension.mergePullRequest' : '';
+        this.statusBar.command = status === 'success' ? 'vscode-github.mergePullRequest' : '';
       } else {
         this.statusBar.color = colors.none;
         this.statusBar.text = `${githubPullRequestIcon} Create PR`;
         this.statusBar.tooltip = 'Create pull-request for current branch';
-        this.statusBar.command = 'extension.createPullRequest';
+        this.statusBar.command = 'vscode-github.createPullRequest';
       }
     } catch (e) {
       if (e instanceof GitHubError) {
