@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.1"></a>
+## [0.16.1](https://github.com/KnisterPeter/vscode-github/compare/v0.16.0...v0.16.1) (2017-06-07)
+
+
+### Bug Fixes
+
+* unclickable status bar buttons ([961914a](https://github.com/KnisterPeter/vscode-github/commit/961914a))
+
+
+
 <a name="0.16.0"></a>
 # [0.16.0](https://github.com/KnisterPeter/vscode-github/compare/v0.15.1...v0.16.0) (2017-05-22)
 
