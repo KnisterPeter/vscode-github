@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import * as git from './git';
 import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
-  PullRequestStatus, Merge, MergeMethod, Repository, Issue} from './github';
+  PullRequestStatus, Merge, MergeMethod, Repository, Issue, PullRequestComment} from './github';
 
 export interface Tokens {
   [host: string]: string;
@@ -235,6 +235,11 @@ export class GitHubManager {
     });
     return result.body
       .filter(issue => !Boolean(issue.pull_request));
+  }
+
+  public async getPullRequestReviewComments(pullRequest: PullRequest): Promise<PullRequestComment[]> {
+    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
+    return (await this.github.getPullRequestComments(owner, repository, pullRequest.number)).body;
   }
 
 }
