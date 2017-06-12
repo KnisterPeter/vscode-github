@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.2"></a>
+## [0.16.2](https://github.com/KnisterPeter/vscode-github/compare/v0.16.1...v0.16.2) (2017-06-12)
+
+
+### Bug Fixes
+
+* **package:** update execa to version 0.7.0 ([dea0f57](https://github.com/KnisterPeter/vscode-github/commit/dea0f57))
+
+
+### Features
+
+* error logging ([54d95f4](https://github.com/KnisterPeter/vscode-github/commit/54d95f4))
+
+
+
 <a name="0.16.1"></a>
 ## [0.16.1](https://github.com/KnisterPeter/vscode-github/compare/v0.16.0...v0.16.1) (2017-06-07)
 
