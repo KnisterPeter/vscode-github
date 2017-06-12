@@ -27,12 +27,21 @@ export interface GitHub {
 
   issues(owner: string, repo: string, parameters?: IssuesParameters): Promise<GitHubResponse<Issue[]>>;
 
+  getPullRequestComments(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestComment[]>>;
+
 }
 
 export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface PullRequestComment {
+  diff_hunk: string;
+  path: string;
+  position: number;
+  body: string;
 }
 
 export interface Issue {
@@ -210,7 +219,7 @@ namespace impl {
 
     @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
-    public getRepository(_owner: string, _repo: string): any {/* */}
+    public getRepository(): any {/* */}
 
     @Get('/repos/:owner/:repo/pulls/:number')
     public getPullRequest(): any {/* */}
@@ -244,6 +253,9 @@ namespace impl {
 
     @Get('/repos/:owner/:repo/issues', true)
     public issues(): any {/* */}
+
+    @Get('/repos/:owner/:repo/pulls/:number/comments')
+    public getPullRequestComments(): any {/* */}
 
   }
 }
