@@ -22,42 +22,48 @@ class Extension {
   private statusBarManager: StatusBarManager;
 
   constructor(context: vscode.ExtensionContext) {
-    this.migrateToken(context);
+    try {
+      this.migrateToken(context);
 
-    this.channel = vscode.window.createOutputChannel('github');
-    context.subscriptions.push(this.channel);
-    this.channel.appendLine('Visual Studio Code GitHub Extension');
+      this.channel = vscode.window.createOutputChannel('GitHub');
+      context.subscriptions.push(this.channel);
+      this.channel.appendLine('Visual Studio Code GitHub Extension');
 
-    this.githubManager = new GitHubManager(this.cwd, this.channel);
-    this.statusBarManager = new StatusBarManager(context, this.cwd, this.githubManager, this.channel);
+      this.githubManager = new GitHubManager(this.cwd, this.channel);
+      this.statusBarManager = new StatusBarManager(context, this.cwd, this.githubManager, this.channel);
 
-    const tokens = context.globalState.get<Tokens>('tokens');
-    if (tokens) {
-      this.githubManager.connect(tokens);
+      const tokens = context.globalState.get<Tokens>('tokens');
+      if (tokens) {
+        this.githubManager.connect(tokens);
+      }
+      this.checkVersionAndToken(context, tokens);
+
+      context.subscriptions.push(
+        vscode.commands.registerCommand('vscode-github.browseProject', this.wrapCommand(this.browseProject)),
+        vscode.commands.registerCommand('vscode-github.setGitHubToken', this.createGithubTokenCommand(context)),
+        vscode.commands.registerCommand('vscode-github.setGitHubEnterpriseToken',
+          this.createGithubEnterpriseTokenCommand(context)),
+        vscode.commands.registerCommand('vscode-github.createSimplePullRequest',
+          this.wrapCommand(this.createSimplePullRequest)),
+        vscode.commands.registerCommand('vscode-github.createPullRequest', this.wrapCommand(this.createPullRequest)),
+        vscode.commands.registerCommand('vscode-github.checkoutPullRequests',
+          this.wrapCommand(this.checkoutPullRequests)),
+        vscode.commands.registerCommand('vscode-github.browserSimplePullRequest',
+          this.wrapCommand(this.browseSimplePullRequest)),
+        vscode.commands.registerCommand('vscode-github.browserPullRequest', this.wrapCommand(this.browsePullRequest)),
+        vscode.commands.registerCommand('vscode-github.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
+        vscode.commands.registerCommand('vscode-github.addAssignee', this.wrapCommand(this.addAssignee)),
+        vscode.commands.registerCommand('vscode-github.removeAssignee', this.wrapCommand(this.removeAssignee)),
+        vscode.commands.registerCommand('vscode-github.requestReview', this.wrapCommand(this.requestReview)),
+        vscode.commands.registerCommand('vscode-github.deleteReviewRequest',
+          this.wrapCommand(this.deleteReviewRequest)),
+        vscode.commands.registerCommand('vscode-github.browseOpenIssue', this.wrapCommand(this.browseOpenIssue)),
+        vscode.commands.registerCommand('vscode-github.browseCurrentFile', this.wrapCommand(this.browseCurrentFile))
+      );
+    } catch (e) {
+      this.logAndShowError(e);
+      throw e;
     }
-    this.checkVersionAndToken(context, tokens);
-
-    context.subscriptions.push(
-      vscode.commands.registerCommand('vscode-github.browseProject', this.wrapCommand(this.browseProject)),
-      vscode.commands.registerCommand('vscode-github.setGitHubToken', this.createGithubTokenCommand(context)),
-      vscode.commands.registerCommand('vscode-github.setGitHubEnterpriseToken',
-        this.createGithubEnterpriseTokenCommand(context)),
-      vscode.commands.registerCommand('vscode-github.createSimplePullRequest',
-        this.wrapCommand(this.createSimplePullRequest)),
-      vscode.commands.registerCommand('vscode-github.createPullRequest', this.wrapCommand(this.createPullRequest)),
-      vscode.commands.registerCommand('vscode-github.checkoutPullRequests',
-        this.wrapCommand(this.checkoutPullRequests)),
-      vscode.commands.registerCommand('vscode-github.browserSimplePullRequest',
-        this.wrapCommand(this.browseSimplePullRequest)),
-      vscode.commands.registerCommand('vscode-github.browserPullRequest', this.wrapCommand(this.browsePullRequest)),
-      vscode.commands.registerCommand('vscode-github.mergePullRequest', this.wrapCommand(this.mergePullRequest)),
-      vscode.commands.registerCommand('vscode-github.addAssignee', this.wrapCommand(this.addAssignee)),
-      vscode.commands.registerCommand('vscode-github.removeAssignee', this.wrapCommand(this.removeAssignee)),
-      vscode.commands.registerCommand('vscode-github.requestReview', this.wrapCommand(this.requestReview)),
-      vscode.commands.registerCommand('vscode-github.deleteReviewRequest', this.wrapCommand(this.deleteReviewRequest)),
-      vscode.commands.registerCommand('vscode-github.browseOpenIssue', this.wrapCommand(this.browseOpenIssue)),
-      vscode.commands.registerCommand('vscode-github.browseCurrentFile', this.wrapCommand(this.browseCurrentFile))
-    );
   }
 
   private migrateToken(context: vscode.ExtensionContext): void {
@@ -113,7 +119,12 @@ class Extension {
   }
 
   private logAndShowError(e: Error): void {
-    this.channel.appendLine(e.message);
+    if (this.channel) {
+      this.channel.appendLine(e.message);
+      if (e.stack) {
+        e.stack.split('\n').forEach(line => this.channel.appendLine(line));
+      }
+    }
     if (e instanceof GitHubError) {
       console.error(e.response);
       vscode.window.showErrorMessage('GitHub error: ' + e.message);

@@ -22,7 +22,7 @@
     "pull request"
   ],
   "activationEvents": [
-    "*"
+    "workspaceContains:.git"
   ],
   "main": "./out/src/extension",
   "contributes": {
