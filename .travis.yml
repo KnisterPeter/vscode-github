@@ -1,7 +1,11 @@
 sudo: false
 language: node_js
 node_js:
+- 'stable'
 - '6'
+os:
+  - osx
+  - linux
 matrix:
   fast_finish: true
 branches:
@@ -14,6 +18,8 @@ cache:
 notifications:
   email:
     on_success: never
+env:
+  - CODE_TESTS_WORKSPACE=/tmp/test-workspace
 
 before_install:
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
@@ -21,6 +27,7 @@ before_install:
       sh -e /etc/init.d/xvfb start;
       sleep 3;
     fi
+  - mkdir /tmp/test-workspace && cd /tmp/test-workspace && git init && cd -
 install:
   - npm install
   - npm run vscode:prepublish
