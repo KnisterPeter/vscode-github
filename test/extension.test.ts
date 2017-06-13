@@ -7,11 +7,14 @@ import * as vscode from 'vscode';
 import * as git from '../src/git';
 
 suite('vscode-github extension tests', () => {
-  test('Extension should be active after startup', () => {
-    const extension = vscode.extensions.getExtension('KnisterPeter.vscode-github');
-    assert.ok(extension);
-    assert.equal(extension!.isActive, true);
-  });
+  test('Extension should be active after startup', done => {
+    setTimeout(() => {
+      const extension = vscode.extensions.getExtension('KnisterPeter.vscode-github');
+      assert.ok(extension);
+      assert.equal(extension!.isActive, true);
+      done();
+    }, 1000 * 3);
+  }).timeout(1000 * 10);
 
   test('should register commands', done => {
     vscode.commands.getCommands(true)
