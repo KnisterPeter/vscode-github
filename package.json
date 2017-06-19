@@ -148,7 +148,7 @@
     "@knisterpeter/standard-tslint": "^1.5.0",
     "@types/lru-cache": "^4.0.0",
     "@types/mocha": "^2.2.40",
-    "@types/node": "^7.0.8",
+    "@types/node": "^8.0.0",
     "conventional-changelog-lint": "^1.1.2",
     "cz-customizable": "5.0.0",
     "husky": "^0.13.2",
