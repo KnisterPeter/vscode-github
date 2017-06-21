@@ -22,7 +22,9 @@
     "pull request"
   ],
   "activationEvents": [
-    "workspaceContains:.git"
+    "workspaceContains:.git",
+    "onCommand:vscode-github.setGitHubToken",
+    "onCommand:vscode-github.setGitHubEnterpriseToken"
   ],
   "main": "./out/src/extension",
   "contributes": {
