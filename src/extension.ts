@@ -215,33 +215,38 @@ class Extension {
       let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
       const repository = await this.githubManager.getRepository();
       let pullRequest: PullRequest | undefined;
+      const items = [{
+        label: repository.full_name,
+        description: '',
+        repo: repository as {default_branch: string}
+      }];
       if (repository.parent) {
-        let branch: string;
-        const items = [{
-          label: repository.full_name,
-          description: '',
-          branch: repository.default_branch
-        }, {
+        items.push({
           label: repository.parent.full_name,
           description: '',
-          branch: repository.parent.default_branch
-        }];
-        const selectedRepository = await vscode.window.showQuickPick(items,
-          { placeHolder: 'Select a repository to create the pull request in' });
-        if (!selectedRepository) {
-          return;
-        }
-        [owner, repo] = selectedRepository.label.split('/');
-        branch = selectedRepository.branch;
-        progress.report(`Create pull request`);
-        pullRequest = await this.githubManager.createPullRequest({
-          owner,
-          repository: repo,
-          branch
+          repo: repository.parent as {default_branch: string}
         });
-      } else {
-        pullRequest = await this.githubManager.createPullRequest();
       }
+      const selectedRepository = await vscode.window.showQuickPick(items,
+        { placeHolder: 'Select a repository to create the pull request in' });
+      if (!selectedRepository) {
+        return;
+      }
+      [owner, repo] = selectedRepository.label.split('/');
+      const branch = await vscode.window.showInputBox({
+        ignoreFocusOut: true,
+        prompt: 'Select a branch to create the pull request for',
+        value: selectedRepository.repo.default_branch
+      });
+      if (!branch) {
+        return;
+      }
+      progress.report(`Create pull request`);
+      pullRequest = await this.githubManager.createPullRequest({
+        owner,
+        repository: repo,
+        branch
+      });
       if (pullRequest) {
         this.statusBarManager.updateStatus();
         this.showPullRequestNotification(pullRequest);
