@@ -64,8 +64,8 @@ export class StatusBarManager {
       this.statusBar.show();
       this.statusBar.color = colors.none;
       this.statusBar.text = `${githubPullRequestIcon}`;
-      this.statusBar.tooltip = '';
-      this.statusBar.command = '';
+      this.statusBar.tooltip = 'Not on a pull request branch. Click to checkout pull request';
+      this.statusBar.command = 'vscode-github.checkoutPullRequests';
     }
   }
 
