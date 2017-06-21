@@ -19,6 +19,7 @@ Current it is possible to do the following:
 * Create a new pull request based on the current branch and the last commit
   The current branch will be requested to merge into master and the pull request title is the commit message summary, or a custom message if configured that way.
 * Create a pull request in forked repositories
+* Allow to select a branch to create a pull request for
 * Merge current pull request with either of 'merge', 'squash' or 'rebase' method.
 * Configure default branch, merge method and refresh interval.
 * Allow to manage assignees for pull requests
