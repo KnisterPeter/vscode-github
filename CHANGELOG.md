@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.17.0"></a>
+# [0.17.0](https://github.com/KnisterPeter/vscode-github/compare/v0.16.2...v0.17.0) (2017-06-21)
+
+
+### Bug Fixes
+
+* activate extension by setup commands ([9eeeaa5](https://github.com/KnisterPeter/vscode-github/commit/9eeeaa5)), closes [#126](https://github.com/KnisterPeter/vscode-github/issues/126)
+
+
+### Features
+
+* add action to status bar ([043e504](https://github.com/KnisterPeter/vscode-github/commit/043e504)), closes [#104](https://github.com/KnisterPeter/vscode-github/issues/104)
+* allow to select branch for pull request ([a7b720f](https://github.com/KnisterPeter/vscode-github/commit/a7b720f)), closes [#125](https://github.com/KnisterPeter/vscode-github/issues/125)
+* extend github api ([094feaa](https://github.com/KnisterPeter/vscode-github/commit/094feaa))
+* fetching comments of a pull request ([58efb4b](https://github.com/KnisterPeter/vscode-github/commit/58efb4b))
+
+
+
 <a name="0.16.2"></a>
 ## [0.16.2](https://github.com/KnisterPeter/vscode-github/compare/v0.16.1...v0.16.2) (2017-06-12)
 

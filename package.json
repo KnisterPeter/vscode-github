@@ -7,7 +7,7 @@
     "color": "#dddddd",
     "theme": "light"
   },
-  "version": "0.16.2",
+  "version": "0.17.0",
   "publisher": "KnisterPeter",
   "engines": {
     "vscode": "^1.12.0"
