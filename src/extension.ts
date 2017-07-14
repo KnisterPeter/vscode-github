@@ -192,11 +192,11 @@ class Extension {
 
   private async createSimplePullRequest(): Promise<void> {
     await this.withinProgressUI(async progress => {
-      progress.report(`Check preconditions`);
+      progress.report({message: `Check preconditions`});
       if (!this.requireRemoteTrackingBranch()) {
         return;
       }
-      progress.report(`Create pull requets`);
+      progress.report({message: `Create pull requets`});
       const pullRequest = await this.githubManager.createPullRequest();
       if (pullRequest) {
         this.statusBarManager.updateStatus();
@@ -207,11 +207,11 @@ class Extension {
 
   private async createPullRequest(): Promise<void> {
     await this.withinProgressUI(async progress => {
-      progress.report(`Check preconditions`);
+      progress.report({message: `Check preconditions`});
       if (!this.requireRemoteTrackingBranch()) {
         return;
       }
-      progress.report(`Gather data`);
+      progress.report({message: `Gather data`});
       let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
       const repository = await this.githubManager.getRepository();
       let pullRequest: PullRequest | undefined;
@@ -241,7 +241,7 @@ class Extension {
       if (!branch) {
         return;
       }
-      progress.report(`Create pull request`);
+      progress.report({message: `Create pull request`});
       pullRequest = await this.githubManager.createPullRequest({
         owner,
         repository: repo,
@@ -342,12 +342,12 @@ class Extension {
 
   private async mergePullRequest(): Promise<void> {
     await this.withinProgressUI(async progress => {
-      progress.report(`Check preconditions`);
+      progress.report({message: `Check preconditions`});
       const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
       if (pullRequest && pullRequest.mergeable) {
         const method = await this.getMergeMethdod();
         if (method) {
-          progress.report(`Merge pull request`);
+          progress.report({message: `Merge pull request`});
           if (await this.githubManager.mergePullRequest(pullRequest, method)) {
             this.statusBarManager.updateStatus();
             vscode.window.showInformationMessage(`Successfully merged`);
