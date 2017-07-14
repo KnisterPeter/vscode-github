@@ -10,7 +10,7 @@
   "version": "0.17.0",
   "publisher": "KnisterPeter",
   "engines": {
-    "vscode": "^1.12.0"
+    "vscode": "^1.14.0"
   },
   "categories": [
     "Other"
@@ -136,7 +136,8 @@
   },
   "scripts": {
     "linter": "tslint --project ./tsconfig.json --type-check",
-    "test": "node ./node_modules/vscode/bin/test",
+    "pretest": "rm -rf /tmp/test-workspace && mkdir /tmp/test-workspace && cd /tmp/test-workspace && git init && cd -",
+    "test": "CODE_TESTS_WORKSPACE=/tmp/test-workspace node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -156,11 +157,12 @@
     "husky": "^0.14.1",
     "mocha": "^3.2.0",
     "standard-version": "4.2.0",
-    "tslint": "^5.2.0",
+    "tslint": "5.5.0",
     "typescript": "^2.3.2",
-    "vscode": "^1.1.0"
+    "vscode": "1.1.4"
   },
   "dependencies": {
+    "conventional-changelog-lint-config-angular": "1.0.0",
     "execa": "^0.7.0",
     "lru-cache": "^4.0.2",
     "pretend": "^0.6.0",
