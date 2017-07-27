@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.17.2"></a>
+## [0.17.2](https://github.com/KnisterPeter/vscode-github/compare/v0.17.1...v0.17.2) (2017-07-27)
+
+
+### Bug Fixes
+
+* eager activation of extension commands ([638bb75](https://github.com/KnisterPeter/vscode-github/commit/638bb75)), closes [#136](https://github.com/KnisterPeter/vscode-github/issues/136)
+
+
+
 <a name="0.17.1"></a>
 ## [0.17.1](https://github.com/KnisterPeter/vscode-github/compare/v0.17.0...v0.17.1) (2017-07-14)
 
