@@ -1,5 +1,7 @@
 # vscode-github README
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/KnisterPeter/vscode-github.svg)](https://greenkeeper.io/)
+
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 [![Installs](https://vsmarketplacebadge.apphb.com/installs/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 [![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://travis-ci.org/KnisterPeter/vscode-github)
