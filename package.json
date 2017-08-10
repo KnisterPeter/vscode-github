@@ -38,6 +38,10 @@
           "default": 5,
           "description": "Interval in seconds to refresh the current pull request status."
         },
+        "github.remoteName": {
+          "type": "string",
+          "description": "Defines the name of the git remote. Defaults to 'origin'."
+        },
         "github.upstream": {
           "type": "string",
           "description": "By default the extension get the repository and user from .git/config. For forks where upstream is a different repository this could be configured here (e.g. microsoft/typescript)."

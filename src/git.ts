@@ -4,6 +4,10 @@ import { readFile, unlink } from 'sander';
 import { parse } from 'url';
 import * as vscode from 'vscode';
 
+function getRemoteName(): string {
+  return vscode.workspace.getConfiguration('github').get('remoteName', 'origin');
+}
+
 /**
  * Check config for a default upstream and if none found look in .git/config for a remote origin and
  * parses it to get username and repository.
@@ -25,7 +29,8 @@ export async function getGitHubHostname(cwd: string): Promise<string> {
 }
 
 async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<string[]> {
-  const remote = (await execa('git', 'config --local --get remote.origin.url'.split(' '), {cwd})).stdout.trim();
+  const remote = (await execa('git',
+    `config --local --get remote.${getRemoteName()}.url`.split(' '), {cwd})).stdout.trim();
   if (!remote.length) {
     throw new Error('Git remote is empty!');
   }
@@ -72,8 +77,9 @@ export async function getCommitMessage(sha: string, cwd: string): Promise<string
 }
 
 export async function getFirstCommitOnBranch(branch: string, cwd: string): Promise<string> {
+  const remoteName = getRemoteName();
   return (await execa('git', ['log', '--reverse', '--right-only', '--format=%h',
-    `origin/master..origin/${branch}`], {cwd})).stdout.trim().split('\n')[0];
+    `${remoteName}/master..${remoteName}/${branch}`], {cwd})).stdout.trim().split('\n')[0];
 }
 
 export async function getCommitBody(sha: string, cwd: string): Promise<string> {
