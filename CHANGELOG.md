@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.18.0"></a>
+# [0.18.0](https://github.com/KnisterPeter/vscode-github/compare/v0.17.2...v0.18.0) (2017-08-10)
+
+
+### Bug Fixes
+
+* **package:** update execa to version 0.8.0 ([6f59339](https://github.com/KnisterPeter/vscode-github/commit/6f59339))
+* do not error in empty workspaces ([5b1769c](https://github.com/KnisterPeter/vscode-github/commit/5b1769c)), closes [#142](https://github.com/KnisterPeter/vscode-github/issues/142)
+
+
+### Features
+
+* allow to configure remote name ([04006da](https://github.com/KnisterPeter/vscode-github/commit/04006da)), closes [#145](https://github.com/KnisterPeter/vscode-github/issues/145)
+
+
+
 <a name="0.17.2"></a>
 ## [0.17.2](https://github.com/KnisterPeter/vscode-github/compare/v0.17.1...v0.17.2) (2017-07-27)
 
