@@ -29,13 +29,7 @@ class Extension {
       context.subscriptions.push(this.channel);
       this.channel.appendLine('Visual Studio Code GitHub Extension');
 
-      this.githubManager = new GitHubManager(this.cwd, this.channel);
-      this.statusBarManager = new StatusBarManager(context, this.cwd, this.githubManager, this.channel);
-
       const tokens = context.globalState.get<Tokens>('tokens');
-      if (tokens) {
-        this.githubManager.connect(tokens);
-      }
       this.checkVersionAndToken(context, tokens);
 
       context.subscriptions.push(
@@ -60,6 +54,15 @@ class Extension {
         vscode.commands.registerCommand('vscode-github.browseOpenIssue', this.wrapCommand(this.browseOpenIssue)),
         vscode.commands.registerCommand('vscode-github.browseCurrentFile', this.wrapCommand(this.browseCurrentFile))
       );
+
+      if (!vscode.workspace.rootPath) {
+        return;
+      }
+      this.githubManager = new GitHubManager(this.cwd, this.channel);
+      this.statusBarManager = new StatusBarManager(context, this.cwd, this.githubManager, this.channel);
+      if (tokens) {
+        this.githubManager.connect(tokens);
+      }
     } catch (e) {
       this.logAndShowError(e);
       throw e;
@@ -104,7 +107,7 @@ class Extension {
 
   private wrapCommand<T>(command: T): T {
     const wrap: any = (...args: any[]) => {
-      if (this.githubManager.connected && this.cwd) {
+      if (this.githubManager && this.githubManager.connected && this.cwd) {
         try {
           return (command as any).apply(this, args);
         } catch (e) {
