@@ -7,7 +7,7 @@
     "color": "#dddddd",
     "theme": "light"
   },
-  "version": "0.18.0",
+  "version": "0.18.1",
   "publisher": "KnisterPeter",
   "engines": {
     "vscode": "^1.14.0"
@@ -41,7 +41,7 @@
         "github.remoteName": {
           "type": "string",
           "description": "Defines the name of the git remote. Defaults to 'origin'.",
-         "default": "origin"
+          "default": "origin"
         },
         "github.upstream": {
           "type": "string",
