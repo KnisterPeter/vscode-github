@@ -40,7 +40,8 @@
         },
         "github.remoteName": {
           "type": "string",
-          "description": "Defines the name of the git remote. Defaults to 'origin'."
+          "description": "Defines the name of the git remote. Defaults to 'origin'.",
+         "default": "origin"
         },
         "github.upstream": {
           "type": "string",
