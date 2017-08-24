@@ -23,9 +23,9 @@ export class StatusBarManager {
 
   private channel: vscode.OutputChannel;
 
-  constructor(context: vscode.ExtensionContext, cwd: string, githubManager: GitHubManager,
+  constructor(context: vscode.ExtensionContext, folder: vscode.WorkspaceFolder, githubManager: GitHubManager,
       channel: vscode.OutputChannel) {
-    this.cwd = cwd;
+    this.cwd = folder.uri.fsPath;
     this.githubManager = githubManager;
     this.channel = channel;
 
