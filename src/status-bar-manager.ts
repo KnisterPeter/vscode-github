@@ -1,3 +1,4 @@
+import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
@@ -13,27 +14,34 @@ const colors = {
 
 const githubPullRequestIcon = '$(git-pull-request)';
 
+@component
 export class StatusBarManager {
 
-  private cwd: string;
+  @inject('vscode.ExtensionContext')
+  private context: vscode.ExtensionContext;
+
+  @inject('vscode.WorkspaceFolder')
+  private folder: vscode.WorkspaceFolder;
 
   private statusBar: vscode.StatusBarItem;
 
+  @inject
   private githubManager: GitHubManager;
 
+  @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
-  constructor(context: vscode.ExtensionContext, folder: vscode.WorkspaceFolder, githubManager: GitHubManager,
-      channel: vscode.OutputChannel) {
-    this.cwd = folder.uri.fsPath;
-    this.githubManager = githubManager;
-    this.channel = channel;
+  private get cwd(): string {
+    return this.folder.uri.fsPath;
+  }
 
+  @initialize
+  protected init(): void {
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.statusBar.command = '';
     this.statusBar.text = `${githubPullRequestIcon} ...`;
     this.statusBar.color = colors.none;
-    context.subscriptions.push(this.statusBar);
+    this.context.subscriptions.push(this.statusBar);
 
     this.refreshStatus();
   }

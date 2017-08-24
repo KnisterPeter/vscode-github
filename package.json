@@ -24,7 +24,7 @@
   "activationEvents": [
     "*"
   ],
-  "main": "./out/src/extension",
+  "main": "./out/src/main",
   "contributes": {
     "configuration": {
       "title": "GitHub configuration",
@@ -169,7 +169,8 @@
     "execa": "^0.8.0",
     "lru-cache": "^4.0.2",
     "pretend": "^0.6.0",
-    "sander": "^0.6.0"
+    "sander": "^0.6.0",
+    "tsdi": "0.11.1"
   },
   "repository": {
     "type": "git",
