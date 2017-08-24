@@ -1,3 +1,4 @@
+import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
@@ -8,17 +9,19 @@ export interface Tokens {
   [host: string]: string;
 }
 
+@component
 export class GitHubManager {
 
-  private cwd: string;
+  @inject('vscode.WorkspaceFolder')
+  private folder: vscode.WorkspaceFolder;
 
+  @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
   private github: GitHub;
 
-  constructor(folder: vscode.WorkspaceFolder, channel: vscode.OutputChannel) {
-    this.cwd = folder.uri.fsPath;
-    this.channel = channel;
+  private get cwd(): string {
+    return this.folder.uri.fsPath;
   }
 
   private log(message: string): void {
