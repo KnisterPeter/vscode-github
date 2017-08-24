@@ -10,7 +10,7 @@
   "version": "0.18.1",
   "publisher": "KnisterPeter",
   "engines": {
-    "vscode": "^1.14.0"
+    "vscode": "^1.15.0"
   },
   "categories": [
     "Other"

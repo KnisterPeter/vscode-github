@@ -16,8 +16,8 @@ export class GitHubManager {
 
   private github: GitHub;
 
-  constructor(cwd: string, channel: vscode.OutputChannel) {
-    this.cwd = cwd;
+  constructor(folder: vscode.WorkspaceFolder, channel: vscode.OutputChannel) {
+    this.cwd = folder.uri.fsPath;
     this.channel = channel;
   }
 

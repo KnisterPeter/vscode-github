@@ -55,7 +55,7 @@ class Extension {
         vscode.commands.registerCommand('vscode-github.browseCurrentFile', this.wrapCommand(this.browseCurrentFile))
       );
 
-      if (!vscode.workspace.rootPath) {
+      if (!vscode.workspace.workspaceFolders) {
         return;
       }
       this.githubManager = new GitHubManager(this.cwd, this.channel);
@@ -87,11 +87,11 @@ class Extension {
     return vscode.window.withProgress(options, task);
   }
 
-  get cwd(): string {
-    if (!vscode.workspace.rootPath) {
+  get cwd(): vscode.WorkspaceFolder {
+    if (!vscode.workspace.workspaceFolders) {
       throw new Error('No workspace available');
     }
-    return vscode.workspace.rootPath;
+    return vscode.workspace.workspaceFolders[0];
   }
 
   private async checkVersionAndToken(context: vscode.ExtensionContext, tokens: Tokens | undefined): Promise<void> {
@@ -177,11 +177,11 @@ class Extension {
   }
 
   private async hasRemoteTrackingBranch(): Promise<boolean> {
-    const localBranch = await git.getCurrentBranch(this.cwd);
+    const localBranch = await git.getCurrentBranch(this.cwd.uri.fsPath);
     if (!localBranch) {
       return false;
     }
-    return Boolean(await git.getRemoteTrackingBranch(this.cwd, localBranch));
+    return Boolean(await git.getRemoteTrackingBranch(this.cwd.uri.fsPath, localBranch));
   }
 
   private async requireRemoteTrackingBranch(): Promise<boolean> {
@@ -215,7 +215,7 @@ class Extension {
         return;
       }
       progress.report({message: `Gather data`});
-      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+      let [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd.uri.fsPath);
       const repository = await this.githubManager.getRepository();
       let pullRequest: PullRequest | undefined;
       const items = [{
@@ -446,8 +446,8 @@ class Extension {
   private async browseCurrentFile(): Promise<void> {
     await this.withinProgressUI(async() => {
       const editor = vscode.window.activeTextEditor;
-      if (vscode.workspace.rootPath && editor) {
-        const file = editor.document.fileName.substring(vscode.workspace.rootPath.length);
+      if (vscode.workspace.workspaceFolders && editor) {
+        const file = editor.document.fileName.substring(vscode.workspace.workspaceFolders[0].uri.fsPath.length);
         const line = editor.selection.active.line;
         const uri = vscode.Uri.parse(await this.githubManager.getGithubFileUrl(file, line));
         vscode.commands.executeCommand('vscode.open', uri);
