@@ -47,8 +47,10 @@ abstract class PullRequestCommand extends TokenCommand {
 
 }
 
-@component
+@component({eager: true})
 export class BrowsePullRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.browserPullRequest';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -60,8 +62,10 @@ export class BrowsePullRequest extends PullRequestCommand {
 
 }
 
-@component
+@component({eager: true})
 export class BrowseSimpleRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.browserSimplePullRequest';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -75,8 +79,10 @@ export class BrowseSimpleRequest extends PullRequestCommand {
 
 }
 
-@component
+@component({eager: true})
 export class CheckoutPullRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.checkoutPullRequests';
 
   @inject
   private statusBarManager: StatusBarManager;
@@ -92,8 +98,10 @@ export class CheckoutPullRequest extends PullRequestCommand {
 
 }
 
-@component
+@component({eager: true})
 export class CreateSimplePullRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.createSimplePullRequest';
 
   @inject
   private statusBarManager: StatusBarManager;
@@ -114,8 +122,10 @@ export class CreateSimplePullRequest extends PullRequestCommand {
 
 }
 
-@component
+@component({eager: true})
 export class CreatePullRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.createPullRequest';
 
   @inject
   private statusBarManager: StatusBarManager;
@@ -170,8 +180,10 @@ export class CreatePullRequest extends PullRequestCommand {
 
 }
 
-@component
+@component({eager: true})
 export class MergePullRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.mergePullRequest';
 
   @inject
   private statusBarManager: StatusBarManager;
