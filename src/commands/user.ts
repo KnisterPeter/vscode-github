@@ -13,8 +13,10 @@ abstract class UserCommand extends TokenCommand {
   }
 }
 
-@component
+@component({eager: true})
 export class AddAssignee extends UserCommand {
+
+  public id = 'vscode-github.addAssignee';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -32,8 +34,10 @@ export class AddAssignee extends UserCommand {
 
 }
 
-@component
+@component({eager: true})
 export class RemoveAssignee extends UserCommand {
+
+  public id = 'vscode-github.removeAssignee';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -51,8 +55,10 @@ export class RemoveAssignee extends UserCommand {
 
 }
 
-@component
+@component({eager: true})
 export class RequestReview extends UserCommand {
+
+  public id = 'vscode-github.requestReview';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -70,8 +76,10 @@ export class RequestReview extends UserCommand {
 
 }
 
-@component
+@component({eager: true})
 export class DeleteReviewRequest extends UserCommand {
+
+  public id = 'vscode-github.deleteReviewRequest';
 
   @showProgress
   protected async runWithToken(): Promise<void> {

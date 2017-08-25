@@ -5,6 +5,7 @@ import { GitHubError } from './github';
 import { GitHubManager } from './github-manager';
 
 export abstract class Command {
+  public abstract get id(): string;
   public abstract run(progress?: vscode.Progress<{ message?: string }>): void;
 }
 

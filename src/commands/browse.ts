@@ -4,8 +4,10 @@ import * as vscode from 'vscode';
 import { TokenCommand } from '../command';
 import { showProgress } from '../helper';
 
-@component
+@component({eager: true})
 export class BrowseProject extends TokenCommand {
+
+  public id = 'vscode-github.browseProject';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -15,8 +17,10 @@ export class BrowseProject extends TokenCommand {
 
 }
 
-@component
+@component({eager: true})
 export class BrowseOpenIssues extends TokenCommand {
+
+  public id = 'vscode-github.browseOpenIssue';
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -37,8 +41,10 @@ export class BrowseOpenIssues extends TokenCommand {
 
 }
 
-@component
+@component({eager: true})
 export class BrowseCurrentFile extends TokenCommand {
+
+  public id = 'vscode-github.browseCurrentFile';
 
   @showProgress
   protected async runWithToken(): Promise<void> {

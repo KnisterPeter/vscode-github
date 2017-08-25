@@ -1,6 +1,7 @@
 import { TSDI, factory } from 'tsdi';
 import * as vscode from 'vscode';
 
+import { CommandManager } from './command-manager';
 import { Extension } from './extension';
 
 let tsdi: TSDI;
@@ -28,6 +29,9 @@ export function activate(context: vscode.ExtensionContext): void {
   tsdi = new TSDI();
   tsdi.enableComponentScanner();
   tsdi.register(ComponentFactory);
+  // note: trigger CommandManager creating for now
+  // this could be removed when tsdi is able to defer eager creation
+  tsdi.get(CommandManager);
   context.subscriptions.push(tsdi.get(Extension));
 }
 

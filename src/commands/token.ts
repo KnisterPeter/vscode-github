@@ -4,8 +4,10 @@ import * as vscode from 'vscode';
 import { Command } from '../command';
 import { GitHubManager, Tokens } from '../github-manager';
 
-@component
+@component({eager: true})
 export class SetGithubToken extends Command {
+
+  public id = 'vscode-github.setGitHubToken';
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
@@ -30,8 +32,10 @@ export class SetGithubToken extends Command {
 
 }
 
-@component
+@component({eager: true})
 export class SetGithubEnterpriseToken extends Command {
+
+  public id = 'vscode-github.setGitHubEnterpriseToken';
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;

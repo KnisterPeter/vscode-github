@@ -1,21 +1,14 @@
-import { TSDI, component, inject, initialize } from 'tsdi';
+import { TSDI, LifecycleListener, component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { Command } from './command';
-import { BrowseProject, BrowseOpenIssues, BrowseCurrentFile } from './commands/browse';
-import {
-  BrowsePullRequest,
-  BrowseSimpleRequest,
-  CheckoutPullRequest,
-  CreateSimplePullRequest,
-  CreatePullRequest,
-  MergePullRequest
-} from './commands/pull-requests';
-import { SetGithubToken, SetGithubEnterpriseToken } from './commands/token';
-import { AddAssignee, RemoveAssignee, RequestReview, DeleteReviewRequest } from './commands/user';
+import './commands/browse';
+import './commands/pull-requests';
+import './commands/token';
+import './commands/user';
 
 @component
-export class CommandManager {
+export class CommandManager implements LifecycleListener {
 
   @inject
   private tsdi: TSDI;
@@ -25,25 +18,15 @@ export class CommandManager {
 
   @initialize
   protected init(): void {
-    this.register('vscode-github.setGitHubToken', this.tsdi.get(SetGithubToken));
-    this.register('vscode-github.setGitHubEnterpriseToken', this.tsdi.get(SetGithubEnterpriseToken));
-    this.register('vscode-github.browseProject', this.tsdi.get(BrowseProject));
-    this.register('vscode-github.browseOpenIssue', this.tsdi.get(BrowseOpenIssues));
-    this.register('vscode-github.browseCurrentFile', this.tsdi.get(BrowseCurrentFile));
-    this.register('vscode-github.browserPullRequest', this.tsdi.get(BrowsePullRequest));
-    this.register('vscode-github.checkoutPullRequests', this.tsdi.get(CheckoutPullRequest));
-    this.register('vscode-github.browserSimplePullRequest', this.tsdi.get(BrowseSimpleRequest));
-    this.register('vscode-github.createSimplePullRequest', this.tsdi.get(CreateSimplePullRequest));
-    this.register('vscode-github.createPullRequest', this.tsdi.get(CreatePullRequest));
-    this.register('vscode-github.mergePullRequest', this.tsdi.get(MergePullRequest));
-    this.register('vscode-github.addAssignee', this.tsdi.get(AddAssignee));
-    this.register('vscode-github.removeAssignee', this.tsdi.get(RemoveAssignee));
-    this.register('vscode-github.requestReview', this.tsdi.get(RequestReview));
-    this.register('vscode-github.deleteReviewRequest', this.tsdi.get(DeleteReviewRequest));
+    this.tsdi.addLifecycleListener(this);
   }
 
-  private register(id: string, command: Command): void {
-    this.context.subscriptions.push(vscode.commands.registerCommand(id, () => command.run()));
+  public onCreate(component: any): void {
+    if (component instanceof Command) {
+      this.context.subscriptions.push(
+        vscode.commands.registerCommand(component.id, () => component.run())
+      );
+    }
   }
 
 }
