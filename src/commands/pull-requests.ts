@@ -16,7 +16,9 @@ abstract class PullRequestCommand extends TokenCommand {
       description: `#${pullRequest.number}`,
       pullRequest
     }));
-    const selected = await vscode.window.showQuickPick(items);
+    const selected = await vscode.window.showQuickPick(items, {
+      matchOnDescription: true
+    });
     return selected ? selected.pullRequest : undefined;
   }
 
