@@ -4,6 +4,7 @@ import { TSDI, component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { CommandManager } from './command-manager';
+import { checkExistence } from './git';
 import { GitHubError } from './github';
 import { GitHubManager, Tokens } from './github-manager';
 
@@ -23,7 +24,7 @@ export class Extension {
   private githubManager: GitHubManager;
 
   @initialize
-  protected init(): void {
+  protected async init(): Promise<void> {
     try {
       this.migrateToken(this.context);
       this.channel.appendLine('Visual Studio Code GitHub Extension');
@@ -35,6 +36,7 @@ export class Extension {
       if (!vscode.workspace.workspaceFolders) {
         return;
       }
+      await checkExistence(vscode.workspace.workspaceFolders[0].uri.fsPath);
       if (tokens) {
         this.githubManager.connect(tokens);
       }

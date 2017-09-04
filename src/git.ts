@@ -4,6 +4,15 @@ import { readFile, unlink } from 'sander';
 import { parse } from 'url';
 import * as vscode from 'vscode';
 
+export async function checkExistence(cwd: string): Promise<boolean> {
+  try {
+    await execa('git', ['--version'], {cwd});
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function getRemoteName(): string {
   return vscode.workspace.getConfiguration('github').get('remoteName', 'origin');
 }
