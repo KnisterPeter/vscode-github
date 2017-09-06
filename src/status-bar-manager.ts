@@ -17,6 +17,10 @@ const githubPullRequestIcon = '$(git-pull-request)';
 @component
 export class StatusBarManager {
 
+  private customStatusBarCommand: string | null;
+
+  private refreshInterval: number;
+
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
 
@@ -37,8 +41,12 @@ export class StatusBarManager {
 
   @initialize
   protected init(): void {
+    const config = vscode.workspace.getConfiguration('github');
+    this.customStatusBarCommand = config.get('statusBarCommand', null);
+    this.refreshInterval = config.get('refreshPullRequestStatus', 5) * 1000;
+
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-    this.statusBar.command = '';
+    this.statusBar.command = this.customStatusBarCommand || '';
     this.statusBar.text = `${githubPullRequestIcon} ...`;
     this.statusBar.color = colors.none;
     this.context.subscriptions.push(this.statusBar);
@@ -60,8 +68,7 @@ export class StatusBarManager {
         throw e;
       }
     }
-    setTimeout(() => { this.refreshStatus(); },
-      vscode.workspace.getConfiguration('github').get<number>('refreshPullRequestStatus', 5) * 1000);
+    setTimeout(() => { this.refreshStatus(); }, this.refreshInterval);
   }
 
   public async updateStatus(): Promise<void> {
@@ -72,8 +79,10 @@ export class StatusBarManager {
       this.statusBar.show();
       this.statusBar.color = colors.none;
       this.statusBar.text = `${githubPullRequestIcon}`;
-      this.statusBar.tooltip = 'Not on a pull request branch. Click to checkout pull request';
-      this.statusBar.command = 'vscode-github.checkoutPullRequests';
+      if (!this.customStatusBarCommand) {
+        this.statusBar.tooltip = 'Not on a pull request branch. Click to checkout pull request';
+        this.statusBar.command = 'vscode-github.checkoutPullRequests';
+      }
     }
   }
 
@@ -82,16 +91,9 @@ export class StatusBarManager {
       const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
       this.statusBar.show();
       if (pullRequest) {
-        const status = await this.calculateMergableStatus(pullRequest);
-        this.statusBar.color = colors[status];
-        this.statusBar.text = `${githubPullRequestIcon} #${pullRequest.number} ${status}`;
-        this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
-        this.statusBar.command = status === 'success' ? 'vscode-github.mergePullRequest' : '';
+        await this.showPullRequestStauts(pullRequest);
       } else {
-        this.statusBar.color = colors.none;
-        this.statusBar.text = `${githubPullRequestIcon} Create PR`;
-        this.statusBar.tooltip = 'Create pull-request for current branch';
-        this.statusBar.command = 'vscode-github.createPullRequest';
+        this.showCreatePullRequestStatus();
       }
     } catch (e) {
       if (e instanceof GitHubError) {
@@ -102,6 +104,25 @@ export class StatusBarManager {
       throw e;
     }
   }
+
+  private async showPullRequestStauts(pullRequest: PullRequest): Promise<void> {
+    const status = await this.calculateMergableStatus(pullRequest);
+    this.statusBar.color = colors[status];
+    this.statusBar.text = `${githubPullRequestIcon} #${pullRequest.number} ${status}`;
+    if (!this.customStatusBarCommand) {
+      this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
+      this.statusBar.command = status === 'success' ? 'vscode-github.mergePullRequest' : '';
+    }
+  }
+
+  private showCreatePullRequestStatus(): void {
+    this.statusBar.color = colors.none;
+    this.statusBar.text = `${githubPullRequestIcon} Create PR`;
+    if (!this.customStatusBarCommand) {
+      this.statusBar.tooltip = 'Create pull-request for current branch';
+      this.statusBar.command = 'vscode-github.createPullRequest';
+    }
+}
 
   private async calculateMergableStatus(pullRequest: PullRequest): Promise<PullRequestStatus> {
     let status: PullRequestStatus = 'pending';
