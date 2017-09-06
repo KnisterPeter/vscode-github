@@ -16,6 +16,7 @@ export class SetGithubToken extends Command {
   private githubManager: GitHubManager;
 
   public async run(): Promise<void> {
+    this.track('execute');
     const options = {
       ignoreFocusOut: true,
       password: true,
@@ -44,6 +45,7 @@ export class SetGithubEnterpriseToken extends Command {
   private githubManager: GitHubManager;
 
   public async run(): Promise<void> {
+    this.track('execute');
     const hostInput = await vscode.window.showInputBox({
       ignoreFocusOut: true,
       placeHolder: 'GitHub Enterprise Hostname'
