@@ -1,5 +1,6 @@
 import { TSDI, factory } from 'tsdi';
 import * as vscode from 'vscode';
+import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { CommandManager } from './command-manager';
 import { Extension } from './extension';
@@ -24,6 +25,15 @@ export function activate(context: vscode.ExtensionContext): void {
       const channel = vscode.window.createOutputChannel('GitHub');
       context.subscriptions.push(channel);
       return channel;
+    }
+    @factory
+    public telemetryReporter(): TelemetryReporter {
+      const extensionId = 'KnisterPeter.vscode-github';
+      const extensionVersion = vscode.extensions.getExtension('KnisterPeter.vscode-github')!.packageJSON.version;
+      const key = '67a6da7f-d420-47bd-97d0-d1fd4b76ac55';
+      const reporter = new TelemetryReporter(extensionId, extensionVersion, key);
+      context.subscriptions.push(reporter);
+      return reporter;
     }
   }
   tsdi = new TSDI();
