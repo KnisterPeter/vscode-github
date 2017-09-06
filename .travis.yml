@@ -3,7 +3,7 @@ language: node_js
 node_js:
 - '7'
 os:
-  - osx
+  # - osx # this is too slow right now
   - linux
 matrix:
   fast_finish: true

@@ -2,6 +2,7 @@ import { join } from 'path';
 import * as sander from 'sander';
 import { TSDI, component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
+import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { CommandManager } from './command-manager';
 import { checkExistence } from './git';
@@ -15,6 +16,9 @@ export class Extension {
   @inject
   private tsdi: TSDI;
 
+  @inject
+  private reporter: TelemetryReporter;
+
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
 
@@ -26,6 +30,7 @@ export class Extension {
 
   @initialize
   protected async init(): Promise<void> {
+    this.reporter.sendTelemetryEvent('start');
     try {
       this.migrateToken(this.context);
       this.channel.appendLine('Visual Studio Code GitHub Extension');
