@@ -81,3 +81,8 @@ The 'GitHub: Set Personal Access Token' should be executed for that.
 1. Execute `Merge pull request (current branch)...`
 1. Select your merge strategy from the shown list (merge, squash, rebase)
 1. The pull request associated with your current branch is then merged
+
+### Telemetry data (extension usage)
+
+This extension collects telemetry data to track and improve usage.
+The collection of data could be disabled as described here https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting.
