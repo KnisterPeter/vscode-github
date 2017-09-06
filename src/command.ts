@@ -1,12 +1,26 @@
 import { inject } from 'tsdi';
 import * as vscode from 'vscode';
+import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { GitHubError } from './github';
 import { GitHubManager } from './github-manager';
 
 export abstract class Command {
+
+  @inject
+  private reporter: TelemetryReporter;
+
   public abstract get id(): string;
+
   public abstract run(progress?: vscode.Progress<{ message?: string }>): void;
+
+  protected track(message: string): void {
+    const properties = {
+      id: this.id,
+      message
+    };
+    this.reporter.sendTelemetryEvent('vscode-github.command', properties);
+  }
 }
 
 export abstract class TokenCommand extends Command {
@@ -22,10 +36,12 @@ export abstract class TokenCommand extends Command {
 
   public async run(progress?: vscode.Progress<{ message?: string | undefined; }>): Promise<void> {
     if (!(this.githubManager && this.githubManager.connected && this.folder)) {
+      this.track('execute without token');
       vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
         + 'and open a GitHub project in your workspace');
       return;
     }
+    this.track('execute');
     try {
       await this.runWithToken(progress);
     } catch (e) {
@@ -36,6 +52,7 @@ export abstract class TokenCommand extends Command {
   protected abstract async runWithToken(progress?: vscode.Progress<{ message?: string | undefined; }>): Promise<void>;
 
   private logAndShowError(e: Error): void {
+    this.track('failed');
     if (this.channel) {
       this.channel.appendLine(e.message);
       if (e.stack) {
