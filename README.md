@@ -27,6 +27,7 @@ Current it is possible to do the following:
 * Support for GitHub Enterprise (on-premise installations)
 * Browse open issues
 * Browse the current open file (including current cursor position)
+* Configure the statusbar behaviour by setting the `github.statusBarCommand` configuration value.
 
 ![Create pull request](images/create-pull-request.png)
 
