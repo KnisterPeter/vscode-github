@@ -7,6 +7,7 @@ import { CommandManager } from './command-manager';
 import { checkExistence } from './git';
 import { GitHubError } from './github';
 import { GitHubManager, Tokens } from './github-manager';
+import { StatusBarManager } from './status-bar-manager';
 
 @component
 export class Extension {
@@ -32,6 +33,7 @@ export class Extension {
       this.checkVersionAndToken(this.context, tokens);
 
       this.tsdi.get(CommandManager);
+      this.tsdi.get(StatusBarManager);
 
       if (!vscode.workspace.workspaceFolders) {
         return;
