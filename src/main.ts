@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
     @factory
     public telemetryReporter(): TelemetryReporter {
-      const extensionId = 'KnisterPeter.vscode-github';
+      const extensionId = 'vscode-github';
       const extensionVersion = vscode.extensions.getExtension('KnisterPeter.vscode-github')!.packageJSON.version;
       const key = '67a6da7f-d420-47bd-97d0-d1fd4b76ac55';
       const reporter = new TelemetryReporter(extensionId, extensionVersion, key);
