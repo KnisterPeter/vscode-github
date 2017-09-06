@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.19.0"></a>
+# [0.19.0](https://github.com/KnisterPeter/vscode-github/compare/v0.18.1...v0.19.0) (2017-09-06)
+
+
+### Bug Fixes
+
+* **package:** update tsdi to version 0.12.2 ([6d8fbc9](https://github.com/KnisterPeter/vscode-github/commit/6d8fbc9))
+* **package:** update tsdi to version 0.12.3 ([9e3fda4](https://github.com/KnisterPeter/vscode-github/commit/9e3fda4))
+* **package:** update tsdi to version 0.13.0 ([075678b](https://github.com/KnisterPeter/vscode-github/commit/075678b))
+* **package:** update tsdi to version 0.14.0 ([25c102d](https://github.com/KnisterPeter/vscode-github/commit/25c102d)), closes [#170](https://github.com/KnisterPeter/vscode-github/issues/170)
+
+
+### Features
+
+* add configurable status bar ([19a9e01](https://github.com/KnisterPeter/vscode-github/commit/19a9e01)), closes [#140](https://github.com/KnisterPeter/vscode-github/issues/140)
+* add telemetry tool ([540e7e8](https://github.com/KnisterPeter/vscode-github/commit/540e7e8))
+* check the existence of git executable ([6eaa948](https://github.com/KnisterPeter/vscode-github/commit/6eaa948))
+* checkout pull request by number ([a61c044](https://github.com/KnisterPeter/vscode-github/commit/a61c044))
+* send a bit more telemetry data ([40c2506](https://github.com/KnisterPeter/vscode-github/commit/40c2506))
+* use eager component pattern ([8e7a45f](https://github.com/KnisterPeter/vscode-github/commit/8e7a45f))
+
+
+
 <a name="0.18.1"></a>
 ## [0.18.1](https://github.com/KnisterPeter/vscode-github/compare/v0.18.0...v0.18.1) (2017-08-11)
 
