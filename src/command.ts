@@ -16,7 +16,7 @@ export abstract class Command {
 
   protected track(message: string): void {
     const properties = {
-      id: this.id,
+      id: this.id.replace('vscode-github.', ''),
       message
     };
     this.reporter.sendTelemetryEvent('vscode-github.command', properties);
