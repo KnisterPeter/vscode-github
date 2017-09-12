@@ -2,8 +2,8 @@ import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {GitHubError, PullRequest, PullRequestStatus} from './github';
 import {GitHubManager} from './github-manager';
+import {GitHubError, PullRequest, PullRequestStatus} from './provider/github';
 
 const colors = {
   none: '#ffffff',
