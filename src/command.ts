@@ -2,8 +2,8 @@ import { inject } from 'tsdi';
 import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
-import { GitHubError } from './github';
 import { GitHubManager } from './github-manager';
+import { GitHubError } from './provider/github';
 
 export abstract class Command {
 

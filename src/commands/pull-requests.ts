@@ -3,8 +3,8 @@ import * as vscode from 'vscode';
 
 import { TokenCommand } from '../command';
 import * as git from '../git';
-import { PullRequest, MergeMethod } from '../github';
 import { showProgress } from '../helper';
+import { PullRequest, MergeMethod } from '../provider/github';
 import { StatusBarManager } from '../status-bar-manager';
 
 abstract class PullRequestCommand extends TokenCommand {

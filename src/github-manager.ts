@@ -2,8 +2,20 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters, CreatePullRequestBody,
-  PullRequestStatus, Merge, MergeMethod, Repository, Issue, PullRequestComment} from './github';
+import {
+  getClient,
+  GitHub,
+  GitHubError,
+  PullRequest,
+  ListPullRequestsParameters,
+  CreatePullRequestBody,
+  PullRequestStatus,
+  Merge,
+  MergeMethod,
+  Repository,
+  Issue,
+  PullRequestComment
+} from './provider/github';
 
 export interface Tokens {
   [host: string]: {

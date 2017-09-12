@@ -6,8 +6,8 @@ import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { CommandManager } from './command-manager';
 import { checkExistence } from './git';
-import { GitHubError } from './github';
 import { GitHubManager, Tokens } from './github-manager';
+import { GitHubError } from './provider/github';
 import { StatusBarManager } from './status-bar-manager';
 import { migrateToken } from './tokens';
 
