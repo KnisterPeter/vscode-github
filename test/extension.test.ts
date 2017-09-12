@@ -5,6 +5,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 // import * as myExtension from '../src/extension';
 import * as git from '../src/git';
+import * as tokens from '../src/tokens';
 
 suite('vscode-github extension tests', () => {
   test('Extension should be active after startup', done => {
@@ -47,5 +48,31 @@ suite('vscode-github extension tests', () => {
     assert.equal(host, 'my.github.com');
     assert.equal(user, 'username');
     assert.equal(repo, 'repo');
+  });
+
+  test('should migrate tokens to a provider structure', (done: MochaDone) => {
+    tokens.migrateToken({
+      get(name: string): any {
+        if (name === 'tokens') {
+          return {
+            host: 'token'
+          };
+        }
+        return undefined;
+      },
+      update(name: string, value: any): Thenable<void> {
+        return Promise.resolve().then(() => {
+          if (name === 'tokens') {
+            assert.deepEqual(value, {
+              host: {
+                token: 'token',
+                provider: 'github'
+              }
+            });
+            done();
+          }
+        });
+      }
+    });
   });
 });
