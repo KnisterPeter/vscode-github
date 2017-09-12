@@ -6,7 +6,10 @@ import {getClient, GitHub, GitHubError, PullRequest, ListPullRequestsParameters,
   PullRequestStatus, Merge, MergeMethod, Repository, Issue, PullRequestComment} from './github';
 
 export interface Tokens {
-  [host: string]: string;
+  [host: string]: {
+    token: string;
+    provider: 'github' | 'gitlab';
+  };
 }
 
 @component
@@ -39,7 +42,7 @@ export class GitHubManager {
 
   public async connect(tokens: Tokens): Promise<void> {
     const hostname = await git.getGitHubHostname(this.cwd);
-    this.github = getClient(await this.getApiEndpoint(), tokens[hostname]);
+    this.github = getClient(await this.getApiEndpoint(), tokens[hostname].token);
   }
 
   private async getApiEndpoint(): Promise<string> {

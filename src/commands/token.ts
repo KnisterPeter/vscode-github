@@ -25,7 +25,10 @@ export class SetGithubToken extends Command {
     const input = await vscode.window.showInputBox(options);
     if (input) {
       const tokens = this.context.globalState.get<Tokens>('tokens', {});
-      tokens['github.com'] = input;
+      tokens['github.com'] = {
+        token: input,
+        provider: 'github'
+      };
       this.context.globalState.update('tokens', tokens);
       await this.githubManager.connect(tokens);
     }
@@ -58,11 +61,14 @@ export class SetGithubEnterpriseToken extends Command {
       });
       if (tokenInput) {
         const tokens = this.context.globalState.get<Tokens>('tokens', {});
-        tokens[hostInput] = tokenInput;
+        tokens[hostInput] = {
+          token: tokenInput,
+          provider: 'github'
+        };
         this.context.globalState.update('tokens', tokens);
         this.githubManager.connect(tokens);
       }
     }
-}
+  }
 
 }

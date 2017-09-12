@@ -57,9 +57,29 @@ export class Extension {
     const token = context.globalState.get<string | undefined>('token');
     if (token) {
       const tokens = context.globalState.get<Tokens>('tokens', {});
-      tokens['github.com'] = token;
+      tokens['github.com'] = {
+        token,
+        provider: 'github'
+      };
       context.globalState.update('tokens', tokens);
       context.globalState.update(token, undefined);
+    }
+    let migrated = false;
+    const tokens = context.globalState.get<{[host: string]: string}>('tokens', {});
+    const struct = Object.keys(tokens).reduce((akku: Tokens, host) => {
+      if (typeof tokens[host] === 'string') {
+        migrated = true;
+        akku[host] = {
+          token: tokens[host],
+          provider: 'github'
+        };
+      } else {
+        akku[host] = tokens[host] as any;
+      }
+      return akku;
+    }, {});
+    if (migrated) {
+      context.globalState.update('tokens', struct);
     }
   }
 
