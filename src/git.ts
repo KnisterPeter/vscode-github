@@ -70,7 +70,7 @@ export function parseGithubUrl(remote: string): string[] {
 
 function getGitHubOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
   // it must be http or https based remote
-  const { protocol = 'https', hostname, pathname } = parse(remote);
+  const { protocol = 'https:', hostname, pathname } = parse(remote);
   // domain names are not case-sensetive
   if (!hostname || !pathname) {
     throw new Error('Not a Github remote!');

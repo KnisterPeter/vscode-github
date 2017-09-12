@@ -43,7 +43,7 @@ suite('vscode-github extension tests', () => {
 
   test('should parse protocol from github http:// url', () => {
     const [proto, host, user, repo] = git.parseGitUrl('http://my.github.com/username/repo.git');
-    assert.equal(proto, 'http');
+    assert.equal(proto, 'http:');
     assert.equal(host, 'my.github.com');
     assert.equal(user, 'username');
     assert.equal(repo, 'repo');
