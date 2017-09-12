@@ -25,7 +25,7 @@ export interface Tokens {
 }
 
 @component
-export class GitHubManager {
+export class WorkflowManager {
 
   @inject('vscode.WorkspaceFolder')
   private folder: vscode.WorkspaceFolder;

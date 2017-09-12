@@ -2,8 +2,8 @@ import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {GitHubManager} from './github-manager';
 import {GitHubError, PullRequest, PullRequestStatus} from './provider/github';
+import {WorkflowManager} from './workflow-manager';
 
 const colors = {
   none: '#ffffff',
@@ -30,7 +30,7 @@ export class StatusBarManager {
   private statusBar: vscode.StatusBarItem;
 
   @inject
-  private githubManager: GitHubManager;
+  private githubManager: WorkflowManager;
 
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;

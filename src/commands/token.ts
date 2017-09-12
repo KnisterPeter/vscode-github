@@ -2,7 +2,7 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { Command } from '../command';
-import { GitHubManager, Tokens } from '../github-manager';
+import { WorkflowManager, Tokens } from '../workflow-manager';
 
 @component({eager: true})
 export class SetGithubToken extends Command {
@@ -13,7 +13,7 @@ export class SetGithubToken extends Command {
   private context: vscode.ExtensionContext;
 
   @inject
-  private githubManager: GitHubManager;
+  private githubManager: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -45,7 +45,7 @@ export class SetGithubEnterpriseToken extends Command {
   private context: vscode.ExtensionContext;
 
   @inject
-  private githubManager: GitHubManager;
+  private githubManager: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');

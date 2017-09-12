@@ -1,5 +1,5 @@
 import { Memento } from 'vscode';
-import { Tokens } from './github-manager';
+import { Tokens } from './workflow-manager';
 
 export function migrateToken(memento: Memento): void {
   const token = memento.get<string | undefined>('token');
