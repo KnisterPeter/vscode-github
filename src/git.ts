@@ -30,10 +30,14 @@ export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]
   if (defaultUpstream) {
     return Promise.resolve(defaultUpstream.split('/'));
   }
-  return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd)).slice(1, 3);
+  return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd)).slice(2, 4);
 }
 
 export async function getGitHubHostname(cwd: string): Promise<string> {
+  return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd))[1];
+}
+
+export async function getGitHubProtocol(cwd: string): Promise<string> {
   return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd))[0];
 }
 
@@ -58,12 +62,12 @@ export function parseGithubUrl(remote: string): string[] {
   if (!match) {
     throw new Error(`'${remote}' does not seem to be a valid github url.`);
   }
-  return match.slice(1, 4);
+  return ['git', ...match.slice(1, 4)];
 }
 
 function getGitHubOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
   // it must be http or https based remote
-  const { hostname, pathname } = parse(remote);
+  const { protocol = 'https', hostname, pathname } = parse(remote);
   // domain names are not case-sensetive
   if (!hostname || !pathname) {
     throw new Error('Not a Github remote!');
@@ -72,7 +76,7 @@ function getGitHubOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
   if (!match) {
     throw new Error('Not a Github remote!');
   }
-  return [hostname, ...match.slice(1, 3)];
+  return [protocol, hostname, ...match.slice(1, 3)];
 }
 
 export async function getCurrentBranch(cwd: string): Promise<string|undefined> {

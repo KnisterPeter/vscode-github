@@ -50,7 +50,8 @@ export class GitHubManager {
     if (hostname.startsWith('http')) {
       return `${hostname}/api/v3`;
     }
-    return `https://${hostname}/api/v3`;
+    const protocol = git.getGitHubProtocol(this.cwd);
+    return `${protocol}://${hostname}/api/v3`;
   }
 
   public async getRepository(): Promise<Repository> {
