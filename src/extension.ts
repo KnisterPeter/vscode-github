@@ -9,6 +9,7 @@ import { checkExistence } from './git';
 import { GitHubError } from './github';
 import { GitHubManager, Tokens } from './github-manager';
 import { StatusBarManager } from './status-bar-manager';
+import { migrateToken } from './tokens';
 
 @component
 export class Extension {
@@ -32,7 +33,7 @@ export class Extension {
   protected async init(): Promise<void> {
     this.reporter.sendTelemetryEvent('start');
     try {
-      this.migrateToken(this.context);
+      migrateToken(this.context.globalState);
       this.channel.appendLine('Visual Studio Code GitHub Extension');
       const tokens = this.context.globalState.get<Tokens>('tokens');
       this.checkVersionAndToken(this.context, tokens);
@@ -50,36 +51,6 @@ export class Extension {
     } catch (e) {
       this.logAndShowError(e);
       throw e;
-    }
-  }
-
-  private migrateToken(context: vscode.ExtensionContext): void {
-    const token = context.globalState.get<string | undefined>('token');
-    if (token) {
-      const tokens = context.globalState.get<Tokens>('tokens', {});
-      tokens['github.com'] = {
-        token,
-        provider: 'github'
-      };
-      context.globalState.update('tokens', tokens);
-      context.globalState.update(token, undefined);
-    }
-    let migrated = false;
-    const tokens = context.globalState.get<{[host: string]: string}>('tokens', {});
-    const struct = Object.keys(tokens).reduce((akku: Tokens, host) => {
-      if (typeof tokens[host] === 'string') {
-        migrated = true;
-        akku[host] = {
-          token: tokens[host],
-          provider: 'github'
-        };
-      } else {
-        akku[host] = tokens[host] as any;
-      }
-      return akku;
-    }, {});
-    if (migrated) {
-      context.globalState.update('tokens', struct);
     }
   }
 
