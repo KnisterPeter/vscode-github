@@ -47,7 +47,10 @@ async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<st
   if (!remote.length) {
     throw new Error('Git remote is empty!');
   }
+  return parseGitUrl(remote);
+}
 
+export function parseGitUrl(remote: string): string[] {
   // git protocol remotes, may be git@github:username/repo.git
   // or git://github/user/repo.git, domain names are not case-sensetive
   if (remote.startsWith('git@') || remote.startsWith('git://')) {
