@@ -6,10 +6,10 @@ import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { CommandManager } from './command-manager';
 import { checkExistence } from './git';
-import { GitHubManager, Tokens } from './github-manager';
 import { GitHubError } from './provider/github';
 import { StatusBarManager } from './status-bar-manager';
 import { migrateToken } from './tokens';
+import { WorkflowManager, Tokens } from './workflow-manager';
 
 @component
 export class Extension {
@@ -27,7 +27,7 @@ export class Extension {
   private channel: vscode.OutputChannel;
 
   @inject
-  private githubManager: GitHubManager;
+  private githubManager: WorkflowManager;
 
   @initialize
   protected async init(): Promise<void> {

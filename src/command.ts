@@ -2,8 +2,8 @@ import { inject } from 'tsdi';
 import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
-import { GitHubManager } from './github-manager';
 import { GitHubError } from './provider/github';
+import { WorkflowManager } from './workflow-manager';
 
 export abstract class Command {
 
@@ -26,7 +26,7 @@ export abstract class Command {
 export abstract class TokenCommand extends Command {
 
   @inject
-  protected githubManager: GitHubManager;
+  protected githubManager: WorkflowManager;
 
   @inject('vscode.WorkspaceFolder')
   protected folder: vscode.WorkspaceFolder;
