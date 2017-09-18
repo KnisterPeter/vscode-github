@@ -34,7 +34,8 @@ abstract class PullRequestCommand extends TokenCommand {
     const hasBranch = await this.hasRemoteTrackingBranch();
     if (!hasBranch) {
       vscode.window.showWarningMessage(
-        `Cannot create pull request without remote branch. Please push your local branch before creating pull request.`);
+        `Cannot create pull request without remote branch. `
+        + `Please push your local branch before creating pull request.`);
     }
     return hasBranch;
   }
