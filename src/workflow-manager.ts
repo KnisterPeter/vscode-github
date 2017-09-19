@@ -2,8 +2,10 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
+import { Client } from './provider/client';
+import { Repository } from './provider/repository';
+
 import {
-  getClient,
   GitHub,
   GitHubError,
   PullRequest,
@@ -12,10 +14,10 @@ import {
   PullRequestStatus,
   Merge,
   MergeMethod,
-  Repository,
   Issue,
   PullRequestComment
 } from './provider/github';
+import { GithubClient } from './provider/github/client';
 
 export interface Tokens {
   [host: string]: {
@@ -33,6 +35,8 @@ export class WorkflowManager {
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
+  private provider: Client;
+
   private github: GitHub;
 
   private get cwd(): string {
@@ -45,7 +49,7 @@ export class WorkflowManager {
   }
 
   get connected(): boolean {
-    return Boolean(this.github);
+    return Boolean(this.provider);
   }
 
   public async getGitHubHostname(): Promise<string> {
@@ -54,7 +58,8 @@ export class WorkflowManager {
 
   public async connect(tokens: Tokens): Promise<void> {
     const hostname = await git.getGitHubHostname(this.cwd);
-    this.github = getClient(await this.getApiEndpoint(), tokens[hostname].token);
+    this.provider = new GithubClient(await this.getApiEndpoint(), tokens[hostname].token);
+    this.github = (this.provider as GithubClient).client;
   }
 
   private async getApiEndpoint(): Promise<string> {
@@ -71,23 +76,23 @@ export class WorkflowManager {
 
   public async getRepository(): Promise<Repository> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    return (await this.github.getRepository(owner, repository)).body;
+    return (await this.provider.getRepository(`${owner}/${repository}`)).body;
   }
 
   public async getDefaultBranch(): Promise<string> {
-    return (await this.getRepository()).default_branch;
+    return (await this.getRepository()).defaultBranch;
   }
 
   public async getEnabledMergeMethods(): Promise<Set<MergeMethod>> {
     const repo = await this.getRepository();
     const set = new Set();
-    if (repo.allow_merge_commit) {
+    if (repo.allowMergeCommits) {
       set.add('merge');
     }
-    if (repo.allow_squash_merge) {
+    if (repo.allowSquashCommits) {
       set.add('squash');
     }
-    if (repo.allow_rebase_merge) {
+    if (repo.allowRebaseCommits) {
       set.add('rebase');
     }
     return set;
