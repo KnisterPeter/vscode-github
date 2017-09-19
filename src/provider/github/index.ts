@@ -4,7 +4,7 @@ import {Pretend, Get, Post, Put, Delete, Headers, Interceptor, IPretendRequestIn
 
 export interface GitHub {
 
-  getRepository(owner: string, repo: string): Promise<GitHubResponse<Repository>>;
+  getRepository(owner: string, repo: string): Promise<GitHubResponse<GithubRepositoryStruct>>;
 
   getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequest>>;
 
@@ -68,12 +68,12 @@ export interface Reviewers {
   reviewers: string[];
 }
 
-export interface Repository {
+export interface GithubRepositoryStruct {
   full_name: string;
   default_branch: string;
-  allow_rebase_merge: boolean;
-  allow_squash_merge: boolean;
-  allow_merge_commit: boolean;
+  allow_rebase_merge?: boolean;
+  allow_squash_merge?: boolean;
+  allow_merge_commit?: boolean;
   parent?: {
     full_name: string;
     default_branch: string;
@@ -258,4 +258,5 @@ namespace impl {
     public getPullRequestComments(): any {/* */}
 
   }
+
 }

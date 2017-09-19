@@ -144,15 +144,15 @@ export class CreatePullRequest extends PullRequestCommand {
     const repository = await this.githubManager.getRepository();
     let pullRequest: PullRequest | undefined;
     const items = [{
-      label: repository.full_name,
+      label: repository.name,
       description: '',
-      repo: repository as { default_branch: string }
+      repo: repository as { defaultBranch: string }
     }];
     if (repository.parent) {
       items.push({
-        label: repository.parent.full_name,
+        label: repository.parent.name,
         description: '',
-        repo: repository.parent as { default_branch: string }
+        repo: repository.parent as { defaultBranch: string }
       });
     }
     const selectedRepository = await vscode.window.showQuickPick(items,
@@ -164,7 +164,7 @@ export class CreatePullRequest extends PullRequestCommand {
     const branch = await vscode.window.showInputBox({
       ignoreFocusOut: true,
       prompt: 'Select a branch to create the pull request for',
-      value: selectedRepository.repo.default_branch
+      value: selectedRepository.repo.defaultBranch
     });
     if (!branch) {
       return;
