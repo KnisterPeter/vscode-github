@@ -2,8 +2,9 @@ import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {GitHubError, PullRequest, PullRequestStatus} from './provider/github';
-import {WorkflowManager} from './workflow-manager';
+import { GitHubError, PullRequestStatus } from './provider/github';
+import { PullRequest } from './provider/pull-request';
+import { WorkflowManager} from './workflow-manager';
 
 const colors = {
   none: '#ffffff',

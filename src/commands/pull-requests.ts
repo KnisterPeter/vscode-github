@@ -4,7 +4,8 @@ import * as vscode from 'vscode';
 import { TokenCommand } from '../command';
 import * as git from '../git';
 import { showProgress } from '../helper';
-import { PullRequest, MergeMethod } from '../provider/github';
+import { MergeMethod } from '../provider/github';
+import { PullRequest } from '../provider/pull-request';
 import { StatusBarManager } from '../status-bar-manager';
 
 abstract class PullRequestCommand extends TokenCommand {
@@ -44,7 +45,7 @@ abstract class PullRequestCommand extends TokenCommand {
     const result = await vscode.window.showInformationMessage(
       `Successfully created #${pullRequest.number}`, 'Open on Github');
     if (result) {
-      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.html_url));
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.url));
     }
   }
 
@@ -59,7 +60,7 @@ export class BrowsePullRequest extends PullRequestCommand {
   protected async runWithToken(): Promise<void> {
     const selected = await this.selectPullRequest();
     if (selected) {
-      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(selected.html_url));
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(selected.url));
     }
   }
 
@@ -74,7 +75,7 @@ export class BrowseSimpleRequest extends PullRequestCommand {
   protected async runWithToken(): Promise<void> {
     const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
-      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.html_url));
+      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.url));
     } else {
       vscode.window.showInformationMessage('No pull request for current branch found');
     }
@@ -94,7 +95,7 @@ export class CheckoutPullRequest extends PullRequestCommand {
   protected async runWithToken(): Promise<void> {
     const selected = await this.selectPullRequest();
     if (selected) {
-      await vscode.commands.executeCommand('git.checkout', selected.head.ref);
+      await vscode.commands.executeCommand('git.checkout', selected.sourceBranch);
       this.statusBarManager.updateStatus();
     }
   }
@@ -142,7 +143,6 @@ export class CreatePullRequest extends PullRequestCommand {
     progress.report({message: `Gather data`});
     let [owner, repo] = await git.getGitHubOwnerAndRepository(this.folder.uri.fsPath);
     const repository = await this.githubManager.getRepository();
-    let pullRequest: PullRequest | undefined;
     const items = [{
       label: repository.name,
       description: '',
@@ -170,7 +170,7 @@ export class CreatePullRequest extends PullRequestCommand {
       return;
     }
     progress.report({ message: `Create pull request` });
-    pullRequest = await this.githubManager.createPullRequest({
+    const pullRequest = await this.githubManager.createPullRequest({
       owner,
       repository: repo,
       branch
