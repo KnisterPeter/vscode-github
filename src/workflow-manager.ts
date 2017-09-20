@@ -2,15 +2,14 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import { Client } from './provider/client';
+import { Client, ListPullRequestsParameters, CreatePullRequestBody } from './provider/client';
+import { PullRequest } from './provider/pull-request';
 import { Repository } from './provider/repository';
 
 import {
   GitHub,
   GitHubError,
-  PullRequest,
-  ListPullRequestsParameters,
-  CreatePullRequestBody,
+  PullRequestStruct,
   PullRequestStatus,
   Merge,
   MergeMethod,
@@ -101,15 +100,11 @@ export class WorkflowManager {
   public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
-    const parameters: ListPullRequestsParameters = {
-      state: 'open',
-      head: `${owner}:${branch}`
-    };
-    const list = await this.github.listPullRequests(owner, repository, parameters);
-    if (list.body.length === 0) {
+    const list = (await this.listPullRequests()).filter(pr => pr.sourceBranch === branch);
+    if (list.length !== 1) {
       return undefined;
     }
-    return (await this.github.getPullRequest(owner, repository, list.body[0].number)).body;
+    return (await this.provider.getPullRequest(`${owner}/${repository}`, list[0].number)).body;
   }
 
   public async hasPullRequestForCurrentBranch(): Promise<boolean> {
@@ -146,9 +141,9 @@ export class WorkflowManager {
       return undefined;
     }
     const body: CreatePullRequestBody = {
+      sourceBranch: branch,
+      targetBranch: upstream ? upstream.branch : await this.getDefaultBranch(),
       title: await git.getCommitMessage(firstCommit, this.cwd),
-      head: `${owner}:${branch}`,
-      base: upstream ? upstream.branch : await this.getDefaultBranch(),
       body: requestBody
     };
     this.channel.appendLine('Create pull request:');
@@ -161,16 +156,9 @@ export class WorkflowManager {
   }
 
   private async doCreatePullRequest(upstreamOwner: string, upstreamRepository: string,
-      body: CreatePullRequestBody): Promise<PullRequest|undefined> {
+      body: CreatePullRequestBody): Promise<PullRequest> {
     try {
-      const result = await this.github.createPullRequest(upstreamOwner, upstreamRepository, body);
-      // tslint:disable-next-line:comment-format
-      // TODO: Pretend should optionally redirect
-      const expr = new RegExp(`${await this.getApiEndpoint()}/repos/[^/]+/[^/]+/pulls/([0-9]+)`);
-      const number = expr.exec(result.headers['location'][0]) as RegExpMatchArray;
-      return (await this.github
-        .getPullRequest(upstreamOwner, upstreamRepository, parseInt(number[1], 10)))
-        .body;
+      return (await this.provider.createPullRequest(`${upstreamOwner}/${upstreamRepository}`, body)).body;
     } catch (e) {
       if (e instanceof GitHubError) {
         console.log(e);
@@ -186,7 +174,7 @@ export class WorkflowManager {
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
-    return (await this.github.listPullRequests(owner, repository, parameters)).body;
+    return (await this.provider.listPullRequests(`${owner}/${repository}`, parameters)).body;
   }
 
   public async mergePullRequest(pullRequest: PullRequest, method: MergeMethod): Promise<boolean|undefined> {
@@ -261,7 +249,7 @@ export class WorkflowManager {
       .filter(issue => !Boolean(issue.pull_request));
   }
 
-  public async getPullRequestReviewComments(pullRequest: PullRequest): Promise<PullRequestComment[]> {
+  public async getPullRequestReviewComments(pullRequest: PullRequestStruct): Promise<PullRequestComment[]> {
     const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     return (await this.github.getPullRequestComments(owner, repository, pullRequest.number)).body;
   }

@@ -6,12 +6,13 @@ export interface GitHub {
 
   getRepository(owner: string, repo: string): Promise<GitHubResponse<GithubRepositoryStruct>>;
 
-  getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequest>>;
+  getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestStruct>>;
 
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
-    Promise<GitHubResponse<PullRequest[]>>;
+    Promise<GitHubResponse<PullRequestStruct[]>>;
 
-  createPullRequest(owner: string, repo: string, body: CreatePullRequestBody): Promise<GitHubResponse<PullRequest>>;
+  createPullRequest(owner: string, repo: string, body: CreatePullRequestBody):
+    Promise<GitHubResponse<PullRequestStruct>>;
 
   getStatusForRef(owner: string, repo: string, ref: string): Promise<GitHubResponse<CombinedStatus>>;
 
@@ -119,7 +120,7 @@ export interface CreatePullRequestBody {
   body?: string;
 }
 
-export interface PullRequest {
+export interface PullRequestStruct {
   id: number;
   number: number;
   state: 'open' | 'closed';
