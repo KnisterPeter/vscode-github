@@ -2,7 +2,13 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import { Client, ListPullRequestsParameters, CreatePullRequestBody } from './provider/client';
+import {
+  Client,
+  ListPullRequestsParameters,
+  CreatePullRequestBody,
+  MergeMethod,
+  MergeBody
+} from './provider/client';
 import { PullRequest } from './provider/pull-request';
 import { Repository } from './provider/repository';
 
@@ -11,8 +17,6 @@ import {
   GitHubError,
   PullRequestStruct,
   PullRequestStatus,
-  Merge,
-  MergeMethod,
   Issue,
   PullRequestComment
 } from './provider/github';
@@ -181,10 +185,10 @@ export class WorkflowManager {
     try {
       if (pullRequest.mergeable) {
         const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-        const body: Merge = {
-          merge_method: method
+        const body: MergeBody = {
+          mergeMethod: method
         };
-        const result = await this.github.mergePullRequest(owner, repository, pullRequest.number, body);
+        const result = await this.provider.mergePullRequest(`${owner}/${repository}`, pullRequest.number, body);
         return result.body.merged;
       }
       return undefined;

@@ -11,6 +11,8 @@ export interface Client {
 
   createPullRequest(rid: string, body: CreatePullRequestBody): Promise<Response<PullRequest>>;
 
+  mergePullRequest(rid: string, number: number, body: MergeBody): Promise<Response<MergeResult>>;
+
 }
 
 export interface Response<T> {
@@ -28,4 +30,16 @@ export interface CreatePullRequestBody {
   targetBranch: string;
   title: string;
   body?: string;
+}
+
+export interface MergeBody {
+  mergeMethod: MergeMethod;
+}
+
+export type MergeMethod = 'merge' | 'squash' | 'rebase';
+
+export interface MergeResult {
+  sha?: string;
+  merged?: boolean;
+  message: string;
 }
