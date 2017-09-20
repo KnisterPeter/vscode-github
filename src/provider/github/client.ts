@@ -2,7 +2,9 @@ import {
   Client,
   Response,
   ListPullRequestsParameters,
-  CreatePullRequestBody
+  CreatePullRequestBody,
+  MergeBody,
+  MergeResult
 } from '../client';
 
 import { GitHub, getClient } from './index';
@@ -60,6 +62,20 @@ export class GithubClient implements Client {
     const response = await this.client.getPullRequest(owner, repository, parseInt(number[1], 10));
     return {
       body: new GithubPullRequest(response.body)
+    };
+  }
+
+  public async mergePullRequest(rid: string, number: number, body: MergeBody): Promise<Response<MergeResult>> {
+    const [owner, repository] = this.getOwnerAndRepository(rid);
+    const response = await this.client.mergePullRequest(owner, repository, number, {
+      merge_method: body.mergeMethod
+    });
+    return {
+      body: {
+        merged: response.body.merged,
+        message: response.body.message,
+        sha: response.body.sha
+      }
     };
   }
 }
