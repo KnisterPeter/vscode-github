@@ -3,14 +3,10 @@ import * as vscode from 'vscode';
 
 import * as git from './git';
 import {
-  Client,
-  ListPullRequestsParameters,
-  CreatePullRequestBody,
-  MergeMethod,
-  MergeBody
+  Client
 } from './provider/client';
-import { PullRequest } from './provider/pull-request';
-import { Repository } from './provider/repository';
+import { PullRequest, MergeBody, MergeMethod } from './provider/pull-request';
+import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 
 import {
   GitHub,
@@ -102,13 +98,12 @@ export class WorkflowManager {
   }
 
   public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
     const list = (await this.listPullRequests()).filter(pr => pr.sourceBranch === branch);
     if (list.length !== 1) {
       return undefined;
     }
-    return (await this.provider.getPullRequest(`${owner}/${repository}`, list[0].number)).body;
+    return list[0];
   }
 
   public async hasPullRequestForCurrentBranch(): Promise<boolean> {
@@ -130,7 +125,6 @@ export class WorkflowManager {
     if (await this.hasPullRequestForCurrentBranch()) {
       return undefined;
     }
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
     if (!branch) {
       throw new Error('No current branch');
@@ -153,16 +147,21 @@ export class WorkflowManager {
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(body, undefined, ' '));
 
-    if (upstream) {
-      return await this.doCreatePullRequest(upstream.owner, upstream.repository, body);
-    }
-    return await this.doCreatePullRequest(owner, repository, body);
+    const getRepository = async() => {
+      if (upstream) {
+        return (await this.provider.getRepository(`${upstream.owner}/${upstream.repository}`)).body;
+      } else {
+        const [owner, name] = await git.getGitHubOwnerAndRepository(this.cwd);
+        return (await this.provider.getRepository(`${owner}/${name}`)).body;
+      }
+    };
+    return await this.doCreatePullRequest(await getRepository(), body);
   }
 
-  private async doCreatePullRequest(upstreamOwner: string, upstreamRepository: string,
+  private async doCreatePullRequest(repository: Repository,
       body: CreatePullRequestBody): Promise<PullRequest> {
     try {
-      return (await this.provider.createPullRequest(`${upstreamOwner}/${upstreamRepository}`, body)).body;
+      return (await repository.createPullRequest(body)).body;
     } catch (e) {
       if (e instanceof GitHubError) {
         console.log(e);
@@ -174,21 +173,21 @@ export class WorkflowManager {
   }
 
   public async listPullRequests(): Promise<PullRequest[]> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const [owner, name] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const repository = (await this.provider.getRepository(`${owner}/${name}`)).body;
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
-    return (await this.provider.listPullRequests(`${owner}/${repository}`, parameters)).body;
+    return (await repository.listPullRequests(parameters)).body;
   }
 
   public async mergePullRequest(pullRequest: PullRequest, method: MergeMethod): Promise<boolean|undefined> {
     try {
       if (pullRequest.mergeable) {
-        const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
         const body: MergeBody = {
           mergeMethod: method
         };
-        const result = await this.provider.mergePullRequest(`${owner}/${repository}`, pullRequest.number, body);
+        const result = await pullRequest.merge(body);
         return result.body.merged;
       }
       return undefined;

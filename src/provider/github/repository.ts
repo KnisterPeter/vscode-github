@@ -1,9 +1,20 @@
-import { Repository } from '../repository';
-import { GithubRepositoryStruct } from './index';
+import { Response } from '../client';
+import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from '../repository';
+import { GitHub, GithubRepositoryStruct } from './index';
+import { GithubPullRequest } from './pull-request';
 
 export class GithubRepository implements Repository {
 
-  public struct: GithubRepositoryStruct;
+  private client: GitHub;
+
+  private struct: GithubRepositoryStruct;
+
+  public owner: string;
+  public repository: string;
+
+  get slug(): string {
+    return `${this.owner}/${this.repository}`;
+  }
 
   get name(): string {
     return this.struct.full_name;
@@ -29,11 +40,46 @@ export class GithubRepository implements Repository {
     if (!this.struct.parent) {
       return undefined;
     }
-    return new GithubRepository(this.struct.parent);
+    // fixme: owner and repository should be set here
+    return new GithubRepository(this.client, '', '', this.struct.parent);
   }
 
-  constructor(struct: GithubRepositoryStruct) {
+  constructor(client: GitHub, owner: string, repository: string, struct: GithubRepositoryStruct) {
+    this.client = client;
+    this.owner = owner;
+    this.repository = repository;
     this.struct = struct;
+  }
+
+  public async listPullRequests(parameters?: ListPullRequestsParameters | undefined):
+      Promise<Response<GithubPullRequest[]>> {
+    const response = await this.client.listPullRequests(this.owner, this.repository, parameters);
+    const body = response.body.map(pr => new GithubPullRequest(this.client, this, pr));
+    return {
+      body
+    };
+  }
+
+  public async getPullRequest(id: number): Promise<Response<GithubPullRequest>> {
+    const response = await this.client.getPullRequest(this.owner, this.repository, id);
+    return {
+      body: new GithubPullRequest(this.client, this, response.body)
+    };
+  }
+
+  public async createPullRequest(body: CreatePullRequestBody): Promise<Response<GithubPullRequest>> {
+    const result = await this.client.createPullRequest(this.owner, this.repository, {
+      head: `${this.owner}:${body.sourceBranch}`,
+      base: `${body.targetBranch}`,
+      title: body.title,
+      body: body.body
+    });
+    const expr = new RegExp(`https?://[^/:]+/repos/[^/]+/[^/]+/pulls/([0-9]+)`);
+    const number = expr.exec(result.headers['location'][0]) as RegExpMatchArray;
+    const response = await this.client.getPullRequest(this.owner, this.repository, parseInt(number[1], 10));
+    return {
+      body: new GithubPullRequest(this.client, this, response.body)
+    };
   }
 
 }
