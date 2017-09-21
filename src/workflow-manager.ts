@@ -12,7 +12,6 @@ import {
   GitHub,
   GitHubError,
   PullRequestStruct,
-  PullRequestStatus,
   Issue,
   PullRequestComment
 } from './provider/github';
@@ -108,16 +107,6 @@ export class WorkflowManager {
 
   public async hasPullRequestForCurrentBranch(): Promise<boolean> {
     return Boolean(await this.getPullRequestForCurrentBranch());
-  }
-
-  public async getCombinedStatusForPullRequest(): Promise<PullRequestStatus |undefined> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    const branch = await git.getCurrentBranch(this.cwd);
-    if (!branch) {
-      return undefined;
-    }
-    const response = await this.github.getStatusForRef(owner, repository, branch);
-    return response.body.total_count > 0 ? response.body.state : undefined;
   }
 
   public async createPullRequest(upstream?: {owner: string, repository: string, branch: string}):
