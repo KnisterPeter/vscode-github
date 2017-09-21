@@ -1,9 +1,13 @@
-import { PullRequest } from '../pull-request';
-import { PullRequestStruct } from './index';
+import { Response } from '../client';
+import { PullRequest, MergeBody, MergeResult } from '../pull-request';
+import { GitHub, PullRequestStruct } from './index';
+import { GithubRepository } from './repository';
 
 export class GithubPullRequest implements PullRequest {
 
-  public struct: PullRequestStruct;
+  private client: GitHub;
+  private repository: GithubRepository;
+  private struct: PullRequestStruct;
 
   get id(): number {
     return this.struct.id;
@@ -41,8 +45,27 @@ export class GithubPullRequest implements PullRequest {
     return this.struct.mergeable;
   }
 
-  constructor(struct: PullRequestStruct) {
+  constructor(client: GitHub, repository: GithubRepository, struct: PullRequestStruct) {
+    this.client = client;
+    this.repository = repository;
     this.struct = struct;
   }
 
+  public async merge(body: MergeBody): Promise<Response<MergeResult>> {
+    const response = await this.client.mergePullRequest(
+      this.repository.owner,
+      this.repository.repository,
+      this.number,
+      {
+        merge_method: body.mergeMethod
+      }
+    );
+    return {
+      body: {
+        merged: response.body.merged,
+        message: response.body.message,
+        sha: response.body.sha
+      }
+    };
+  }
 }
