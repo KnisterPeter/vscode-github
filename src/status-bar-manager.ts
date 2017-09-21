@@ -130,10 +130,7 @@ export class StatusBarManager {
     if (typeof pullRequest.mergeable === 'undefined') {
       status = 'failure';
     } else {
-      const combinedStatus = await this.githubManager.getCombinedStatusForPullRequest();
-      if (combinedStatus) {
-        status = combinedStatus;
-      } else if (pullRequest.mergeable) {
+      if (pullRequest.mergeable) {
         status = 'success';
       } else {
         status = 'failure';
