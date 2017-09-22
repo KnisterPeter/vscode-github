@@ -1,5 +1,5 @@
 import * as LRUCache from 'lru-cache';
-import {Pretend, Get, Post, Put, Delete, Headers, Interceptor, IPretendRequestInterceptor,
+import {Pretend, Get, Post, Put, Patch, Delete, Headers, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
 
 export interface GitHub {
@@ -30,12 +30,23 @@ export interface GitHub {
 
   getPullRequestComments(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestComment[]>>;
 
+  editIssue(owner: string, repo: string, number: number, body: EditIssueBody): Promise<GitHubResponse<EditIssueBody>>;
 }
 
 export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface EditIssueBody {
+  state?: 'open' | 'closed';
+  assignees?: string[];
+}
+
+export interface EditIssueResponse {
+  number: number;
+  state: 'open' | 'closed';
 }
 
 export interface PullRequestComment {
@@ -257,6 +268,9 @@ namespace impl {
 
     @Get('/repos/:owner/:repo/pulls/:number/comments')
     public getPullRequestComments(): any {/* */}
+
+    @Patch('/repos/:owner/:repo/issues/:number')
+    public editIssue(): any {/* */}
 
   }
 

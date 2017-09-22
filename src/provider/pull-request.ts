@@ -1,4 +1,5 @@
 import { Response } from './client';
+import { User } from './user';
 
 export interface PullRequest {
   id: number;
@@ -12,6 +13,8 @@ export interface PullRequest {
   mergeable?: boolean|null;
 
   merge(body: MergeBody): Promise<Response<MergeResult>>;
+  assign(assignees: User<any>[]): Promise<void>;
+  unassign(): Promise<void>;
 }
 
 export interface MergeBody {

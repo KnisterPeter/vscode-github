@@ -2,6 +2,7 @@ import { Response } from '../client';
 import { PullRequest, MergeBody, MergeResult } from '../pull-request';
 import { GitHub, PullRequestStruct } from './index';
 import { GithubRepository } from './repository';
+import { GithubUser } from './user';
 
 export class GithubPullRequest implements PullRequest {
 
@@ -67,5 +68,27 @@ export class GithubPullRequest implements PullRequest {
         sha: response.body.sha
       }
     };
+  }
+
+  public async assign(assignees: GithubUser[]): Promise<void> {
+    await this.client.editIssue(
+      this.repository.owner,
+      this.repository.repository,
+      this.number,
+      {
+        assignees: assignees.map(assignee => assignee.id)
+      }
+    );
+  }
+
+  public async unassign(): Promise<void> {
+    await this.client.editIssue(
+      this.repository.owner,
+      this.repository.repository,
+      this.number,
+      {
+        assignees: []
+      }
+    );
   }
 }

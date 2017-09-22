@@ -211,14 +211,12 @@ export class WorkflowManager {
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${file}#L${(line || 0) + 1}`;
   }
 
-  public async addAssignee(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    await this.github.addAssignees(owner, repo, issue, {assignees: [name]});
+  public async addAssignee(pullRequest: PullRequest, name: string): Promise<void> {
+    await pullRequest.assign([{id: name}]);
   }
 
-  public async removeAssignee(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    await this.github.removeAssignees(owner, repo, issue, {assignees: [name]});
+  public async removeAssignee(pullRequest: PullRequest): Promise<void> {
+    await pullRequest.unassign();
   }
 
   public async requestReview(issue: number, name: string): Promise<void> {
