@@ -24,8 +24,8 @@ export class AddAssignee extends UserCommand {
     if (pullRequest) {
       const user = await this.getUser();
       if (user) {
-        await this.githubManager.addAssignee(pullRequest.number, user);
-        vscode.window.showInformationMessage(`Successfully added ${user} to the assignees`);
+        await this.githubManager.addAssignee(pullRequest, user);
+        vscode.window.showInformationMessage(`Successfully assigned ${user} to the pull request`);
       }
     } else {
       vscode.window.showWarningMessage('No pull request for current brach');
@@ -43,11 +43,8 @@ export class RemoveAssignee extends UserCommand {
   protected async runWithToken(): Promise<void> {
     const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
-      const user = await this.getUser();
-      if (user) {
-        await this.githubManager.removeAssignee(pullRequest.number, user);
-        vscode.window.showInformationMessage(`Successfully remove ${user} from the assignees`);
-      }
+      await this.githubManager.removeAssignee(pullRequest);
+      vscode.window.showInformationMessage(`Successfully unassigned the pull request`);
     } else {
       vscode.window.showWarningMessage('No pull request for current brach');
     }
