@@ -9,6 +9,7 @@ import {
 export interface GitLab {
   getProject(id: string): Promise<GitLabResponse<Project>>;
   getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
+  getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
 }
 
 export interface GitLabResponse<T> {
@@ -104,6 +105,8 @@ namespace impl {
     public getProject(): any {/* */}
     @Get('/projects/:id/merge_requests', true)
     public getMergeRequests(): any {/* */}
+    @Get('/projects/:id/merge_requests/:merge_request_iid')
+    public getMergeRequest(): any {/* */}
   }
 
 }
