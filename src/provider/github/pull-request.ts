@@ -1,5 +1,12 @@
 import { Response } from '../client';
-import { PullRequest, MergeBody, MergeResult, RequestReviewBody, CancelReviewBody } from '../pull-request';
+import {
+  PullRequest,
+  MergeBody,
+  MergeResult,
+  RequestReviewBody,
+  CancelReviewBody,
+  Comment
+} from '../pull-request';
 import { GitHub, PullRequestStruct } from './index';
 import { GithubRepository } from './repository';
 import { GithubUser } from './user';
@@ -50,6 +57,23 @@ export class GithubPullRequest implements PullRequest {
     this.client = client;
     this.repository = repository;
     this.struct = struct;
+  }
+
+  public async getComments(): Promise<Response<Comment[]>> {
+    const response = await this.client.getPullRequestComments(
+      this.repository.owner,
+      this.repository.repository,
+      this.number
+    );
+    return {
+      body: response.body.map(comment => {
+        return {
+          file: comment.path,
+          line: comment.position,
+          body: comment.body
+        };
+      })
+    };
   }
 
   public async merge(body: MergeBody): Promise<Response<MergeResult>> {

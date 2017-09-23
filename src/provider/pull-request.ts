@@ -12,6 +12,7 @@ export interface PullRequest {
   targetBranch: string;
   mergeable?: boolean|null;
 
+  getComments(): Promise<Response<Comment[]>>;
   merge(body: MergeBody): Promise<Response<MergeResult>>;
   assign(assignees: User<any>[]): Promise<void>;
   unassign(): Promise<void>;
@@ -37,4 +38,10 @@ export interface RequestReviewBody {
 
 export interface CancelReviewBody {
   reviewers: string[];
+}
+
+export interface Comment {
+  file: string;
+  line: number;
+  body: string;
 }
