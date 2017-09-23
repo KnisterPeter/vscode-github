@@ -65,7 +65,7 @@ export function parseGitProviderUrl(remote: string): string[] {
   if (!match) {
     throw new Error(`'${remote}' does not seem to be a valid git provider url.`);
   }
-  return ['git', ...match.slice(1, 4)];
+  return ['git:', ...match.slice(1, 4)];
 }
 
 function getGitProviderOwnerAndRepositoryFromHttpUrl(remote: string): string[] {

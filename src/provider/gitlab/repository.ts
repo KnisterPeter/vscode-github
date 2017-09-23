@@ -38,6 +38,10 @@ export class GitLabRepository implements Repository {
     return undefined;
   }
 
+  public get url(): string {
+    return this.project.web_url;
+  }
+
   constructor(client: GitLab, project: Project) {
     this.client = client;
     this.project = project;

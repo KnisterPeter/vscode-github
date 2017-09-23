@@ -6,7 +6,8 @@ import { GithubClient } from './github/client';
 import { GitLabClient } from './gitlab/client';
 
 export async function createClient(cwd: string, tokens: Tokens): Promise<Client> {
-  const protocol = await getGitProtocol(cwd);
+  const gitProtocol = await getGitProtocol(cwd);
+  const protocol = gitProtocol.startsWith('http') ? gitProtocol : 'https:';
   const hostname = await getGitHostname(cwd);
   const tokenInfo = tokens[hostname];
   switch (tokenInfo.provider) {
