@@ -90,8 +90,14 @@ export class GitLabRepository implements Repository {
     };
   }
 
-  public async getPullRequest(_id: number): Promise<Response<GitLabMergeRequest>> {
-    throw new Error('Method not implemented.');
+  public async getPullRequest(id: number): Promise<Response<GitLabMergeRequest>> {
+    const response = await this.client.getMergeRequest(
+      encodeURIComponent(this.project.path_with_namespace),
+      id
+    );
+    return {
+      body: new GitLabMergeRequest(this.client, this, response.body)
+    };
   }
 
   public async createPullRequest(_body: CreatePullRequestBody): Promise<Response<GitLabMergeRequest>> {
