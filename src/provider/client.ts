@@ -22,6 +22,8 @@ export async function createClient(cwd: string, tokens: Tokens): Promise<Client>
 
 export interface Client {
 
+  name: string;
+
   getRepository(rid: string): Promise<Response<Repository>>;
 
 }

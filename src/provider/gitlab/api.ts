@@ -8,6 +8,7 @@ import {
 
 export interface GitLab {
   getProject(id: string): Promise<GitLabResponse<Project>>;
+  getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
 }
 
 export interface GitLabResponse<T> {
@@ -16,8 +17,27 @@ export interface GitLabResponse<T> {
   body: T;
 }
 
+export interface GetMergeRequestParameters {
+  state?: 'opened' | 'closed' | 'merged';
+  order_by?: 'created_at' | 'updated_at';
+  sort?: 'asc' | 'desc';
+}
+
+export interface MergeRequest {
+  id: number;
+  iid: number;
+  state: 'opened' | 'closed' | 'merged';
+  title: string;
+  description: string;
+  web_url: string;
+  target_branch: string;
+  source_branch: string;
+  merge_status: 'can_be_merged';
+}
+
 export interface Project {
   id: number;
+  path_with_namespace: string;
   name: string;
   default_branch: string;
   web_url: string;
@@ -65,7 +85,7 @@ namespace impl {
     return async response => {
       if (response.status >= 400) {
         const body = await response.json();
-        throw new GitLabError(`${body.message || response.statusText}`, response);
+        throw new GitLabError(`${body.error || response.statusText}`, response);
       }
       const headers = {};
       response.headers.forEach((value, index) => {
@@ -82,6 +102,8 @@ namespace impl {
   export class GitLabBlueprint implements GitLab {
     @Get('/projects/:id')
     public getProject(): any {/* */}
+    @Get('/projects/:id/merge_requests', true)
+    public getMergeRequests(): any {/* */}
   }
 
 }
