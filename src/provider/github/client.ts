@@ -8,7 +8,7 @@ import { GithubRepository } from './repository';
 
 export class GithubClient implements Client {
 
-  public client: GitHub;
+  private client: GitHub;
 
   constructor(endpoint: string, token: string) {
     this.client = getClient(endpoint, token);

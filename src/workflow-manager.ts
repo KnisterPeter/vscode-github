@@ -7,7 +7,7 @@ import { Issue } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 
-import { GitHub, GitHubError } from './provider/github';
+import { GitHubError } from './provider/github';
 import { GithubClient } from './provider/github/client';
 
 export interface Tokens {
@@ -27,8 +27,6 @@ export class WorkflowManager {
   private channel: vscode.OutputChannel;
 
   private provider: Client;
-
-  private github: GitHub;
 
   private get cwd(): string {
     return this.folder.uri.fsPath;
@@ -50,7 +48,6 @@ export class WorkflowManager {
   public async connect(tokens: Tokens): Promise<void> {
     const hostname = await git.getGitHubHostname(this.cwd);
     this.provider = new GithubClient(await this.getApiEndpoint(), tokens[hostname].token);
-    this.github = (this.provider as GithubClient).client;
   }
 
   private async getApiEndpoint(): Promise<string> {
@@ -158,7 +155,7 @@ export class WorkflowManager {
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
-    return (await repository.listPullRequests(parameters)).body;
+    return (await repository.getPullRequests(parameters)).body;
   }
 
   public async mergePullRequest(pullRequest: PullRequest, method: MergeMethod): Promise<boolean|undefined> {
