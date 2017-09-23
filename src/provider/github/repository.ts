@@ -18,36 +18,44 @@ export class GithubRepository implements Repository {
   public owner: string;
   public repository: string;
 
-  get slug(): string {
+  public get slug(): string {
     return `${this.owner}/${this.repository}`;
   }
 
-  get name(): string {
+  public get name(): string {
     return this.struct.full_name;
   }
 
-  get defaultBranch(): string {
+  public get defaultBranch(): string {
     return this.struct.default_branch;
   }
 
-  get allowMergeCommits(): boolean {
+  public get allowMergeCommits(): boolean {
     return Boolean(this.struct.allow_merge_commit);
   }
 
-  get allowSquashCommits(): boolean {
+  public get allowSquashCommits(): boolean {
     return Boolean(this.struct.allow_squash_merge);
   }
 
-  get allowRebaseCommits(): boolean {
+  public get allowRebaseCommits(): boolean {
     return Boolean(this.struct.allow_rebase_merge);
   }
 
-  get parent(): Repository | undefined {
+  public get parent(): Repository | undefined {
     if (!this.struct.parent) {
       return undefined;
     }
-    // fixme: owner and repository should be set here
-    return new GithubRepository(this.client, '', '', this.struct.parent);
+    return new GithubRepository(
+      this.client,
+      this.struct.parent.owner.login,
+      this.struct.parent.name,
+      this.struct.parent
+    );
+  }
+
+  public get url(): string {
+    return this.struct.html_url;
   }
 
   constructor(client: GitHub, owner: string, repository: string, struct: GithubRepositoryStruct) {

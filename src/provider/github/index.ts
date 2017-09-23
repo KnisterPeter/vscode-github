@@ -81,15 +81,17 @@ export interface Reviewers {
 }
 
 export interface GithubRepositoryStruct {
+  owner: {
+    login: string;
+  };
+  name: string;
   full_name: string;
   default_branch: string;
   allow_rebase_merge?: boolean;
   allow_squash_merge?: boolean;
   allow_merge_commit?: boolean;
-  parent?: {
-    full_name: string;
-    default_branch: string;
-  };
+  html_url: string;
+  parent?: GithubRepositoryStruct;
 }
 
 export type MergeMethod = 'merge' | 'squash' | 'rebase';

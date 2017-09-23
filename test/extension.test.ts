@@ -28,7 +28,7 @@ suite('vscode-github extension tests', () => {
 
   test('should parse username and repository from github ssh url', () => {
     const [proto, host, user, repo] = git.parseGitUrl('git@github:username/repo.git');
-    assert.equal(proto, 'git');
+    assert.equal(proto, 'git:');
     assert.equal(host, 'github');
     assert.equal(user, 'username');
     assert.equal(repo, 'repo');
@@ -36,7 +36,7 @@ suite('vscode-github extension tests', () => {
 
   test('should parse username and repository from github ssh:// url', () => {
     const [proto, host, user, repo] = git.parseGitUrl('git://github/username/repo.git');
-    assert.equal(proto, 'git');
+    assert.equal(proto, 'git:');
     assert.equal(host, 'github');
     assert.equal(user, 'username');
     assert.equal(repo, 'repo');

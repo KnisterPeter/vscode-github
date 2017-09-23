@@ -9,6 +9,7 @@ export interface Repository {
   allowSquashCommits: boolean;
   allowRebaseCommits: boolean;
   parent: Repository | undefined;
+  url: string;
 
   getPullRequests(parameters?: ListPullRequestsParameters): Promise<Response<PullRequest[]>>;
   getPullRequest(id: number): Promise<Response<PullRequest>>;

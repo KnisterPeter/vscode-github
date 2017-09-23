@@ -169,9 +169,8 @@ export class WorkflowManager {
   }
 
   public async getGithubUrl(): Promise<string> {
-    const hostname = await git.getGitHostname(this.cwd);
-    const [owner, repo] = await git.getGitProviderOwnerAndRepository(this.cwd);
-    return `https://${hostname}/${owner}/${repo}`;
+    const repository = await this.getRepository();
+    return repository.url;
   }
 
   public async getGithubFileUrl(file: string, line?: number): Promise<string> {
