@@ -79,6 +79,11 @@
         "category": "GitHub"
       },
       {
+        "command": "vscode-github.setGitlabToken",
+        "title": "Setup Gitlab Token...",
+        "category": "GitHub"
+      },
+      {
         "command": "vscode-github.browseProject",
         "title": "Browse project",
         "category": "GitHub"

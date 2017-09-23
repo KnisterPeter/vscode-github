@@ -7,9 +7,9 @@ import {
   CancelReviewBody,
   Comment
 } from '../pull-request';
-import { GitlabUser } from './user';
+import { GitLabUser } from './user';
 
-export class GitlabMergeRequest implements PullRequest {
+export class GitLabMergeRequest implements PullRequest {
 
   public id: number;
   public number: number;
@@ -29,7 +29,7 @@ export class GitlabMergeRequest implements PullRequest {
     throw new Error('Method not implemented.');
   }
 
-  public async assign(_assignees: GitlabUser[]): Promise<void> {
+  public async assign(_assignees: GitLabUser[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 

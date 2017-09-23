@@ -37,36 +37,36 @@ export class SetGithubToken extends Command {
 }
 
 @component({eager: true})
-export class SetGithubEnterpriseToken extends Command {
+export class SetGitLabToken extends Command {
 
-  public id = 'vscode-github.setGitHubEnterpriseToken';
+  public id = 'vscode-github.setGitlabToken';
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
 
   @inject
-  private githubManager: WorkflowManager;
+  private workflowManager: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
     const hostInput = await vscode.window.showInputBox({
       ignoreFocusOut: true,
-      placeHolder: 'GitHub Enterprise Hostname'
+      placeHolder: 'GitLab Hostname'
     });
     if (hostInput) {
       const tokenInput = await vscode.window.showInputBox({
         ignoreFocusOut: true,
         password: true,
-        placeHolder: 'GitHub Enterprise Token'
+        placeHolder: 'GitLab Token (Personal Access Tokens)'
       });
       if (tokenInput) {
         const tokens = this.context.globalState.get<Tokens>('tokens', {});
         tokens[hostInput] = {
           token: tokenInput,
-          provider: 'github'
+          provider: 'gitlab'
         };
         this.context.globalState.update('tokens', tokens);
-        this.githubManager.connect(tokens);
+        this.workflowManager.connect(tokens);
       }
     }
   }

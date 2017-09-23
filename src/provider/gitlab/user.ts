@@ -1,5 +1,5 @@
 import { User } from '../user';
 
-export class GitlabUser implements User<number> {
+export class GitLabUser implements User<number> {
   public id: number;
 }

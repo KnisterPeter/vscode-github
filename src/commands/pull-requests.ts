@@ -141,7 +141,7 @@ export class CreatePullRequest extends PullRequestCommand {
       return;
     }
     progress.report({message: `Gather data`});
-    let [owner, repo] = await git.getGitHubOwnerAndRepository(this.folder.uri.fsPath);
+    let [owner, repo] = await git.getGitProviderOwnerAndRepository(this.folder.uri.fsPath);
     const repository = await this.githubManager.getRepository();
     const items = [{
       label: repository.name,
