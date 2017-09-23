@@ -6,6 +6,8 @@ export class GitLabClient implements Client {
 
   private client: GitLab;
 
+  public name = 'GitLab Client';
+
   constructor(protocol: string, hostname: string, token: string) {
     this.client = getClient(this.getApiEndpoint(protocol, hostname), token);
   }

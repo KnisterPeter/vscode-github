@@ -6,7 +6,7 @@ import {
   CreatePullRequestBody,
   IssuesParameters
 } from '../repository';
-import { GitLab, Project } from './api';
+import { GitLab, Project, GetMergeRequestParameters } from './api';
 import { GitLabMergeRequest } from './merge-request';
 
 export class GitLabRepository implements Repository {
@@ -16,6 +16,10 @@ export class GitLabRepository implements Repository {
 
   public get name(): string {
     return this.project.name;
+  }
+
+  public get pathWithNamespace(): string {
+    return this.project.path_with_namespace;
   }
 
   public get defaultBranch(): string {
@@ -47,9 +51,43 @@ export class GitLabRepository implements Repository {
     this.project = project;
   }
 
-  public async getPullRequests(_parameters?: ListPullRequestsParameters | undefined):
+  public async getPullRequests(parameters: ListPullRequestsParameters = {}):
       Promise<Response<GitLabMergeRequest[]>> {
-    throw new Error('Method not implemented.');
+    function getState(state: ListPullRequestsParameters['state']): GetMergeRequestParameters['state'] {
+      switch (state) {
+        case 'open':
+          return 'opened';
+        case 'close':
+          return 'closed';
+        default:
+          return undefined;
+      }
+    }
+    function getOrderBy(orderBy: ListPullRequestsParameters['sort']): GetMergeRequestParameters['order_by'] {
+      switch (orderBy) {
+        case 'created':
+          return 'created_at';
+        case 'updated':
+          return 'updated_at';
+        default:
+          return undefined;
+      }
+    }
+
+    const params: GetMergeRequestParameters = {};
+    if (parameters.state) {
+      params.state = getState(parameters.state);
+    }
+    if (parameters.sort) {
+      params.order_by = getOrderBy(parameters.sort);
+    }
+    if (parameters.direction) {
+      params.sort = parameters.direction;
+    }
+    const respose = await this.client.getMergeRequests(encodeURIComponent(this.project.path_with_namespace), params);
+    return {
+      body: respose.body.map(mergeRequest => new GitLabMergeRequest(this.client, this, mergeRequest))
+    };
   }
 
   public async getPullRequest(_id: number): Promise<Response<GitLabMergeRequest>> {

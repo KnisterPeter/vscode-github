@@ -10,6 +10,8 @@ export class GithubClient implements Client {
 
   private client: GitHub;
 
+  public name = 'GitHub Client';
+
   constructor(protocol: string, hostname: string, token: string) {
     this.client = getClient(this.getApiEndpoint(protocol, hostname), token);
   }

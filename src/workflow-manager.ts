@@ -42,6 +42,7 @@ export class WorkflowManager {
 
   public async connect(tokens: Tokens): Promise<void> {
     this.provider = await createClient(this.cwd, tokens);
+    this.log(`Connected with provider ${this.provider.name}`);
   }
 
   public async getRepository(): Promise<Repository> {
