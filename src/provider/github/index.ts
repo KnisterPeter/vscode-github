@@ -213,7 +213,8 @@ namespace impl {
   export function githubDecoder(): IPretendDecoder {
     return async response => {
       if (response.status >= 400) {
-        throw new GitHubError(`${response.statusText}`, response);
+        const body = await response.json();
+        throw new GitHubError(`${body.message || response.statusText}`, response);
       }
       const headers = {};
       response.headers.forEach((value, index) => {
@@ -255,11 +256,9 @@ namespace impl {
     @Delete('/repos/:owner/:repo/issues/:number/assignees', true)
     public removeAssignees(): any {/* */}
 
-    @Headers('Accept: application/vnd.github.black-cat-preview+json')
     @Post('/repos/:owner/:repo/pulls/:number/requested_reviewers')
     public requestReview(): any {/* */}
 
-    @Headers('Accept: application/vnd.github.black-cat-preview+json')
     @Delete('/repos/:owner/:repo/pulls/:number/requested_reviewers', true)
     public deleteReviewRequest(): any {/* */}
 

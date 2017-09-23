@@ -15,6 +15,8 @@ export interface PullRequest {
   merge(body: MergeBody): Promise<Response<MergeResult>>;
   assign(assignees: User<any>[]): Promise<void>;
   unassign(): Promise<void>;
+  requestReview(body: RequestReviewBody): Promise<void>;
+  cancelReview(body: CancelReviewBody): Promise<void>;
 }
 
 export interface MergeBody {
@@ -27,4 +29,12 @@ export interface MergeResult {
   sha?: string;
   merged?: boolean;
   message: string;
+}
+
+export interface RequestReviewBody {
+  reviewers: string[];
+}
+
+export interface CancelReviewBody {
+  reviewers: string[];
 }

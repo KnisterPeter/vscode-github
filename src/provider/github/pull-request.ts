@@ -1,5 +1,5 @@
 import { Response } from '../client';
-import { PullRequest, MergeBody, MergeResult } from '../pull-request';
+import { PullRequest, MergeBody, MergeResult, RequestReviewBody, CancelReviewBody } from '../pull-request';
 import { GitHub, PullRequestStruct } from './index';
 import { GithubRepository } from './repository';
 import { GithubUser } from './user';
@@ -88,6 +88,28 @@ export class GithubPullRequest implements PullRequest {
       this.number,
       {
         assignees: []
+      }
+    );
+  }
+
+  public async requestReview(body: RequestReviewBody): Promise<void> {
+    await this.client.requestReview(
+      this.repository.owner,
+      this.repository.repository,
+      this.number,
+      {
+        reviewers: body.reviewers
+      }
+    );
+  }
+
+  public async cancelReview(body: CancelReviewBody): Promise<void> {
+    await this.client.deleteReviewRequest(
+      this.repository.owner,
+      this.repository.repository,
+      this.number,
+      {
+        reviewers: body.reviewers
       }
     );
   }

@@ -218,13 +218,19 @@ export class WorkflowManager {
   }
 
   public async requestReview(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    await this.github.requestReview(owner, repo, issue, {reviewers: [name]});
+    const repository = await this.getRepository();
+    const pullRequest = await repository.getPullRequest(issue);
+    await pullRequest.body.requestReview({
+      reviewers: [name]
+    });
   }
 
   public async deleteReviewRequest(issue: number, name: string): Promise<void> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    await this.github.deleteReviewRequest(owner, repo, issue, {reviewers: [name]});
+    const repository = await this.getRepository();
+    const pullRequest = await repository.getPullRequest(issue);
+    await pullRequest.body.cancelReview({
+      reviewers: [name]
+    });
   }
 
   public async issues(): Promise<Issue[]> {
