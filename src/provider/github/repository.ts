@@ -1,5 +1,11 @@
 import { Response } from '../client';
-import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from '../repository';
+import { Issue } from '../issue';
+import {
+  Repository,
+  ListPullRequestsParameters,
+  CreatePullRequestBody,
+  IssuesParameters
+} from '../repository';
 import { GitHub, GithubRepositoryStruct } from './index';
 import { GithubPullRequest } from './pull-request';
 
@@ -82,4 +88,20 @@ export class GithubRepository implements Repository {
     };
   }
 
+  public async getIssues(parameters: IssuesParameters = {}): Promise<Response<Issue[]>> {
+    const response = await this.client.issues(this.owner, this.repository, {
+      direction: parameters.direction,
+      sort: parameters.sort,
+      state: parameters.state || 'all'
+    });
+    return {
+      body: response.body
+        .filter(issue => !Boolean(issue.pull_request))
+        .map(issue => ({
+          number: issue.number,
+          title: issue.title,
+          url: issue.html_url
+        }))
+    };
+  }
 }
