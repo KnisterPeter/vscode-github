@@ -1,4 +1,5 @@
 import { Response } from './client';
+import { Issue } from './issue';
 import { PullRequest } from './pull-request';
 
 export interface Repository {
@@ -14,6 +15,8 @@ export interface Repository {
   getPullRequest(id: number): Promise<Response<PullRequest>>;
 
   createPullRequest(body: CreatePullRequestBody): Promise<Response<PullRequest>>;
+
+  getIssues(parameters?: IssuesParameters): Promise<Response<Issue[]>>;
 }
 
 export interface ListPullRequestsParameters {
@@ -27,4 +30,10 @@ export interface CreatePullRequestBody {
   targetBranch: string;
   title: string;
   body?: string;
+}
+
+export interface IssuesParameters {
+  state?: 'closed' | 'all' | 'open';
+  sort?: 'created' | 'updated';
+  direction?: 'asc' | 'desc';
 }

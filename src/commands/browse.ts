@@ -32,7 +32,7 @@ export class BrowseOpenIssues extends TokenCommand {
         issue
       })));
       if (selected) {
-        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(selected.issue.html_url));
+        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(selected.issue.url));
       }
     } else {
       vscode.window.showInformationMessage(`No open issues found`);

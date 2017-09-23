@@ -5,6 +5,7 @@ import * as git from './git';
 import {
   Client
 } from './provider/client';
+import { Issue } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 
@@ -12,7 +13,6 @@ import {
   GitHub,
   GitHubError,
   PullRequestStruct,
-  Issue,
   PullRequestComment
 } from './provider/github';
 import { GithubClient } from './provider/github/client';
@@ -46,7 +46,7 @@ export class WorkflowManager {
     console.log(message);
   }
 
-  get connected(): boolean {
+  public get connected(): boolean {
     return Boolean(this.provider);
   }
 
@@ -140,8 +140,7 @@ export class WorkflowManager {
       if (upstream) {
         return (await this.provider.getRepository(`${upstream.owner}/${upstream.repository}`)).body;
       } else {
-        const [owner, name] = await git.getGitHubOwnerAndRepository(this.cwd);
-        return (await this.provider.getRepository(`${owner}/${name}`)).body;
+        return await this.getRepository();
       }
     };
     return await this.doCreatePullRequest(await getRepository(), body);
@@ -162,8 +161,7 @@ export class WorkflowManager {
   }
 
   public async listPullRequests(): Promise<PullRequest[]> {
-    const [owner, name] = await git.getGitHubOwnerAndRepository(this.cwd);
-    const repository = (await this.provider.getRepository(`${owner}/${name}`)).body;
+    const repository = await this.getRepository();
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
@@ -230,13 +228,12 @@ export class WorkflowManager {
   }
 
   public async issues(): Promise<Issue[]> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
-    const result = await this.github.issues(owner, repo, {
+    const repository = await this.getRepository();
+    const result = await repository.getIssues({
       sort: 'updated',
       direction: 'desc'
     });
-    return result.body
-      .filter(issue => !Boolean(issue.pull_request));
+    return result.body;
   }
 
   public async getPullRequestReviewComments(pullRequest: PullRequestStruct): Promise<PullRequestComment[]> {
