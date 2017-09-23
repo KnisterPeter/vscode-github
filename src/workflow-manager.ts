@@ -2,13 +2,12 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import { Client } from './provider/client';
+import { createClient, Client } from './provider/client';
 import { Issue } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 
 import { GitHubError } from './provider/github';
-import { GithubClient } from './provider/github/client';
 
 export interface Tokens {
   [host: string]: {
@@ -41,29 +40,12 @@ export class WorkflowManager {
     return Boolean(this.provider);
   }
 
-  public async getGitHubHostname(): Promise<string> {
-    return git.getGitHubHostname(this.cwd);
-  }
-
   public async connect(tokens: Tokens): Promise<void> {
-    const hostname = await git.getGitHubHostname(this.cwd);
-    this.provider = new GithubClient(await this.getApiEndpoint(), tokens[hostname].token);
-  }
-
-  private async getApiEndpoint(): Promise<string> {
-    const hostname = await git.getGitHubHostname(this.cwd);
-    if (hostname === 'github.com') {
-      return 'https://api.github.com';
-    }
-    if (hostname.startsWith('http')) {
-      return `${hostname}/api/v3`;
-    }
-    const protocol = git.getGitHubProtocol(this.cwd);
-    return `${protocol}//${hostname}/api/v3`;
+    this.provider = await createClient(this.cwd, tokens);
   }
 
   public async getRepository(): Promise<Repository> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const [owner, repository] = await git.getGitProviderOwnerAndRepository(this.cwd);
     return (await this.provider.getRepository(`${owner}/${repository}`)).body;
   }
 
@@ -182,19 +164,19 @@ export class WorkflowManager {
   }
 
   public async getGithubSlug(): Promise<string> {
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const [owner, repo] = await git.getGitProviderOwnerAndRepository(this.cwd);
     return `${owner}/${repo}`;
   }
 
   public async getGithubUrl(): Promise<string> {
-    const hostname = await git.getGitHubHostname(this.cwd);
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const hostname = await git.getGitHostname(this.cwd);
+    const [owner, repo] = await git.getGitProviderOwnerAndRepository(this.cwd);
     return `https://${hostname}/${owner}/${repo}`;
   }
 
   public async getGithubFileUrl(file: string, line?: number): Promise<string> {
-    const hostname = await git.getGitHubHostname(this.cwd);
-    const [owner, repo] = await git.getGitHubOwnerAndRepository(this.cwd);
+    const hostname = await git.getGitHostname(this.cwd);
+    const [owner, repo] = await git.getGitProviderOwnerAndRepository(this.cwd);
     const branch = await git.getCurrentBranch(this.cwd);
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${file}#L${(line || 0) + 1}`;
   }

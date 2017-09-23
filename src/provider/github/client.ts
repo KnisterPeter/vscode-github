@@ -10,8 +10,18 @@ export class GithubClient implements Client {
 
   private client: GitHub;
 
-  constructor(endpoint: string, token: string) {
-    this.client = getClient(endpoint, token);
+  constructor(protocol: string, hostname: string, token: string) {
+    this.client = getClient(this.getApiEndpoint(protocol, hostname), token);
+  }
+
+  private getApiEndpoint(protocol: string, hostname: string): string {
+    if (hostname === 'github.com') {
+      return 'https://api.github.com';
+    }
+    if (hostname.startsWith('http')) {
+      return `${hostname}/api/v3`;
+    }
+    return `${protocol}//${hostname}/api/v3`;
   }
 
   public async getRepository(rid: string): Promise<Response<GithubRepository>> {

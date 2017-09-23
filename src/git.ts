@@ -25,23 +25,23 @@ function getRemoteName(): string {
  * @return {Promise<string[]>} A tuple of username and repository (e.g. KnisterPeter/vscode-github)
  * @throws Throws if the could not be parsed as a github url
  */
-export async function getGitHubOwnerAndRepository(cwd: string): Promise<string[]> {
+export async function getGitProviderOwnerAndRepository(cwd: string): Promise<string[]> {
   const defaultUpstream = vscode.workspace.getConfiguration('github').get<string|undefined>('upstream', undefined);
   if (defaultUpstream) {
     return Promise.resolve(defaultUpstream.split('/'));
   }
-  return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd)).slice(2, 4);
+  return (await getGitProviderOwnerAndRepositoryFromGitConfig(cwd)).slice(2, 4);
 }
 
-export async function getGitHubHostname(cwd: string): Promise<string> {
-  return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd))[1];
+export async function getGitHostname(cwd: string): Promise<string> {
+  return (await getGitProviderOwnerAndRepositoryFromGitConfig(cwd))[1];
 }
 
-export async function getGitHubProtocol(cwd: string): Promise<string> {
-  return (await getGitHubOwnerAndRepositoryFromGitConfig(cwd))[0];
+export async function getGitProtocol(cwd: string): Promise<string> {
+  return (await getGitProviderOwnerAndRepositoryFromGitConfig(cwd))[0];
 }
 
-async function getGitHubOwnerAndRepositoryFromGitConfig(cwd: string): Promise<string[]> {
+async function getGitProviderOwnerAndRepositoryFromGitConfig(cwd: string): Promise<string[]> {
   const remote = (await execa('git',
     `config --local --get remote.${getRemoteName()}.url`.split(' '), {cwd})).stdout.trim();
   if (!remote.length) {
@@ -54,30 +54,30 @@ export function parseGitUrl(remote: string): string[] {
   // git protocol remotes, may be git@github:username/repo.git
   // or git://github/user/repo.git, domain names are not case-sensetive
   if (remote.startsWith('git@') || remote.startsWith('git://')) {
-    return parseGithubUrl(remote);
+    return parseGitProviderUrl(remote);
   }
 
-  return getGitHubOwnerAndRepositoryFromHttpUrl(remote);
+  return getGitProviderOwnerAndRepositoryFromHttpUrl(remote);
 }
 
-export function parseGithubUrl(remote: string): string[] {
+export function parseGitProviderUrl(remote: string): string[] {
   const match = new RegExp('^git(?:@|://)([^:/]+)(?::|:/|/)([^/]+)/(.+?)(?:.git)?$', 'i').exec(remote);
   if (!match) {
-    throw new Error(`'${remote}' does not seem to be a valid github url.`);
+    throw new Error(`'${remote}' does not seem to be a valid git provider url.`);
   }
   return ['git', ...match.slice(1, 4)];
 }
 
-function getGitHubOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
+function getGitProviderOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
   // it must be http or https based remote
   const { protocol = 'https:', hostname, pathname } = parse(remote);
   // domain names are not case-sensetive
   if (!hostname || !pathname) {
-    throw new Error('Not a Github remote!');
+    throw new Error('Not a Provider remote!');
   }
   const match = pathname.match(/\/(.*?)\/(.*?)(?:.git)?$/);
   if (!match) {
-    throw new Error('Not a Github remote!');
+    throw new Error('Not a Provider remote!');
   }
   return [protocol, hostname, ...match.slice(1, 3)];
 }

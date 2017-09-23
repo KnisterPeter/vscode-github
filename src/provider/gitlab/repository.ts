@@ -6,27 +6,53 @@ import {
   CreatePullRequestBody,
   IssuesParameters
 } from '../repository';
-import { GitlabMergeRequest } from './merge-request';
+import { GitLab, Project } from './api';
+import { GitLabMergeRequest } from './merge-request';
 
-export class GitlabRepository implements Repository {
+export class GitLabRepository implements Repository {
 
-  public name: string;
-  public defaultBranch: string;
-  public allowMergeCommits: boolean;
-  public allowSquashCommits: boolean;
-  public allowRebaseCommits: boolean;
-  public parent: Repository | undefined;
+  private client: GitLab;
+  private project: Project;
+
+  public get name(): string {
+    return this.project.name;
+  }
+
+  public get defaultBranch(): string {
+    return this.project.default_branch;
+  }
+
+  public get allowMergeCommits(): boolean {
+    return this.project.merge_requests_enabled;
+  }
+
+  public get allowSquashCommits(): boolean {
+    return false;
+  }
+
+  public get allowRebaseCommits(): boolean {
+    return false;
+  }
+
+  public get parent(): Repository | undefined {
+    return undefined;
+  }
+
+  constructor(client: GitLab, project: Project) {
+    this.client = client;
+    this.project = project;
+  }
 
   public async getPullRequests(_parameters?: ListPullRequestsParameters | undefined):
-      Promise<Response<GitlabMergeRequest[]>> {
+      Promise<Response<GitLabMergeRequest[]>> {
     throw new Error('Method not implemented.');
   }
 
-  public async getPullRequest(_id: number): Promise<Response<GitlabMergeRequest>> {
+  public async getPullRequest(_id: number): Promise<Response<GitLabMergeRequest>> {
     throw new Error('Method not implemented.');
   }
 
-  public async createPullRequest(_body: CreatePullRequestBody): Promise<Response<GitlabMergeRequest>> {
+  public async createPullRequest(_body: CreatePullRequestBody): Promise<Response<GitLabMergeRequest>> {
     throw new Error('Method not implemented.');
   }
 
