@@ -57,7 +57,7 @@ export class GithubRepository implements Repository {
     this.struct = struct;
   }
 
-  public async listPullRequests(parameters?: ListPullRequestsParameters | undefined):
+  public async getPullRequests(parameters?: ListPullRequestsParameters | undefined):
       Promise<Response<GithubPullRequest[]>> {
     const response = await this.client.listPullRequests(this.owner, this.repository, parameters);
     const body = response.body.map(pr => new GithubPullRequest(this.client, this, pr));
