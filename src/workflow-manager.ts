@@ -2,19 +2,12 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import * as git from './git';
-import {
-  Client
-} from './provider/client';
+import { Client } from './provider/client';
 import { Issue } from './provider/issue';
-import { PullRequest, MergeBody, MergeMethod } from './provider/pull-request';
+import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 
-import {
-  GitHub,
-  GitHubError,
-  PullRequestStruct,
-  PullRequestComment
-} from './provider/github';
+import { GitHub, GitHubError } from './provider/github';
 import { GithubClient } from './provider/github/client';
 
 export interface Tokens {
@@ -242,9 +235,8 @@ export class WorkflowManager {
     return result.body;
   }
 
-  public async getPullRequestReviewComments(pullRequest: PullRequestStruct): Promise<PullRequestComment[]> {
-    const [owner, repository] = await git.getGitHubOwnerAndRepository(this.cwd);
-    return (await this.github.getPullRequestComments(owner, repository, pullRequest.number)).body;
+  public async getPullRequestReviewComments(pullRequest: PullRequest): Promise<Comment[]> {
+    return (await pullRequest.getComments()).body;
   }
 
 }
