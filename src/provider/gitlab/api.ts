@@ -3,19 +3,28 @@ import {
   Interceptor,
   IPretendRequestInterceptor,
   IPretendDecoder,
-  Get
+  Get,
+  Post
 } from 'pretend';
 
 export interface GitLab {
   getProject(id: string): Promise<GitLabResponse<Project>>;
   getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
   getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
+  createMergeRequest(id: string, body: CreateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
 }
 
 export interface GitLabResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface CreateMergeRequestBody {
+  source_branch: string;
+  target_branch: string;
+  title: string;
+  description?: string;
 }
 
 export interface GetMergeRequestParameters {
@@ -49,6 +58,7 @@ export function getClient(endpoint: string, token: string): GitLab {
   return Pretend
     .builder()
     .requestInterceptor(impl.gitlabTokenAuthenticator(token))
+    .requestInterceptor(impl.formEncoding())
     .interceptor(impl.logger())
     .decode(impl.gitlabDecoder())
     .target(impl.GitLabBlueprint, endpoint);
@@ -82,6 +92,24 @@ namespace impl {
     };
   }
 
+  export function formEncoding(): IPretendRequestInterceptor {
+    return request => {
+      if (request.options.method === 'POST') {
+        request.options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        if (request.options.body) {
+          const body = JSON.parse(request.options.body);
+          const encodedBody = Object.keys(body)
+            .reduce((query, name) => {
+              return `${query}&${name}=${encodeURIComponent(body[name])}`;
+            }, '')
+            .replace(/^&/, '');
+          request.options.body = encodedBody;
+        }
+      }
+      return request;
+    };
+  }
+
   export function gitlabDecoder(): IPretendDecoder {
     return async response => {
       if (response.status >= 400) {
@@ -107,6 +135,8 @@ namespace impl {
     public getMergeRequests(): any {/* */}
     @Get('/projects/:id/merge_requests/:merge_request_iid')
     public getMergeRequest(): any {/* */}
+    @Post('/projects/:id/merge_requests')
+    public createMergeRequest(): any {/* */}
   }
 
 }
