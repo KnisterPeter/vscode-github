@@ -92,9 +92,9 @@ export class WorkflowManager {
       throw new Error('No current branch');
     }
     const defaultBranch = await this.getDefaultBranch();
-    this.log(`Create pull request on branch ${branch}`);
+    this.log(`Create pull request on branch '${branch}'`);
     const firstCommit = await git.getFirstCommitOnBranch(branch, defaultBranch, this.cwd);
-    this.log(`First commit on branch ${firstCommit}`);
+    this.log(`First commit on branch '${firstCommit}'`);
     const requestBody = await git.getPullRequestBody(firstCommit, this.cwd);
     if (requestBody === undefined) {
       vscode.window.showWarningMessage(
