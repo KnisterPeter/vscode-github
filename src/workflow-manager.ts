@@ -91,8 +91,9 @@ export class WorkflowManager {
     if (!branch) {
       throw new Error('No current branch');
     }
+    const defaultBranch = await this.getDefaultBranch();
     this.log(`Create pull request on branch ${branch}`);
-    const firstCommit = await git.getFirstCommitOnBranch(branch, this.cwd);
+    const firstCommit = await git.getFirstCommitOnBranch(branch, defaultBranch, this.cwd);
     this.log(`First commit on branch ${firstCommit}`);
     const requestBody = await git.getPullRequestBody(firstCommit, this.cwd);
     if (requestBody === undefined) {
@@ -102,7 +103,7 @@ export class WorkflowManager {
     }
     const body: CreatePullRequestBody = {
       sourceBranch: branch,
-      targetBranch: upstream ? upstream.branch : await this.getDefaultBranch(),
+      targetBranch: upstream ? upstream.branch : defaultBranch,
       title: await git.getCommitMessage(firstCommit, this.cwd),
       body: requestBody
     };
