@@ -92,10 +92,8 @@ export async function getCommitMessage(sha: string, cwd: string): Promise<string
   return (await execa('git', ['log', '-n', '1', '--format=%s', sha], {cwd})).stdout.trim();
 }
 
-export async function getFirstCommitOnBranch(branch: string, cwd: string): Promise<string> {
-  const remoteName = getRemoteName();
-  return (await execa('git', ['log', '--reverse', '--right-only', '--format=%h',
-    `${remoteName}/master..${remoteName}/${branch}`], {cwd})).stdout.trim().split('\n')[0];
+export async function getFirstCommitOnBranch(branch: string, defaultBranch: string, cwd: string): Promise<string> {
+  return (await execa('git', ['rev-list', `^${defaultBranch}`, branch], {cwd})).stdout.trim().split('\n')[0];
 }
 
 export async function getCommitBody(sha: string, cwd: string): Promise<string> {
