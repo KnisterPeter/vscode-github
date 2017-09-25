@@ -6,7 +6,7 @@ import {
   CreatePullRequestBody,
   IssuesParameters
 } from '../repository';
-import { GitLab, Project, GetMergeRequestParameters } from './api';
+import { GitLab, Project, GetMergeRequestParameters, CreateMergeRequestBody } from './api';
 import { GitLabMergeRequest } from './merge-request';
 
 export class GitLabRepository implements Repository {
@@ -100,8 +100,22 @@ export class GitLabRepository implements Repository {
     };
   }
 
-  public async createPullRequest(_body: CreatePullRequestBody): Promise<Response<GitLabMergeRequest>> {
-    throw new Error('Method not implemented.');
+  public async createPullRequest(body: CreatePullRequestBody): Promise<Response<GitLabMergeRequest>> {
+    const gitlabBody: CreateMergeRequestBody =  {
+      source_branch: body.sourceBranch,
+      target_branch: body.targetBranch,
+      title: body.title
+    };
+    if (body.body) {
+     gitlabBody.description = body.body;
+    }
+    const response = await this.client.createMergeRequest(
+      encodeURIComponent(this.project.path_with_namespace),
+      gitlabBody
+    );
+    return {
+      body: new GitLabMergeRequest(this.client, this, response.body)
+    };
   }
 
   public async getIssues(_parameters?: IssuesParameters | undefined): Promise<Response<Issue[]>> {
