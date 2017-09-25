@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.20.0"></a>
+# [0.20.0](https://github.com/KnisterPeter/vscode-github/compare/v0.19.0...v0.20.0) (2017-09-25)
+
+
+### Bug Fixes
+
+* corrected test and opened api ([c9c8a46](https://github.com/KnisterPeter/vscode-github/commit/c9c8a46))
+* currect lookup of first commit on branch ([f79b2dd](https://github.com/KnisterPeter/vscode-github/commit/f79b2dd))
+* extra log output ([31059c1](https://github.com/KnisterPeter/vscode-github/commit/31059c1)), closes [#114](https://github.com/KnisterPeter/vscode-github/issues/114)
+* protocol includes colon ([929dc8f](https://github.com/KnisterPeter/vscode-github/commit/929dc8f))
+
+
+### Features
+
+* add browse project for gitlab ([43fc258](https://github.com/KnisterPeter/vscode-github/commit/43fc258))
+* add interfaces and stubs for gitlab ([802623f](https://github.com/KnisterPeter/vscode-github/commit/802623f))
+* add support for http with github enterprise ([f7f9d42](https://github.com/KnisterPeter/vscode-github/commit/f7f9d42)), closes [#158](https://github.com/KnisterPeter/vscode-github/issues/158)
+* connect to different providers ([9f5bda1](https://github.com/KnisterPeter/vscode-github/commit/9f5bda1))
+* enable gitlab support for creating merge request ([569515e](https://github.com/KnisterPeter/vscode-github/commit/569515e))
+* list merge requests on a project ([7423018](https://github.com/KnisterPeter/vscode-github/commit/7423018))
+* load single merge request ([84d04d6](https://github.com/KnisterPeter/vscode-github/commit/84d04d6))
+* migrate token storage to support providers ([f79beb1](https://github.com/KnisterPeter/vscode-github/commit/f79beb1))
+* remove command prefix for telemetry data ([34293f7](https://github.com/KnisterPeter/vscode-github/commit/34293f7))
+
+
+
 <a name="0.19.0"></a>
 # [0.19.0](https://github.com/KnisterPeter/vscode-github/compare/v0.18.1...v0.19.0) (2017-09-06)
 
