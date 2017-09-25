@@ -75,7 +75,8 @@ export class WorkflowManager {
     if (list.length !== 1) {
       return undefined;
     }
-    return list[0];
+    const repository = await this.getRepository();
+    return (await repository.getPullRequest(list[0].number)).body;
   }
 
   public async hasPullRequestForCurrentBranch(): Promise<boolean> {
