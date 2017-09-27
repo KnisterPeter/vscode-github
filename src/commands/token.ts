@@ -13,7 +13,7 @@ export class SetGithubToken extends Command {
   private context: vscode.ExtensionContext;
 
   @inject
-  private githubManager: WorkflowManager;
+  private workflowManager: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -30,7 +30,44 @@ export class SetGithubToken extends Command {
         provider: 'github'
       };
       this.context.globalState.update('tokens', tokens);
-      await this.githubManager.connect(tokens);
+      await this.workflowManager.connect(tokens);
+    }
+  }
+
+}
+
+@component({eager: true})
+export class SetGithubEnterpriseToken extends Command {
+
+  public id = 'vscode-github.setGitHubEnterpriseToken';
+
+  @inject('vscode.ExtensionContext')
+  private context: vscode.ExtensionContext;
+
+  @inject
+  private workflowManager: WorkflowManager;
+
+  public async run(): Promise<void> {
+    this.track('execute');
+    const hostInput = await vscode.window.showInputBox({
+      ignoreFocusOut: true,
+      placeHolder: 'GitHub Enterprise Hostname'
+    });
+    if (hostInput) {
+      const tokenInput = await vscode.window.showInputBox({
+        ignoreFocusOut: true,
+        password: true,
+        placeHolder: 'GitHub Enterprise Token'
+      });
+      if (tokenInput) {
+        const tokens = this.context.globalState.get<Tokens>('tokens', {});
+        tokens[hostInput] = {
+          token: tokenInput,
+          provider: 'github'
+        };
+        this.context.globalState.update('tokens', tokens);
+        this.workflowManager.connect(tokens);
+      }
     }
   }
 
