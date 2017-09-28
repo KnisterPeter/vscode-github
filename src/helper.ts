@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 
+import { Configuration } from './configuration';
+
 export function showProgress(_target: Object, _propertyKey: string | symbol,
     descriptor: PropertyDescriptor): PropertyDescriptor {
   const fn = descriptor.value;
@@ -13,4 +15,12 @@ export function showProgress(_target: Object, _propertyKey: string | symbol,
     });
   };
   return descriptor;
+}
+
+export function getConfiguration(): Configuration {
+  const config = vscode.workspace.getConfiguration().get<Configuration>('github');
+  if (!config) {
+    throw new Error('Empty configuration. This is likely a bug.');
+  }
+  return config;
 }

@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 import { TokenCommand } from '../command';
 import * as git from '../git';
-import { showProgress } from '../helper';
+import { getConfiguration, showProgress } from '../helper';
 import { MergeMethod } from '../provider/github';
 import { PullRequest } from '../provider/pull-request';
 import { StatusBarManager } from '../status-bar-manager';
@@ -193,9 +193,9 @@ export class MergePullRequest extends PullRequestCommand {
 
   @showProgress
   private async getMergeMethdod(): Promise<MergeMethod | undefined> {
-    const preferedMethod = vscode.workspace.getConfiguration('github').get<MergeMethod>('preferedMergeMethod');
-    if (preferedMethod) {
-      return preferedMethod;
+    const config = getConfiguration();
+    if (config.preferedMergeMethod) {
+      return config.preferedMergeMethod;
     }
     const items: { label: string; description: string; method: MergeMethod; }[] = [];
     const enabledMethods = await this.githubManager.getEnabledMergeMethods();

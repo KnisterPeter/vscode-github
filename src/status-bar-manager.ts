@@ -1,7 +1,9 @@
 import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
+import { Configuration } from './configuration';
 import * as git from './git';
+import { getConfiguration } from './helper';
 import { GitHubError, PullRequestStatus } from './provider/github';
 import { PullRequest } from './provider/pull-request';
 import { WorkflowManager} from './workflow-manager';
@@ -18,9 +20,33 @@ const githubPullRequestIcon = '$(git-pull-request)';
 @component
 export class StatusBarManager {
 
-  private customStatusBarCommand: string | null;
+  private configuration: Configuration;
 
-  private refreshInterval: number;
+  private get customStatusBarCommand(): string | null {
+    // #202: migrate from statusBarCommand to statusbar.command
+    return this.configuration.statusBarCommand || this.configuration.statusbar.command;
+  }
+
+  private get refreshInterval(): number {
+    // #202: migrate from refreshPullRequestStatus to statusbar.refresh
+    return (this.configuration.refreshPullRequestStatus || this.configuration.statusbar.refresh) * 1000;
+  }
+
+  private get colored(): boolean {
+    return this.configuration.statusbar.color;
+  }
+
+  private get successText(): string | undefined {
+    return this.configuration.statusbar.successText;
+  }
+
+  private get pendingText(): string | undefined {
+    return this.configuration.statusbar.pendingText;
+  }
+
+  private get failureText(): string | undefined {
+    return this.configuration.statusbar.failureText;
+  }
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
@@ -42,14 +68,14 @@ export class StatusBarManager {
 
   @initialize
   protected init(): void {
-    const config = vscode.workspace.getConfiguration('github');
-    this.customStatusBarCommand = config.get('statusBarCommand', null);
-    this.refreshInterval = config.get('refreshPullRequestStatus', 5) * 1000;
+    this.configuration = getConfiguration();
 
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.statusBar.command = this.customStatusBarCommand || '';
     this.statusBar.text = `${githubPullRequestIcon} ...`;
-    this.statusBar.color = colors.none;
+    if (this.colored) {
+      this.statusBar.color = colors.none;
+    }
     this.context.subscriptions.push(this.statusBar);
 
     this.refreshStatus();
@@ -78,7 +104,9 @@ export class StatusBarManager {
       this.updatePullRequestStatus();
     } else {
       this.statusBar.show();
-      this.statusBar.color = colors.none;
+      if (this.colored) {
+        this.statusBar.color = colors.none;
+      }
       this.statusBar.text = `${githubPullRequestIcon}`;
       if (!this.customStatusBarCommand) {
         this.statusBar.tooltip = 'Not on a pull request branch. Click to checkout pull request';
@@ -108,16 +136,40 @@ export class StatusBarManager {
 
   private async showPullRequestStauts(pullRequest: PullRequest): Promise<void> {
     const status = await this.calculateMergableStatus(pullRequest);
-    this.statusBar.color = colors[status];
-    this.statusBar.text = `${githubPullRequestIcon} #${pullRequest.number} ${status}`;
+    if (this.colored) {
+      this.statusBar.color = colors[status];
+    }
+    this.statusBar.text = this.getPullRequestStautsText(pullRequest, status);
     if (!this.customStatusBarCommand) {
       this.statusBar.tooltip = status === 'success' ? `Merge pull-request #${pullRequest.number}` : '';
       this.statusBar.command = status === 'success' ? 'vscode-github.mergePullRequest' : '';
     }
   }
 
+  // tslint:disable-next-line:cyclomatic-complexity
+  private getPullRequestStautsText(pullRequest: PullRequest, status: PullRequestStatus): string {
+    let text = '${icon} #${prNumber} ${status}';
+    switch (status) {
+      case 'success':
+        text = this.successText || text;
+        break;
+      case 'pending':
+        text = this.pendingText || text;
+        break;
+        case 'failure':
+        text = this.failureText || text;
+        break;
+      }
+    return text
+      .replace('${icon}', githubPullRequestIcon)
+      .replace('${prNumber}', String(pullRequest.number))
+      .replace('${status}', status);
+  }
+
   private showCreatePullRequestStatus(): void {
-    this.statusBar.color = colors.none;
+    if (this.colored) {
+      this.statusBar.color = colors.none;
+    }
     this.statusBar.text = `${githubPullRequestIcon} Create PR`;
     if (!this.customStatusBarCommand) {
       this.statusBar.tooltip = 'Create pull-request for current branch';
