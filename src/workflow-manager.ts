@@ -121,6 +121,36 @@ export class WorkflowManager {
     return await this.doCreatePullRequest(await getRepository(), body);
   }
 
+  public async createPullRequestFromData(
+      {
+        sourceBranch,
+        targetBranch,
+        title,
+        body
+      }:
+      {
+        sourceBranch: string;
+        targetBranch: string;
+        title: string;
+        body?: string;
+      }
+  ): Promise<PullRequest|undefined> {
+    if (await this.hasPullRequestForCurrentBranch()) {
+      return undefined;
+    }
+    this.log(`Create pull request on branch '${targetBranch}'`);
+    const pullRequestBody: CreatePullRequestBody = {
+      sourceBranch,
+      targetBranch,
+      title,
+      body
+    };
+    this.channel.appendLine('Create pull request:');
+    this.channel.appendLine(JSON.stringify(pullRequestBody, undefined, ' '));
+
+    return await this.doCreatePullRequest(await this.getRepository(), pullRequestBody);
+  }
+
   private async doCreatePullRequest(repository: Repository,
       body: CreatePullRequestBody): Promise<PullRequest> {
     try {
