@@ -28,15 +28,11 @@
   "contributes": {
     "configuration": {
       "title": "GitHub configuration",
+      "type": "object",
       "properties": {
         "github.preferedMergeMethod": {
           "type": "string",
           "description": "By default the extension asks the user during merge process. This could be set to on of 'merge', 'squash' or 'rebase' to define the prefered method and not to be asked every time."
-        },
-        "github.refreshPullRequestStatus": {
-          "type": "number",
-          "default": 5,
-          "description": "Interval in seconds to refresh the current pull request status."
         },
         "github.remoteName": {
           "type": "string",
@@ -57,13 +53,35 @@
           "default": "off",
           "description": "By default the pull request description is the first commit message. When this property is set, the user is asked for a description when creating the PR. This can be a single-line description via an input dialog ('singleLine') or a multi-line markdown description via the editor configured in git ('gitEditor')."
         },
-        "github.statusBarCommand": {
+        "github.statusbar.command": {
           "type": [
             "string",
             "null"
           ],
           "description": "Defines which command is executed when clicking the status bar item. Default behaviour is the create-pull-request-then-merge cycle (different command based on state). For example to open the current pull request set this to 'vscode-github.browserSimplePullRequest'",
           "default": null
+        },
+        "github.statusbar.refresh": {
+          "type": "number",
+          "default": 5,
+          "description": "Interval in seconds to refresh the current pull request status."
+        },
+        "github.statusbar.color": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enables or disables the coloring of the status bar based on the mergeable state."
+        },
+        "github.statusbar.successText": {
+          "type": "string",
+          "description": "Overrides the default success text."
+        },
+        "github.statusbar.pendingText": {
+          "type": "string",
+          "description": "Overrides the default pending text."
+        },
+        "github.statusbar.failureText": {
+          "type": "string",
+          "description": "Overrides the default failure text."
         }
       }
     },

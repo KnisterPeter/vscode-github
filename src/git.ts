@@ -4,6 +4,8 @@ import { readFile, unlink } from 'sander';
 import { parse } from 'url';
 import * as vscode from 'vscode';
 
+import { getConfiguration } from './helper';
+
 export async function checkExistence(cwd: string): Promise<boolean> {
   try {
     await execa('git', ['--version'], {cwd});
@@ -14,7 +16,7 @@ export async function checkExistence(cwd: string): Promise<boolean> {
 }
 
 function getRemoteName(): string {
-  return vscode.workspace.getConfiguration('github').get('remoteName', 'origin');
+  return getConfiguration().remoteName;
 }
 
 /**
@@ -26,7 +28,7 @@ function getRemoteName(): string {
  * @throws Throws if the could not be parsed as a github url
  */
 export async function getGitProviderOwnerAndRepository(cwd: string): Promise<string[]> {
-  const defaultUpstream = vscode.workspace.getConfiguration('github').get<string|undefined>('upstream', undefined);
+  const defaultUpstream = getConfiguration().upstream;
   if (defaultUpstream) {
     return Promise.resolve(defaultUpstream.split('/'));
   }
@@ -101,7 +103,7 @@ export async function getCommitBody(sha: string, cwd: string): Promise<string> {
 }
 
 export async function getPullRequestBody(sha: string, cwd: string): Promise<string|undefined> {
-  const bodyMethod = vscode.workspace.getConfiguration('github').get<string>('customPullRequestDescription');
+  const bodyMethod = getConfiguration().customPullRequestDescription;
 
   switch (bodyMethod) {
     case 'singleLine':
