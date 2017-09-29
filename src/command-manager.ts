@@ -24,7 +24,7 @@ export class CommandManager implements LifecycleListener {
   public onCreate(component: any): void {
     if (component instanceof Command) {
       this.context.subscriptions.push(
-        vscode.commands.registerCommand(component.id, () => component.run())
+        vscode.commands.registerCommand(component.id, (...args: any[]) => component.run(...args))
       );
     }
   }

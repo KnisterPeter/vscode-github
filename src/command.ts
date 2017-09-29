@@ -12,7 +12,7 @@ export abstract class Command {
 
   public abstract get id(): string;
 
-  public abstract run(progress?: vscode.Progress<{ message?: string }>): void;
+  public abstract run(): void;
 
   protected track(message: string): void {
     const properties = {
@@ -34,7 +34,7 @@ export abstract class TokenCommand extends Command {
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
-  public async run(progress?: vscode.Progress<{ message?: string | undefined; }>): Promise<void> {
+  public async run(...args: any[]): Promise<void> {
     if (!(this.githubManager && this.githubManager.connected && this.folder)) {
       this.track('execute without token');
       vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
@@ -43,13 +43,13 @@ export abstract class TokenCommand extends Command {
     }
     this.track('execute');
     try {
-      await this.runWithToken(progress);
+      await this.runWithToken(...args);
     } catch (e) {
       this.logAndShowError(e);
     }
   }
 
-  protected abstract async runWithToken(progress?: vscode.Progress<{ message?: string | undefined; }>): Promise<void>;
+  protected abstract async runWithToken(...args: any[]): Promise<void>;
 
   private logAndShowError(e: Error): void {
     this.track('failed');
