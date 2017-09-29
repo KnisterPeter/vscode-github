@@ -102,14 +102,44 @@ export class WorkflowManager {
         `For some unknown reason no pull request body could be build; Aborting operation`);
       return undefined;
     }
-    const body: CreatePullRequestBody = {
+
+    return await this.createPullRequestFromData({
+      upstream,
       sourceBranch: branch,
       targetBranch: upstream ? upstream.branch : defaultBranch,
       title: await git.getCommitMessage(firstCommit, this.cwd),
       body: requestBody
+    });
+  }
+
+  public async createPullRequestFromData(
+      {
+        upstream,
+        sourceBranch,
+        targetBranch,
+        title,
+        body
+      }:
+      {
+        upstream?: {owner: string, repository: string};
+        sourceBranch: string;
+        targetBranch: string;
+        title: string;
+        body?: string;
+      }
+  ): Promise<PullRequest|undefined> {
+    if (await this.hasPullRequestForCurrentBranch()) {
+      return undefined;
+    }
+    this.log(`Create pull request on branch '${sourceBranch}'`);
+    const pullRequestBody: CreatePullRequestBody = {
+      sourceBranch,
+      targetBranch,
+      title,
+      body
     };
     this.channel.appendLine('Create pull request:');
-    this.channel.appendLine(JSON.stringify(body, undefined, ' '));
+    this.channel.appendLine(JSON.stringify(pullRequestBody, undefined, ' '));
 
     const getRepository = async() => {
       if (upstream) {
@@ -118,7 +148,7 @@ export class WorkflowManager {
         return await this.getRepository();
       }
     };
-    return await this.doCreatePullRequest(await getRepository(), body);
+    return await this.doCreatePullRequest(await getRepository(), pullRequestBody);
   }
 
   private async doCreatePullRequest(repository: Repository,

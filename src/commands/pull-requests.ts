@@ -103,6 +103,34 @@ export class CheckoutPullRequest extends PullRequestCommand {
 }
 
 @component({eager: true})
+export class CreatePullRequestWithParameters extends PullRequestCommand {
+
+  public id = 'vscode-github.createPullRequestWithParameters';
+
+  @inject
+  private statusBarManager: StatusBarManager;
+
+  @showProgress
+  protected async runWithToken(sourceBranch: string, targetBranch: string,
+      title: string, body?: string): Promise<void> {
+    if (!this.requireRemoteTrackingBranch()) {
+      return;
+    }
+    const pullRequest = await this.githubManager.createPullRequestFromData({
+      sourceBranch,
+      targetBranch,
+      title,
+      body
+    });
+    if (pullRequest) {
+      this.statusBarManager.updateStatus();
+      this.showPullRequestNotification(pullRequest);
+    }
+  }
+
+}
+
+@component({eager: true})
 export class CreateSimplePullRequest extends PullRequestCommand {
 
   public id = 'vscode-github.createSimplePullRequest';
@@ -111,12 +139,10 @@ export class CreateSimplePullRequest extends PullRequestCommand {
   private statusBarManager: StatusBarManager;
 
   @showProgress
-  protected async runWithToken(progress: vscode.Progress<{ message?: string | undefined; }>): Promise<void> {
-    progress.report({ message: `Check preconditions` });
+  protected async runWithToken(): Promise<void> {
     if (!this.requireRemoteTrackingBranch()) {
       return;
     }
-    progress.report({ message: `Create pull requets` });
     const pullRequest = await this.githubManager.createPullRequest();
     if (pullRequest) {
       this.statusBarManager.updateStatus();
@@ -135,12 +161,10 @@ export class CreatePullRequest extends PullRequestCommand {
   private statusBarManager: StatusBarManager;
 
   @showProgress
-  protected async runWithToken(progress: vscode.Progress<{ message?: string | undefined; }>): Promise<void> {
-    progress.report({ message: `Check preconditions` });
+  protected async runWithToken(): Promise<void> {
     if (!this.requireRemoteTrackingBranch()) {
       return;
     }
-    progress.report({message: `Gather data`});
     let [owner, repo] = await git.getGitProviderOwnerAndRepository(this.folder.uri.fsPath);
     const repository = await this.githubManager.getRepository();
     const items = [{
@@ -169,7 +193,6 @@ export class CreatePullRequest extends PullRequestCommand {
     if (!branch) {
       return;
     }
-    progress.report({ message: `Create pull request` });
     const pullRequest = await this.githubManager.createPullRequest({
       owner,
       repository: repo,
@@ -225,13 +248,11 @@ export class MergePullRequest extends PullRequestCommand {
   }
 
   @showProgress
-  protected async runWithToken(progress: vscode.Progress<{ message?: string | undefined; }>): Promise<void> {
-    progress.report({ message: `Check preconditions` });
+  protected async runWithToken(): Promise<void> {
     const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
     if (pullRequest && pullRequest.mergeable) {
       const method = await this.getMergeMethdod();
       if (method) {
-        progress.report({ message: `Merge pull request` });
         if (await this.githubManager.mergePullRequest(pullRequest, method)) {
           this.statusBarManager.updateStatus();
           vscode.window.showInformationMessage(`Successfully merged`);
