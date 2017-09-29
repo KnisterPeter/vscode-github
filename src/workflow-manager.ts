@@ -102,33 +102,26 @@ export class WorkflowManager {
         `For some unknown reason no pull request body could be build; Aborting operation`);
       return undefined;
     }
-    const body: CreatePullRequestBody = {
+
+    return await this.createPullRequestFromData({
+      upstream,
       sourceBranch: branch,
       targetBranch: upstream ? upstream.branch : defaultBranch,
       title: await git.getCommitMessage(firstCommit, this.cwd),
       body: requestBody
-    };
-    this.channel.appendLine('Create pull request:');
-    this.channel.appendLine(JSON.stringify(body, undefined, ' '));
-
-    const getRepository = async() => {
-      if (upstream) {
-        return (await this.provider.getRepository(`${upstream.owner}/${upstream.repository}`)).body;
-      } else {
-        return await this.getRepository();
-      }
-    };
-    return await this.doCreatePullRequest(await getRepository(), body);
+    });
   }
 
   public async createPullRequestFromData(
       {
+        upstream,
         sourceBranch,
         targetBranch,
         title,
         body
       }:
       {
+        upstream?: {owner: string, repository: string};
         sourceBranch: string;
         targetBranch: string;
         title: string;
@@ -138,7 +131,7 @@ export class WorkflowManager {
     if (await this.hasPullRequestForCurrentBranch()) {
       return undefined;
     }
-    this.log(`Create pull request on branch '${targetBranch}'`);
+    this.log(`Create pull request on branch '${sourceBranch}'`);
     const pullRequestBody: CreatePullRequestBody = {
       sourceBranch,
       targetBranch,
@@ -148,7 +141,14 @@ export class WorkflowManager {
     this.channel.appendLine('Create pull request:');
     this.channel.appendLine(JSON.stringify(pullRequestBody, undefined, ' '));
 
-    return await this.doCreatePullRequest(await this.getRepository(), pullRequestBody);
+    const getRepository = async() => {
+      if (upstream) {
+        return (await this.provider.getRepository(`${upstream.owner}/${upstream.repository}`)).body;
+      } else {
+        return await this.getRepository();
+      }
+    };
+    return await this.doCreatePullRequest(await getRepository(), pullRequestBody);
   }
 
   private async doCreatePullRequest(repository: Repository,
