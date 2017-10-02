@@ -24,3 +24,11 @@ export function getConfiguration(): Configuration {
   }
   return config;
 }
+
+export function getHostname(input: string): string {
+  const match = input.match(/.*?(?::\/\/|@)([^:\/]+)/);
+  if (match) {
+    return match[1];
+  }
+  return input;
+}
