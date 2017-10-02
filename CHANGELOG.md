@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.21.0"></a>
+# [0.21.0](https://github.com/KnisterPeter/vscode-github/compare/v0.20.2...v0.21.0) (2017-10-02)
+
+
+### Features
+
+* add configuration for git executable ([d737302](https://github.com/KnisterPeter/vscode-github/commit/d737302)), closes [#210](https://github.com/KnisterPeter/vscode-github/issues/210)
+* allow parameters when calling commands ([293891e](https://github.com/KnisterPeter/vscode-github/commit/293891e))
+* customizable statusbar ([f099c56](https://github.com/KnisterPeter/vscode-github/commit/f099c56)), closes [#202](https://github.com/KnisterPeter/vscode-github/issues/202)
+* prepare for pull request by command ([49c6c68](https://github.com/KnisterPeter/vscode-github/commit/49c6c68))
+
+
+
 <a name="0.20.2"></a>
 ## [0.20.2](https://github.com/KnisterPeter/vscode-github/compare/v0.20.1...v0.20.2) (2017-09-27)
 
