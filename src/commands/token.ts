@@ -2,6 +2,7 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { Command } from '../command';
+import { listTokenHosts, removeToken } from '../tokens';
 import { WorkflowManager, Tokens } from '../workflow-manager';
 
 @component({eager: true})
@@ -105,6 +106,26 @@ export class SetGitLabToken extends Command {
         this.context.globalState.update('tokens', tokens);
         this.workflowManager.connect(tokens);
       }
+    }
+  }
+
+}
+
+@component({eager: true})
+export class ClearToken extends Command {
+
+  public id = 'vscode-github.clearToken';
+
+  @inject('vscode.ExtensionContext')
+  private context: vscode.ExtensionContext;
+
+  public async run(): Promise<void> {
+    this.track('execute');
+    const host = await vscode.window.showQuickPick(listTokenHosts(this.context.globalState), {
+      placeHolder: 'Token to remove'
+    });
+    if (host) {
+      removeToken(this.context.globalState, host);
     }
   }
 

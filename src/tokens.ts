@@ -30,3 +30,19 @@ export function migrateToken(memento: Memento): void {
     memento.update('tokens', struct);
   }
 }
+
+export function listTokenHosts(memento: Memento): string[] {
+  const tokens: Tokens | undefined = memento.get('tokens');
+  if (!tokens) {
+    return [];
+  }
+  return Object.keys(tokens);
+}
+
+export function removeToken(memento: Memento, host: string): void {
+  const tokens: Tokens | undefined = memento.get('tokens');
+  if (tokens) {
+    delete tokens[host];
+    memento.update('tokens', tokens);
+  }
+}
