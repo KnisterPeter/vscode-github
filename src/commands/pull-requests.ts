@@ -2,13 +2,16 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { TokenCommand } from '../command';
-import * as git from '../git';
+import { Git } from '../git';
 import { getConfiguration, showProgress } from '../helper';
 import { MergeMethod } from '../provider/github';
 import { PullRequest } from '../provider/pull-request';
 import { StatusBarManager } from '../status-bar-manager';
 
 abstract class PullRequestCommand extends TokenCommand {
+
+  @inject
+  protected git: Git;
 
   protected async selectPullRequest(): Promise<PullRequest | undefined> {
     const pullRequests = await this.githubManager.listPullRequests();
@@ -24,11 +27,11 @@ abstract class PullRequestCommand extends TokenCommand {
   }
 
   private async hasRemoteTrackingBranch(): Promise<boolean> {
-    const localBranch = await git.getCurrentBranch(this.folder.uri.fsPath);
+    const localBranch = await this.git.getCurrentBranch();
     if (!localBranch) {
       return false;
     }
-    return Boolean(await git.getRemoteTrackingBranch(this.folder.uri.fsPath, localBranch));
+    return Boolean(await this.git.getRemoteTrackingBranch(localBranch));
   }
 
   protected async requireRemoteTrackingBranch(): Promise<boolean> {
@@ -165,7 +168,7 @@ export class CreatePullRequest extends PullRequestCommand {
     if (!this.requireRemoteTrackingBranch()) {
       return;
     }
-    let [owner, repo] = await git.getGitProviderOwnerAndRepository(this.folder.uri.fsPath);
+    let [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
     const repository = await this.githubManager.getRepository();
     const items = [{
       label: repository.name,

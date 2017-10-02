@@ -1,7 +1,7 @@
 import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
-import * as git from './git';
+import { Git } from './git';
 import { createClient, Client } from './provider/client';
 import { Issue } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
@@ -25,6 +25,9 @@ export class WorkflowManager {
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
+  @inject
+  private git: Git;
+
   private provider: Client;
 
   private get cwd(): string {
@@ -41,12 +44,12 @@ export class WorkflowManager {
   }
 
   public async connect(tokens: Tokens): Promise<void> {
-    this.provider = await createClient(this.cwd, tokens);
+    this.provider = await createClient(this.git, tokens);
     this.log(`Connected with provider ${this.provider.name}`);
   }
 
   public async getRepository(): Promise<Repository> {
-    const [owner, repository] = await git.getGitProviderOwnerAndRepository(this.cwd);
+    const [owner, repository] = await this.git.getGitProviderOwnerAndRepository();
     return (await this.provider.getRepository(`${owner}/${repository}`)).body;
   }
 
@@ -70,7 +73,7 @@ export class WorkflowManager {
   }
 
   public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
-    const branch = await git.getCurrentBranch(this.cwd);
+    const branch = await this.git.getCurrentBranch();
     const list = (await this.listPullRequests()).filter(pr => pr.sourceBranch === branch);
     if (list.length !== 1) {
       return undefined;
@@ -88,15 +91,15 @@ export class WorkflowManager {
     if (await this.hasPullRequestForCurrentBranch()) {
       return undefined;
     }
-    const branch = await git.getCurrentBranch(this.cwd);
+    const branch = await this.git.getCurrentBranch();
     if (!branch) {
       throw new Error('No current branch');
     }
     const defaultBranch = await this.getDefaultBranch();
     this.log(`Create pull request on branch '${branch}'`);
-    const firstCommit = await git.getFirstCommitOnBranch(branch, defaultBranch, this.cwd);
+    const firstCommit = await this.git.getFirstCommitOnBranch(branch, defaultBranch);
     this.log(`First commit on branch '${firstCommit}'`);
-    const requestBody = await git.getPullRequestBody(firstCommit, this.cwd);
+    const requestBody = await this.git.getPullRequestBody(firstCommit);
     if (requestBody === undefined) {
       vscode.window.showWarningMessage(
         `For some unknown reason no pull request body could be build; Aborting operation`);
@@ -107,7 +110,7 @@ export class WorkflowManager {
       upstream,
       sourceBranch: branch,
       targetBranch: upstream ? upstream.branch : defaultBranch,
-      title: await git.getCommitMessage(firstCommit, this.cwd),
+      title: await this.git.getCommitMessage(firstCommit),
       body: requestBody
     });
   }
@@ -197,7 +200,7 @@ export class WorkflowManager {
   }
 
   public async getGithubSlug(): Promise<string> {
-    const [owner, repo] = await git.getGitProviderOwnerAndRepository(this.cwd);
+    const [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
     return `${owner}/${repo}`;
   }
 
@@ -207,9 +210,9 @@ export class WorkflowManager {
   }
 
   public async getGithubFileUrl(file: string, line?: number): Promise<string> {
-    const hostname = await git.getGitHostname(this.cwd);
-    const [owner, repo] = await git.getGitProviderOwnerAndRepository(this.cwd);
-    const branch = await git.getCurrentBranch(this.cwd);
+    const hostname = await this.git.getGitHostname();
+    const [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
+    const branch = await this.git.getCurrentBranch();
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${file}#L${(line || 0) + 1}`;
   }
 

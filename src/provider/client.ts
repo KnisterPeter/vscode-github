@@ -1,14 +1,14 @@
-import { getGitProtocol, getGitHostname } from '../git';
+import { Git } from '../git';
 import { Tokens } from '../workflow-manager';
 import { Repository } from './repository';
 
 import { GithubClient } from './github/client';
 import { GitLabClient } from './gitlab/client';
 
-export async function createClient(cwd: string, tokens: Tokens): Promise<Client> {
-  const gitProtocol = await getGitProtocol(cwd);
+export async function createClient(git: Git, tokens: Tokens): Promise<Client> {
+  const gitProtocol = await git.getGitProtocol();
   const protocol = gitProtocol.startsWith('http') ? gitProtocol : 'https:';
-  const hostname = await getGitHostname(cwd);
+  const hostname = await git.getGitHostname();
   const tokenInfo = tokens[hostname];
   switch (tokenInfo.provider) {
     case 'github':
