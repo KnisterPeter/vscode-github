@@ -16,14 +16,15 @@ export class Git {
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
-  private async execute(cmd: string): Promise<{stdout: string, stderr: string}> {
-    this.channel.appendLine(cmd);
-    const [git, ...args] = cmd.split(' ');
-    return await execa(git, args, {cwd: this.folder.uri.fsPath});
+  private get remoteName(): string {
+    return getConfiguration().remoteName;
   }
 
-  private getRemoteName(): string {
-    return getConfiguration().remoteName;
+  private async execute(cmd: string): Promise<{stdout: string, stderr: string}> {
+    const [git, ...args] = cmd.split(' ');
+    const gitCommand = getConfiguration().gitCommand;
+    this.channel.appendLine(`${gitCommand || git} ${args.join(' ')}`);
+    return await execa(gitCommand || git, args, {cwd: this.folder.uri.fsPath});
   }
 
   public async checkExistence(): Promise<boolean> {
@@ -60,7 +61,7 @@ export class Git {
   }
 
   private async getGitProviderOwnerAndRepositoryFromGitConfig(): Promise<string[]> {
-    const remote = (await this.execute(`git config --local --get remote.${this.getRemoteName()}.url`))
+    const remote = (await this.execute(`git config --local --get remote.${this.remoteName}.url`))
       .stdout.trim();
     if (!remote.length) {
       throw new Error('Git remote is empty!');
