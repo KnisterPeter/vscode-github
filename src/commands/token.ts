@@ -2,6 +2,7 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { Command } from '../command';
+import { getHostname } from '../helper';
 import { listTokenHosts, removeToken } from '../tokens';
 import { WorkflowManager, Tokens } from '../workflow-manager';
 
@@ -62,7 +63,7 @@ export class SetGithubEnterpriseToken extends Command {
       });
       if (tokenInput) {
         const tokens = this.context.globalState.get<Tokens>('tokens', {});
-        tokens[hostInput] = {
+        tokens[getHostname(hostInput)] = {
           token: tokenInput,
           provider: 'github'
         };
@@ -99,7 +100,7 @@ export class SetGitLabToken extends Command {
       });
       if (tokenInput) {
         const tokens = this.context.globalState.get<Tokens>('tokens', {});
-        tokens[hostInput] = {
+        tokens[getHostname(hostInput)] = {
           token: tokenInput,
           provider: 'gitlab'
         };
