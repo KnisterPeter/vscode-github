@@ -30,6 +30,10 @@
       "title": "GitHub configuration",
       "type": "object",
       "properties": {
+        "github.gitCommand": {
+          "type": "string",
+          "description": "Path to the git executable. If it is in the OS path, this should not be necessary to set."
+        },
         "github.preferedMergeMethod": {
           "type": "string",
           "description": "By default the extension asks the user during merge process. This could be set to on of 'merge', 'squash' or 'rebase' to define the prefered method and not to be asked every time."

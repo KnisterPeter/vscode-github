@@ -1,7 +1,6 @@
 import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
-import { Configuration } from './configuration';
 import { Git } from './git';
 import { getConfiguration } from './helper';
 import { GitHubError, PullRequestStatus } from './provider/github';
@@ -20,32 +19,30 @@ const githubPullRequestIcon = '$(git-pull-request)';
 @component
 export class StatusBarManager {
 
-  private configuration: Configuration;
-
   private get customStatusBarCommand(): string | null {
     // #202: migrate from statusBarCommand to statusbar.command
-    return this.configuration.statusBarCommand || this.configuration.statusbar.command;
+    return getConfiguration().statusBarCommand || getConfiguration().statusbar.command;
   }
 
   private get refreshInterval(): number {
     // #202: migrate from refreshPullRequestStatus to statusbar.refresh
-    return (this.configuration.refreshPullRequestStatus || this.configuration.statusbar.refresh) * 1000;
+    return (getConfiguration().refreshPullRequestStatus || getConfiguration().statusbar.refresh) * 1000;
   }
 
   private get colored(): boolean {
-    return this.configuration.statusbar.color;
+    return getConfiguration().statusbar.color;
   }
 
   private get successText(): string | undefined {
-    return this.configuration.statusbar.successText;
+    return getConfiguration().statusbar.successText;
   }
 
   private get pendingText(): string | undefined {
-    return this.configuration.statusbar.pendingText;
+    return getConfiguration().statusbar.pendingText;
   }
 
   private get failureText(): string | undefined {
-    return this.configuration.statusbar.failureText;
+    return getConfiguration().statusbar.failureText;
   }
 
   @inject('vscode.ExtensionContext')
@@ -71,8 +68,6 @@ export class StatusBarManager {
 
   @initialize
   protected init(): void {
-    this.configuration = getConfiguration();
-
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.statusBar.command = this.customStatusBarCommand || '';
     this.statusBar.text = `${githubPullRequestIcon} ...`;

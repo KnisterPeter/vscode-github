@@ -49,7 +49,7 @@ export class Extension {
       }
       if (!await this.git.checkExistence()) {
         vscode.window.showWarningMessage('No git executable found. Please install git '
-          + 'and if required set it in your path');
+          + "and if required set it in your path. You may also set 'gitCommand'");
       }
       if (tokens) {
         this.githubManager.connect(tokens);

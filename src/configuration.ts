@@ -1,6 +1,7 @@
 import { MergeMethod } from './provider/pull-request';
 
 export interface Configuration {
+  gitCommand?: string;
   preferedMergeMethod?: MergeMethod;
   refreshPullRequestStatus: number;
   remoteName: string;
