@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { CommandManager } from './command-manager';
-import { checkExistence } from './git';
+import { Git } from './git';
 import { GitHubError } from './provider/github';
 import { StatusBarManager } from './status-bar-manager';
 import { migrateToken } from './tokens';
@@ -27,6 +27,9 @@ export class Extension {
   private channel: vscode.OutputChannel;
 
   @inject
+  private git: Git;
+
+  @inject
   private githubManager: WorkflowManager;
 
   @initialize
@@ -44,7 +47,10 @@ export class Extension {
       if (!vscode.workspace.workspaceFolders) {
         return;
       }
-      await checkExistence(vscode.workspace.workspaceFolders[0].uri.fsPath);
+      if (!await this.git.checkExistence()) {
+        vscode.window.showWarningMessage('No git executable found. Please install git '
+          + 'and if required set it in your path');
+      }
       if (tokens) {
         this.githubManager.connect(tokens);
       }

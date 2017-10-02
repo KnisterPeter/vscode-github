@@ -2,7 +2,7 @@ import { component, inject, initialize } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { Configuration } from './configuration';
-import * as git from './git';
+import { Git } from './git';
 import { getConfiguration } from './helper';
 import { GitHubError, PullRequestStatus } from './provider/github';
 import { PullRequest } from './provider/pull-request';
@@ -54,6 +54,9 @@ export class StatusBarManager {
   @inject('vscode.WorkspaceFolder')
   private folder: vscode.WorkspaceFolder;
 
+  @inject
+  private git: Git;
+
   private statusBar: vscode.StatusBarItem;
 
   @inject
@@ -99,7 +102,7 @@ export class StatusBarManager {
   }
 
   public async updateStatus(): Promise<void> {
-    const branch = await git.getCurrentBranch(this.cwd);
+    const branch = await this.git.getCurrentBranch();
     if (branch !== await this.githubManager.getDefaultBranch()) {
       this.updatePullRequestStatus();
     } else {

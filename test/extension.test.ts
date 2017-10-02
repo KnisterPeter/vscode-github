@@ -4,7 +4,7 @@ import * as assert from 'assert';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 // import * as myExtension from '../src/extension';
-import * as git from '../src/git';
+import { Git } from '../src/git';
 import * as tokens from '../src/tokens';
 
 suite('vscode-github extension tests', () => {
@@ -27,6 +27,7 @@ suite('vscode-github extension tests', () => {
   });
 
   test('should parse username and repository from github ssh url', () => {
+    const git = new Git();
     const [proto, host, user, repo] = git.parseGitUrl('git@github:username/repo.git');
     assert.equal(proto, 'git:');
     assert.equal(host, 'github');
@@ -35,6 +36,7 @@ suite('vscode-github extension tests', () => {
   });
 
   test('should parse username and repository from github ssh:// url', () => {
+    const git = new Git();
     const [proto, host, user, repo] = git.parseGitUrl('git://github/username/repo.git');
     assert.equal(proto, 'git:');
     assert.equal(host, 'github');
@@ -43,6 +45,7 @@ suite('vscode-github extension tests', () => {
   });
 
   test('should parse protocol from github http:// url', () => {
+    const git = new Git();
     const [proto, host, user, repo] = git.parseGitUrl('http://my.github.com/username/repo.git');
     assert.equal(proto, 'http:');
     assert.equal(host, 'my.github.com');
