@@ -7,6 +7,7 @@ export interface Configuration {
   remoteName: string;
   upstream?: string;
   customPullRequestDescription: 'off' | 'singleLine' | 'gitEditor';
+  autoPublish?: boolean;
   statusBarCommand: string | null;
   statusbar: {
     refresh: number;

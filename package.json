@@ -57,6 +57,11 @@
           "default": "off",
           "description": "By default the pull request description is the first commit message. When this property is set, the user is asked for a description when creating the PR. This can be a single-line description via an input dialog ('singleLine') or a multi-line markdown description via the editor configured in git ('gitEditor')."
         },
+        "github.autoPublish": {
+          "type": "boolean",
+          "description": "Automatically publish the current branch before creating a pull request. Defaults to false",
+          "default": false
+        },
         "github.statusbar.command": {
           "type": [
             "string",
