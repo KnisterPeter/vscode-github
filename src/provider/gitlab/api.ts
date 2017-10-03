@@ -4,7 +4,8 @@ import {
   IPretendRequestInterceptor,
   IPretendDecoder,
   Get,
-  Post
+  Post,
+  Put
 } from 'pretend';
 
 export interface GitLab {
@@ -12,13 +13,24 @@ export interface GitLab {
   getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
   getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
   createMergeRequest(id: string, body: CreateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
+  updateMergeRequest(id: string, mr_iid: number, body: UpdateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
   getProjectIssues(id: string, body: ProjectIssuesBody): Promise<GitLabResponse<Issue[]>>;
+  searchUser(parameters?: SearchUsersParameters): Promise<GitLabResponse<UserResponse[]>>;
 }
 
 export interface GitLabResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface SearchUsersParameters {
+  username?: string;
+}
+
+export interface UserResponse {
+  id: number;
+  username: string;
 }
 
 export interface ProjectIssuesBody {
@@ -39,6 +51,16 @@ export interface CreateMergeRequestBody {
   title: string;
   description?: string;
   remove_source_branch?: boolean;
+}
+
+export interface UpdateMergeRequestBody {
+  target_branch?: string;
+  title?: string;
+  description?: string;
+  state_event?: 'close' | 'reopen';
+  assignee_id?: number;
+  remove_source_branch?: boolean;
+  squash?: boolean;
 }
 
 export interface GetMergeRequestParameters {
@@ -108,8 +130,8 @@ namespace impl {
 
   export function formEncoding(): IPretendRequestInterceptor {
     return request => {
-      if (request.options.method === 'POST') {
-        request.options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      if (request.options.method !== 'GET') {
+        request.options.headers.set('Content-Type', 'application/x-www-form-urlencoded');
         if (request.options.body) {
           const body = JSON.parse(request.options.body);
           const encodedBody = Object.keys(body)
@@ -143,16 +165,28 @@ namespace impl {
   }
 
   export class GitLabBlueprint implements GitLab {
+
+    @Get('/users', true)
+    public searchUser(): any {/* */}
+
     @Get('/projects/:id')
     public getProject(): any {/* */}
+
     @Get('/projects/:id/merge_requests', true)
     public getMergeRequests(): any {/* */}
+
     @Get('/projects/:id/merge_requests/:merge_request_iid')
     public getMergeRequest(): any {/* */}
+
     @Post('/projects/:id/merge_requests')
     public createMergeRequest(): any {/* */}
+
+    @Put('/projects/:id/merge_requests/:merge_request_iid')
+    public updateMergeRequest(): any {/* */}
+
     @Get('/projects/:id/issues')
     public getProjectIssues(): any {/* */}
+
   }
 
 }

@@ -100,7 +100,7 @@ export class GithubPullRequest implements PullRequest {
       this.repository.repository,
       this.number,
       {
-        assignees: assignees.map(assignee => assignee.id)
+        assignees: assignees.map(assignee => assignee.username)
       }
     );
   }

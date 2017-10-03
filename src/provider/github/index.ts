@@ -31,12 +31,19 @@ export interface GitHub {
   getPullRequestComments(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestComment[]>>;
 
   editIssue(owner: string, repo: string, number: number, body: EditIssueBody): Promise<GitHubResponse<EditIssueBody>>;
+
+  getUser(username: string): Promise<GitHubResponse<UserResponse>>;
 }
 
 export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface UserResponse {
+  id: number;
+  login: string;
 }
 
 export interface EditIssueBody {
@@ -231,7 +238,6 @@ namespace impl {
   }
 
   export class GitHubBlueprint implements GitHub {
-
     @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
     public getRepository(): any {/* */}
@@ -273,6 +279,8 @@ namespace impl {
     @Patch('/repos/:owner/:repo/issues/:number')
     public editIssue(): any {/* */}
 
+    @Get('/users/:username')
+    public getUser(): any {/* */}
   }
 
 }
