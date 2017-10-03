@@ -38,6 +38,7 @@ export interface CreateMergeRequestBody {
   target_branch: string;
   title: string;
   description?: string;
+  remove_source_branch?: boolean;
 }
 
 export interface GetMergeRequestParameters {
