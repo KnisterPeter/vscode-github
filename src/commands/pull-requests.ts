@@ -37,9 +37,14 @@ abstract class PullRequestCommand extends TokenCommand {
   protected async requireRemoteTrackingBranch(): Promise<boolean> {
     const hasBranch = await this.hasRemoteTrackingBranch();
     if (!hasBranch) {
-      vscode.window.showWarningMessage(
-        `Cannot create pull request without remote branch. `
-        + `Please push your local branch before creating pull request.`);
+      if (getConfiguration().autoPublish) {
+        await vscode.commands.executeCommand('git.publish');
+        return true;
+      } else {
+        vscode.window.showWarningMessage(
+          `Cannot create pull request without remote branch. `
+          + `Please push your local branch before creating pull request.`);
+      }
     }
     return hasBranch;
   }
