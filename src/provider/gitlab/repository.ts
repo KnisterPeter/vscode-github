@@ -1,3 +1,4 @@
+import { getConfiguration } from '../../helper';
 import { Response } from '../client';
 import { Issue } from '../issue';
 import {
@@ -110,7 +111,8 @@ export class GitLabRepository implements Repository {
     const gitlabBody: CreateMergeRequestBody =  {
       source_branch: body.sourceBranch,
       target_branch: body.targetBranch,
-      title: body.title
+      title: body.title,
+      remove_source_branch: getConfiguration().gitlab.removeSourceBranch
     };
     if (body.body) {
      gitlabBody.description = body.body;
