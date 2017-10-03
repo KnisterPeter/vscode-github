@@ -6,7 +6,13 @@ import {
   CreatePullRequestBody,
   IssuesParameters
 } from '../repository';
-import { GitLab, Project, GetMergeRequestParameters, CreateMergeRequestBody } from './api';
+import {
+  GitLab,
+  Project,
+  GetMergeRequestParameters,
+  CreateMergeRequestBody,
+  ProjectIssuesBody
+} from './api';
 import { GitLabMergeRequest } from './merge-request';
 
 export class GitLabRepository implements Repository {
@@ -118,7 +124,49 @@ export class GitLabRepository implements Repository {
     };
   }
 
-  public async getIssues(_parameters?: IssuesParameters | undefined): Promise<Response<Issue[]>> {
-    throw new Error('Method not implemented.');
+  public async getIssues(parameters?: IssuesParameters | undefined): Promise<Response<Issue[]>> {
+    function getState(state: IssuesParameters['state']): ProjectIssuesBody['state'] {
+      switch (state) {
+        case 'open':
+          return 'opened';
+        case 'closed':
+          return 'closed';
+      }
+      return undefined;
+    }
+    function getOrderBy(orderBy: IssuesParameters['sort']): ProjectIssuesBody['order_by'] {
+      switch (orderBy) {
+        case 'created':
+          return 'created_at';
+        case 'updated':
+          return 'updated_at';
+        default:
+          return undefined;
+      }
+    }
+
+    const body: ProjectIssuesBody = {};
+    if (parameters) {
+      if (parameters.state && parameters.state !== 'all') {
+        body.state = getState(parameters.state);
+      }
+      if (parameters.sort) {
+        body.order_by = getOrderBy(parameters.sort);
+      }
+      if (parameters.direction) {
+        body.sort = parameters.direction;
+      }
+    }
+    const response = await this.client.getProjectIssues(
+      encodeURIComponent(this.project.path_with_namespace),
+      body
+    );
+    return {
+      body: response.body.map(issue => ({
+        number: issue.iid,
+        title: issue.title,
+        url: issue.web_url
+      }))
+    };
   }
 }

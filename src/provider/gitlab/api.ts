@@ -12,12 +12,25 @@ export interface GitLab {
   getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
   getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
   createMergeRequest(id: string, body: CreateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
+  getProjectIssues(id: string, body: ProjectIssuesBody): Promise<GitLabResponse<Issue[]>>;
 }
 
 export interface GitLabResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface ProjectIssuesBody {
+  state?: 'opened' | 'closed';
+  order_by?: 'created_at' | 'updated_at';
+  sort?: 'asc' | 'desc';
+}
+
+export interface Issue {
+  iid: number;
+  title: string;
+  web_url: string;
 }
 
 export interface CreateMergeRequestBody {
@@ -137,6 +150,8 @@ namespace impl {
     public getMergeRequest(): any {/* */}
     @Post('/projects/:id/merge_requests')
     public createMergeRequest(): any {/* */}
+    @Get('/projects/:id/issues')
+    public getProjectIssues(): any {/* */}
   }
 
 }
