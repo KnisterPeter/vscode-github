@@ -213,7 +213,8 @@ export class WorkflowManager {
     const hostname = await this.git.getGitHostname();
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
     const branch = await this.git.getCurrentBranch();
-    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${file}#L${(line || 0) + 1}`;
+    const currentFile = file.replace(/^\//, '');
+    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${(line || 0) + 1}`;
   }
 
   public async addAssignee(pullRequest: PullRequest, name: string): Promise<void> {
