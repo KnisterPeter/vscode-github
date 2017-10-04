@@ -14,7 +14,7 @@ export interface PullRequest {
 
   getComments(): Promise<Response<Comment[]>>;
   merge(body: MergeBody): Promise<Response<MergeResult>>;
-  assign(assignees: User<any>[]): Promise<void>;
+  assign(assignees: User[]): Promise<void>;
   unassign(): Promise<void>;
   requestReview(body: RequestReviewBody): Promise<void>;
   cancelReview(body: CancelReviewBody): Promise<void>;

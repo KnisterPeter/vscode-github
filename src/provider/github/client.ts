@@ -5,6 +5,7 @@ import {
 
 import { GitHub, getClient } from './index';
 import { GithubRepository } from './repository';
+import { GithubUser } from './user';
 
 export class GithubClient implements Client {
 
@@ -34,4 +35,10 @@ export class GithubClient implements Client {
     };
   }
 
+  public async getUserByUsername(username: string): Promise<Response<GithubUser>> {
+    const response = await this.client.getUser(username);
+    return {
+      body: new GithubUser(this.client, response.body)
+    };
+  }
 }

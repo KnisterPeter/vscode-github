@@ -1,6 +1,7 @@
 import { Git } from '../git';
 import { Tokens } from '../workflow-manager';
 import { Repository } from './repository';
+import { User } from './user';
 
 import { GithubClient } from './github/client';
 import { GitLabClient } from './gitlab/client';
@@ -25,6 +26,8 @@ export interface Client {
   name: string;
 
   getRepository(rid: string): Promise<Response<Repository>>;
+
+  getUserByUsername(username: string): Promise<Response<User>>;
 
 }
 

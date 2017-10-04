@@ -218,7 +218,8 @@ export class WorkflowManager {
   }
 
   public async addAssignee(pullRequest: PullRequest, name: string): Promise<void> {
-    await pullRequest.assign([{id: name}]);
+    const user = await this.provider.getUserByUsername(name);
+    await pullRequest.assign([user.body]);
   }
 
   public async removeAssignee(pullRequest: PullRequest): Promise<void> {

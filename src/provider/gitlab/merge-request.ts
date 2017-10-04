@@ -76,12 +76,25 @@ export class GitLabMergeRequest implements PullRequest {
     throw new Error('Method not implemented.');
   }
 
-  public async assign(_assignees: GitLabUser[]): Promise<void> {
-    throw new Error('Method not implemented.');
+  public async assign(assignees: GitLabUser[]): Promise<void> {
+    await this.client.updateMergeRequest(
+      encodeURIComponent(this.repository.pathWithNamespace),
+      this.mergeRequest.iid,
+      {
+        assignee_id: assignees[0].id
+      }
+    );
   }
 
   public async unassign(): Promise<void> {
-    throw new Error('Method not implemented.');
+    // note: assign to '0'
+    await this.client.updateMergeRequest(
+      encodeURIComponent(this.repository.pathWithNamespace),
+      this.mergeRequest.iid,
+      {
+        assignee_id: 0
+      }
+    );
   }
 
   public async requestReview(_body: RequestReviewBody): Promise<void> {
