@@ -17,7 +17,8 @@ export interface Configuration {
     pendingText?: string;
     failureText?: string;
   };
-  gitlab: {
-    removeSourceBranch?: boolean;
-  };
+}
+
+export interface GitLabConfiguration {
+  removeSourceBranch?: boolean;
 }

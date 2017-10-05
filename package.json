@@ -92,7 +92,7 @@
           "type": "string",
           "description": "Overrides the default failure text."
         },
-        "github.gitlab.removeSourceBranch": {
+        "gitlab.removeSourceBranch": {
           "type": "boolean",
           "description": "GitLab setting to 'remove_source_branch' per MergeRequest.",
           "default": false
