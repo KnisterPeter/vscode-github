@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { Configuration } from './configuration';
+import { Configuration, GitLabConfiguration } from './configuration';
 
 export function showProgress(_target: Object, _propertyKey: string | symbol,
     descriptor: PropertyDescriptor): PropertyDescriptor {
@@ -17,8 +17,10 @@ export function showProgress(_target: Object, _propertyKey: string | symbol,
   return descriptor;
 }
 
-export function getConfiguration(): Configuration {
-  const config = vscode.workspace.getConfiguration().get<Configuration>('github');
+export function getConfiguration(section: 'gitlab'): GitLabConfiguration;
+export function getConfiguration(section?: 'github'): Configuration;
+export function getConfiguration(section = 'github'): any {
+  const config = vscode.workspace.getConfiguration().get<Configuration>(section);
   if (!config) {
     throw new Error('Empty configuration. This is likely a bug.');
   }

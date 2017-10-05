@@ -112,7 +112,7 @@ export class GitLabRepository implements Repository {
       source_branch: body.sourceBranch,
       target_branch: body.targetBranch,
       title: body.title,
-      remove_source_branch: getConfiguration().gitlab.removeSourceBranch
+      remove_source_branch: getConfiguration('gitlab').removeSourceBranch
     };
     if (body.body) {
      gitlabBody.description = body.body;
