@@ -19,7 +19,10 @@
     "git",
     "github",
     "pull-request",
-    "pull request"
+    "pull request",
+    "gitlab",
+    "merge-request",
+    "merge request"
   ],
   "activationEvents": [
     "*"
