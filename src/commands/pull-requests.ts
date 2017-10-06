@@ -174,6 +174,27 @@ export class CreatePullRequest extends PullRequestCommand {
       return;
     }
     let [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
+    const selectedRepository = await this.getRepository();
+    if (!selectedRepository) {
+      return;
+    }
+    [owner, repo] = selectedRepository.label.split('/');
+    const branch = await this.getTargetBranch(selectedRepository.repo.defaultBranch);
+    if (!branch) {
+      return;
+    }
+    const pullRequest = await this.githubManager.createPullRequest({
+      owner,
+      repository: repo,
+      branch
+    });
+    if (pullRequest) {
+      this.statusBarManager.updateStatus();
+      this.showPullRequestNotification(pullRequest);
+    }
+  }
+
+  private async getRepository(): Promise<{label: string, repo: { defaultBranch: string }} | undefined> {
     const repository = await this.githubManager.getRepository();
     const items = [{
       label: repository.name,
@@ -187,29 +208,28 @@ export class CreatePullRequest extends PullRequestCommand {
         repo: repository.parent as { defaultBranch: string }
       });
     }
-    const selectedRepository = await vscode.window.showQuickPick(items,
+    if (items.length === 1) {
+      return items[0];
+    }
+    return await vscode.window.showQuickPick(items,
       { placeHolder: 'Select a repository to create the pull request in' });
-    if (!selectedRepository) {
-      return;
-    }
-    [owner, repo] = selectedRepository.label.split('/');
-    const branch = await vscode.window.showInputBox({
+  }
+
+  private async getTargetBranch(defaultBranch: string): Promise<string | undefined> {
+    // sort default branch up
+    const picks = (await this.git.getRemoteBranches())
+      .sort((b1, b2) => {
+        if (b1 === defaultBranch) {
+          return -1;
+        } else if (b2 === defaultBranch) {
+          return 1;
+        }
+        return b1.localeCompare(b2);
+      });
+    return await vscode.window.showQuickPick(picks, {
       ignoreFocusOut: true,
-      prompt: 'Select a branch to create the pull request for',
-      value: selectedRepository.repo.defaultBranch
+      placeHolder: 'Select a branch to create the pull request for'
     });
-    if (!branch) {
-      return;
-    }
-    const pullRequest = await this.githubManager.createPullRequest({
-      owner,
-      repository: repo,
-      branch
-    });
-    if (pullRequest) {
-      this.statusBarManager.updateStatus();
-      this.showPullRequestNotification(pullRequest);
-    }
   }
 
 }
