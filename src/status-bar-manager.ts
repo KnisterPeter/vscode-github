@@ -80,6 +80,7 @@ export class StatusBarManager {
   }
 
   private async refreshStatus(): Promise<void> {
+    setTimeout(() => { this.refreshStatus(); }, this.refreshInterval);
     try {
       if (this.githubManager.connected) {
         await this.updateStatus();
@@ -93,7 +94,6 @@ export class StatusBarManager {
         throw e;
       }
     }
-    setTimeout(() => { this.refreshStatus(); }, this.refreshInterval);
   }
 
   public async updateStatus(): Promise<void> {
