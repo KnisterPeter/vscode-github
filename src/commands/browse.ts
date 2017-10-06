@@ -11,7 +11,7 @@ export class BrowseProject extends TokenCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const url = await this.githubManager.getGithubUrl();
+    const url = await this.githubManager.getRepositoryUrl();
     await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
 
