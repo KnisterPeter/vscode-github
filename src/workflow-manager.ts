@@ -199,12 +199,7 @@ export class WorkflowManager {
     }
   }
 
-  public async getGithubSlug(): Promise<string> {
-    const [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
-    return `${owner}/${repo}`;
-  }
-
-  public async getGithubUrl(): Promise<string> {
+  public async getRepositoryUrl(): Promise<string> {
     const repository = await this.getRepository();
     return repository.url;
   }
