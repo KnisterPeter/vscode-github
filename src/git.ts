@@ -36,6 +36,15 @@ export class Git {
     }
   }
 
+  public async getRemoteBranches(): Promise<string[]> {
+    const response = await this.execute('git branch --list --remotes --no-color');
+    return response.stdout
+      .split('\n')
+      .filter(line => !line.match('->'))
+      .map(line => line.replace(`${this.remoteName}/`, ''))
+      .map(line => line.trim());
+  }
+
   /**
    * Check config for a default upstream and if none found look in .git/config for a remote origin and
    * parses it to get username and repository.
