@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.22.0"></a>
+# [0.22.0](https://github.com/KnisterPeter/vscode-github/compare/v0.21.0...v0.22.0) (2017-10-06)
+
+
+### Bug Fixes
+
+* parse hostname ([2e78e01](https://github.com/KnisterPeter/vscode-github/commit/2e78e01)), closes [#208](https://github.com/KnisterPeter/vscode-github/issues/208)
+* remove duplicate slash in url ([e409d10](https://github.com/KnisterPeter/vscode-github/commit/e409d10))
+* reschedule status update ([e1159cb](https://github.com/KnisterPeter/vscode-github/commit/e1159cb))
+
+
+### Features
+
+* add remove token command ([f34b116](https://github.com/KnisterPeter/vscode-github/commit/f34b116)), closes [#193](https://github.com/KnisterPeter/vscode-github/issues/193)
+* add support for gitlab issues ([a87f4c5](https://github.com/KnisterPeter/vscode-github/commit/a87f4c5))
+* add support for remove_source_branch ([ac60cd1](https://github.com/KnisterPeter/vscode-github/commit/ac60cd1))
+* add/remove assignees for gitlab ([c7d69e1](https://github.com/KnisterPeter/vscode-github/commit/c7d69e1))
+* publish branch automatically ([68b13ba](https://github.com/KnisterPeter/vscode-github/commit/68b13ba))
+* quick pick branches for pull request ([53aa27d](https://github.com/KnisterPeter/vscode-github/commit/53aa27d)), closes [#223](https://github.com/KnisterPeter/vscode-github/issues/223)
+
+
+
 <a name="0.21.0"></a>
 # [0.21.0](https://github.com/KnisterPeter/vscode-github/compare/v0.20.2...v0.21.0) (2017-10-02)
 
