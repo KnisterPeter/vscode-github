@@ -44,7 +44,8 @@ export class WorkflowManager {
   }
 
   public async connect(tokens: Tokens): Promise<void> {
-    this.provider = await createClient(this.git, tokens);
+    const logger = (message: string) => this.log(message);
+    this.provider = await createClient(this.git, tokens, logger);
     this.log(`Connected with provider ${this.provider.name}`);
   }
 

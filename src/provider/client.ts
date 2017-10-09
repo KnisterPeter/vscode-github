@@ -6,16 +6,16 @@ import { User } from './user';
 import { GithubClient } from './github/client';
 import { GitLabClient } from './gitlab/client';
 
-export async function createClient(git: Git, tokens: Tokens): Promise<Client> {
+export async function createClient(git: Git, tokens: Tokens, logger: (message: string) => void): Promise<Client> {
   const gitProtocol = await git.getGitProtocol();
   const protocol = gitProtocol.startsWith('http') ? gitProtocol : 'https:';
   const hostname = await git.getGitHostname();
   const tokenInfo = tokens[hostname];
   switch (tokenInfo.provider) {
     case 'github':
-      return new GithubClient(protocol, hostname, tokens[hostname].token);
+      return new GithubClient(protocol, hostname, tokens[hostname].token, logger);
     case 'gitlab':
-      return new GitLabClient(protocol, hostname, tokens[hostname].token);
+      return new GitLabClient(protocol, hostname, tokens[hostname].token, logger);
     default:
       throw new Error(`Unknown git provider '${tokenInfo.provider}'`);
   }

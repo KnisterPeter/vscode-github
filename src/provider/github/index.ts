@@ -158,12 +158,12 @@ export interface PullRequestStruct {
   mergeable?: boolean|null;
 }
 
-export function getClient(endpoint: string, token: string): GitHub {
+export function getClient(endpoint: string, token: string, logger: (message: string) => void): GitHub {
   return Pretend
     .builder()
     .interceptor(impl.githubCache())
     .requestInterceptor(impl.githubTokenAuthenticator(token))
-    .interceptor(impl.logger())
+    .interceptor(impl.logger(logger))
     .decode(impl.githubDecoder())
     .target(impl.GitHubBlueprint, endpoint);
 }
@@ -180,12 +180,18 @@ export class GitHubError extends Error {
 
 namespace impl {
 
-  export function logger(): Interceptor {
+  export function logger(logger: (message: string) => void): Interceptor {
     return async(chain, request) => {
-      // console.log('github-request: ', request);
-      const response = await chain(request);
-      // console.log('response', response);
-      return response;
+      try {
+        logger(`${request.options.method} ${request.url}`);
+        // console.log('github-request: ', request);
+        const response = await chain(request);
+        // console.log('response', response);
+        return response;
+      } catch (e) {
+        logger(`${(e as GitHubError).response.status} ${e.message}`);
+        throw e;
+      }
     };
   }
 

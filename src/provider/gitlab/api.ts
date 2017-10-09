@@ -90,12 +90,12 @@ export interface Project {
   merge_requests_enabled: boolean;
 }
 
-export function getClient(endpoint: string, token: string): GitLab {
+export function getClient(endpoint: string, token: string, logger: (message: string) => void): GitLab {
   return Pretend
     .builder()
     .requestInterceptor(impl.gitlabTokenAuthenticator(token))
     .requestInterceptor(impl.formEncoding())
-    .interceptor(impl.logger())
+    .interceptor(impl.logger(logger))
     .decode(impl.gitlabDecoder())
     .target(impl.GitLabBlueprint, endpoint);
 }
@@ -112,12 +112,18 @@ export class GitLabError extends Error {
 
 namespace impl {
 
-  export function logger(): Interceptor {
+  export function logger(logger: (message: string) => void): Interceptor {
     return async(chain, request) => {
-      // console.log('gitlab-request: ', request);
-      const response = await chain(request);
-      // console.log('response', response);
-      return response;
+      try {
+        logger(`${request.options.method} ${request.url}`);
+        // console.log('gitlab-request: ', request);
+        const response = await chain(request);
+        // console.log('response', response);
+        return response;
+      } catch (e) {
+        logger(`${(e as GitLabError).response.status} ${e.message}`);
+        throw e;
+      }
     };
   }
 

@@ -9,8 +9,8 @@ export class GitLabClient implements Client {
 
   public name = 'GitLab Client';
 
-  constructor(protocol: string, hostname: string, token: string) {
-    this.client = getClient(this.getApiEndpoint(protocol, hostname), token);
+  constructor(protocol: string, hostname: string, token: string, logger: (message: string) => void) {
+    this.client = getClient(this.getApiEndpoint(protocol, hostname), token, logger);
   }
 
   private getApiEndpoint(protocol: string, hostname: string): string {
