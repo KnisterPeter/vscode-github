@@ -13,8 +13,8 @@ export class GithubClient implements Client {
 
   public name = 'GitHub Client';
 
-  constructor(protocol: string, hostname: string, token: string) {
-    this.client = getClient(this.getApiEndpoint(protocol, hostname), token);
+  constructor(protocol: string, hostname: string, token: string, logger: (message: string) => void) {
+    this.client = getClient(this.getApiEndpoint(protocol, hostname), token, logger);
   }
 
   private getApiEndpoint(protocol: string, hostname: string): string {
