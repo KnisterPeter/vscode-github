@@ -14,6 +14,8 @@ export interface GitLab {
   getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
   createMergeRequest(id: string, body: CreateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
   updateMergeRequest(id: string, mr_iid: number, body: UpdateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
+  acceptMergeRequest(id: string, mr_iid: number, body: AcceptMergeRequestBody)
+    : Promise<GitLabResponse<AcceptMergeRequestResponse>>;
   getProjectIssues(id: string, body: ProjectIssuesBody): Promise<GitLabResponse<Issue[]>>;
   searchUser(parameters?: SearchUsersParameters): Promise<GitLabResponse<UserResponse[]>>;
 }
@@ -22,6 +24,16 @@ export interface GitLabResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface AcceptMergeRequestBody {
+  should_remove_source_branch?: boolean;
+}
+
+export interface AcceptMergeRequestResponse {
+  title: string;
+  state: 'merged';
+  sha: string;
 }
 
 export interface SearchUsersParameters {
@@ -189,6 +201,9 @@ namespace impl {
 
     @Put('/projects/:id/merge_requests/:merge_request_iid')
     public updateMergeRequest(): any {/* */}
+
+    @Put('/projects/:id/merge_requests/:merge_request_iid/merge')
+    public acceptMergeRequest(): any {/* */}
 
     @Get('/projects/:id/issues')
     public getProjectIssues(): any {/* */}
