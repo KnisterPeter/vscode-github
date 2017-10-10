@@ -20,11 +20,11 @@ export class AddAssignee extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
       const user = await this.getUser();
       if (user) {
-        await this.githubManager.addAssignee(pullRequest, user);
+        await this.workflowManager.addAssignee(pullRequest, user);
         vscode.window.showInformationMessage(`Successfully assigned ${user} to the pull request`);
       }
     } else {
@@ -41,9 +41,9 @@ export class RemoveAssignee extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
-      await this.githubManager.removeAssignee(pullRequest);
+      await this.workflowManager.removeAssignee(pullRequest);
       vscode.window.showInformationMessage(`Successfully unassigned the pull request`);
     } else {
       vscode.window.showWarningMessage('No pull request for current brach');
@@ -59,11 +59,11 @@ export class RequestReview extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
       const user = await this.getUser();
       if (user) {
-        await this.githubManager.requestReview(pullRequest.number, user);
+        await this.workflowManager.requestReview(pullRequest.number, user);
         vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
       }
     } else {
@@ -80,11 +80,11 @@ export class DeleteReviewRequest extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
       const user = await this.getUser();
       if (user) {
-        await this.githubManager.deleteReviewRequest(pullRequest.number, user);
+        await this.workflowManager.deleteReviewRequest(pullRequest.number, user);
         vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);
       }
     } else {

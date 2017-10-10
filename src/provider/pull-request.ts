@@ -12,6 +12,7 @@ export interface PullRequest {
   targetBranch: string;
   mergeable?: boolean|null;
 
+  update(body: UpdateBody): Promise<void>;
   getComments(): Promise<Response<Comment[]>>;
   merge(body: MergeBody): Promise<Response<MergeResult>>;
   assign(assignees: User[]): Promise<void>;
@@ -30,6 +31,12 @@ export interface MergeResult {
   sha?: string;
   merged?: boolean;
   message: string;
+}
+
+export interface UpdateBody {
+  title?: string;
+  body?: string;
+  state?: 'open' | 'closed';
 }
 
 export interface RequestReviewBody {

@@ -26,7 +26,7 @@ export abstract class Command {
 export abstract class TokenCommand extends Command {
 
   @inject
-  protected githubManager: WorkflowManager;
+  protected workflowManager: WorkflowManager;
 
   @inject('vscode.WorkspaceFolder')
   protected folder: vscode.WorkspaceFolder;
@@ -35,7 +35,7 @@ export abstract class TokenCommand extends Command {
   private channel: vscode.OutputChannel;
 
   public async run(...args: any[]): Promise<void> {
-    if (!(this.githubManager && this.githubManager.connected && this.folder)) {
+    if (!(this.workflowManager && this.workflowManager.connected && this.folder)) {
       this.track('execute without token');
       vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
         + 'and open a GitHub project in your workspace');

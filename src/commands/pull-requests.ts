@@ -14,7 +14,7 @@ abstract class PullRequestCommand extends TokenCommand {
   protected git: Git;
 
   protected async selectPullRequest(): Promise<PullRequest | undefined> {
-    const pullRequests = await this.githubManager.listPullRequests();
+    const pullRequests = await this.workflowManager.listPullRequests();
     const items = pullRequests.map(pullRequest => ({
       label: pullRequest.title,
       description: `#${pullRequest.number}`,
@@ -81,7 +81,7 @@ export class BrowseSimpleRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.url));
     } else {
@@ -124,7 +124,7 @@ export class CreatePullRequestWithParameters extends PullRequestCommand {
     if (!this.requireRemoteTrackingBranch()) {
       return;
     }
-    const pullRequest = await this.githubManager.createPullRequestFromData({
+    const pullRequest = await this.workflowManager.createPullRequestFromData({
       sourceBranch,
       targetBranch,
       title,
@@ -151,7 +151,7 @@ export class CreateSimplePullRequest extends PullRequestCommand {
     if (!this.requireRemoteTrackingBranch()) {
       return;
     }
-    const pullRequest = await this.githubManager.createPullRequest();
+    const pullRequest = await this.workflowManager.createPullRequest();
     if (pullRequest) {
       this.statusBarManager.updateStatus();
       this.showPullRequestNotification(pullRequest);
@@ -183,7 +183,7 @@ export class CreatePullRequest extends PullRequestCommand {
     if (!branch) {
       return;
     }
-    const pullRequest = await this.githubManager.createPullRequest({
+    const pullRequest = await this.workflowManager.createPullRequest({
       owner,
       repository: repo,
       branch
@@ -195,7 +195,7 @@ export class CreatePullRequest extends PullRequestCommand {
   }
 
   private async getRepository(): Promise<{label: string, repo: { defaultBranch: string }} | undefined> {
-    const repository = await this.githubManager.getRepository();
+    const repository = await this.workflowManager.getRepository();
     const items = [{
       label: repository.name,
       description: '',
@@ -249,7 +249,7 @@ export class MergePullRequest extends PullRequestCommand {
       return config.preferedMergeMethod;
     }
     const items: { label: string; description: string; method: MergeMethod; }[] = [];
-    const enabledMethods = await this.githubManager.getEnabledMergeMethods();
+    const enabledMethods = await this.workflowManager.getEnabledMergeMethods();
     if (enabledMethods.has('merge')) {
       items.push({
         label: 'Create merge commit',
@@ -277,11 +277,11 @@ export class MergePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest && pullRequest.mergeable) {
       const method = await this.getMergeMethdod();
       if (method) {
-        if (await this.githubManager.mergePullRequest(pullRequest, method)) {
+        if (await this.workflowManager.mergePullRequest(pullRequest, method)) {
           this.statusBarManager.updateStatus();
           vscode.window.showInformationMessage(`Successfully merged`);
         } else {
@@ -291,6 +291,23 @@ export class MergePullRequest extends PullRequestCommand {
     } else {
       vscode.window.showWarningMessage(
         'Either no pull request for current brach, or the pull request is not mergable');
+    }
+  }
+
+}
+
+@component({eager: true})
+export class UpdatePullRequest extends PullRequestCommand {
+
+  public id = 'vscode-github.updatePullRequest';
+
+  @showProgress
+  protected async runWithToken(): Promise<void> {
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    if (pullRequest) {
+      await this.workflowManager.updatePullRequest(pullRequest);
+    } else {
+      vscode.window.showInformationMessage('No pull request for current branch found');
     }
   }
 
