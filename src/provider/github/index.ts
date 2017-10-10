@@ -14,6 +14,8 @@ export interface GitHub {
   createPullRequest(owner: string, repo: string, body: CreatePullRequestBody):
     Promise<GitHubResponse<PullRequestStruct>>;
 
+  updatePullRequest(owner: string, repo: string, number: number, body: UpdatePullRequestBody): Promise<void>;
+
   getStatusForRef(owner: string, repo: string, ref: string): Promise<GitHubResponse<CombinedStatus>>;
 
   mergePullRequest(owner: string, repo: string, number: number, body: Merge): Promise<GitHubResponse<MergeResult>>;
@@ -39,6 +41,12 @@ export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface UpdatePullRequestBody {
+  title?: string;
+  body?: string;
+  state?: 'open' | 'closed';
 }
 
 export interface UserResponse {
@@ -256,6 +264,9 @@ namespace impl {
 
     @Post('/repos/:owner/:repo/pulls')
     public createPullRequest(): any {/* */}
+
+    @Patch('/repos/:owner/:repo/pulls/:number')
+    public updatePullRequest(): any {/* */}
 
     @Get('/repos/:owner/:repo/commits/:ref/status')
     public getStatusForRef(): any {/* */}

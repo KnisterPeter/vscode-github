@@ -169,6 +169,31 @@ export class WorkflowManager {
     }
   }
 
+  public async updatePullRequest(pullRequest: PullRequest): Promise<void> {
+    if (await this.hasPullRequestForCurrentBranch()) {
+      return undefined;
+    }
+    const branch = await this.git.getCurrentBranch();
+    if (!branch) {
+      throw new Error('No current branch');
+    }
+    this.log(`Update pull request on branch '${branch}'`);
+    const firstCommit = await this.git.getFirstCommitOnBranch(branch, pullRequest.targetBranch);
+    this.log(`First commit on branch '${firstCommit}'`);
+    const requestBody = await this.git.getPullRequestBody(firstCommit);
+    if (requestBody === undefined) {
+      vscode.window.showWarningMessage(
+        `For some unknown reason no pull request body could be build; Aborting operation`);
+      return undefined;
+    }
+    if (requestBody !== pullRequest.body) {
+      await pullRequest.update({
+        title: await this.git.getCommitMessage(firstCommit),
+        body: requestBody
+      });
+    }
+  }
+
   public async listPullRequests(): Promise<PullRequest[]> {
     const repository = await this.getRepository();
     const parameters: ListPullRequestsParameters = {

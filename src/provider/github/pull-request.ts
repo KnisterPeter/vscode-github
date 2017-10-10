@@ -5,7 +5,8 @@ import {
   MergeResult,
   RequestReviewBody,
   CancelReviewBody,
-  Comment
+  Comment,
+  UpdateBody
 } from '../pull-request';
 import { GitHub, PullRequestStruct } from './index';
 import { GithubRepository } from './repository';
@@ -57,6 +58,19 @@ export class GithubPullRequest implements PullRequest {
     this.client = client;
     this.repository = repository;
     this.struct = struct;
+  }
+
+  public async update(body: UpdateBody): Promise<void> {
+    await this.client.updatePullRequest(
+      this.repository.owner,
+      this.repository.repository,
+      this.number,
+      {
+        title: body.title,
+        body: body.body,
+        state: body.state
+      }
+    );
   }
 
   public async getComments(): Promise<Response<Comment[]>> {

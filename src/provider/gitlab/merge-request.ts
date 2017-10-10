@@ -5,9 +5,10 @@ import {
   MergeResult,
   RequestReviewBody,
   CancelReviewBody,
-  Comment
+  Comment,
+  UpdateBody
 } from '../pull-request';
-import { GitLab, MergeRequest } from './api';
+import { GitLab, MergeRequest, UpdateMergeRequestBody } from './api';
 import { GitLabRepository } from './repository';
 import { GitLabUser } from './user';
 
@@ -66,6 +67,34 @@ export class GitLabMergeRequest implements PullRequest {
     this.client = client;
     this.repository = repository;
     this.mergeRequest = mergeRequest;
+  }
+
+  public async update(body: UpdateBody): Promise<void> {
+    const gitlabBody: UpdateMergeRequestBody = {};
+    if (body.title) {
+      gitlabBody.title = body.title;
+    }
+    if (body.body) {
+      gitlabBody.description = body.body;
+    }
+    if (body.state) {
+      const mapState = (state: UpdateBody['state']): UpdateMergeRequestBody['state_event'] => {
+        switch (state) {
+          case 'open':
+            return 'reopen';
+          case 'closed':
+            return 'close';
+          default:
+            return undefined;
+          }
+      };
+      gitlabBody.state_event = mapState(body.state);
+    }
+    await this.client.updateMergeRequest(
+      encodeURIComponent(this.repository.pathWithNamespace),
+      this.mergeRequest.iid,
+      gitlabBody
+    );
   }
 
   public async getComments(): Promise<Response<Comment[]>> {
