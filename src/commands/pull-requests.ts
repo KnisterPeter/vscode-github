@@ -312,3 +312,20 @@ export class UpdatePullRequest extends PullRequestCommand {
   }
 
 }
+
+@component({eager: true})
+export class PrintPullRequestComments extends PullRequestCommand {
+
+  public id = 'vscode-github.printPullRequestComments';
+
+  @showProgress
+  protected async runWithToken(): Promise<void> {
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    if (pullRequest) {
+      await this.workflowManager.getPullRequestReviewComments(pullRequest);
+    } else {
+      vscode.window.showInformationMessage('No pull request for current branch found');
+    }
+  }
+
+}

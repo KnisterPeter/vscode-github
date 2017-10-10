@@ -99,6 +99,11 @@ export class GitLabMergeRequest implements PullRequest {
   }
 
   public async getComments(): Promise<Response<Comment[]>> {
+    const response = await this.client.getMergeRequestNotes(
+      encodeURIComponent(this.repository.pathWithNamespace),
+      this.mergeRequest.iid
+    );
+    console.log(JSON.stringify(response));
     throw new Error('Method not implemented.');
   }
 
