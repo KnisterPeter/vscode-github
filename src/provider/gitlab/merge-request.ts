@@ -1,3 +1,4 @@
+import { getConfiguration } from '../../helper';
 import { Response } from '../client';
 import {
   PullRequest,
@@ -102,7 +103,20 @@ export class GitLabMergeRequest implements PullRequest {
   }
 
   public async merge(_body: MergeBody): Promise<Response<MergeResult>> {
-    throw new Error('Method not implemented.');
+    const response = await this.client.acceptMergeRequest(
+      encodeURIComponent(this.repository.pathWithNamespace),
+      this.mergeRequest.iid,
+      {
+        should_remove_source_branch: getConfiguration('gitlab').removeSourceBranch
+      }
+    );
+    return {
+      body: {
+        message: response.body.title,
+        merged: response.body.state === 'merged',
+        sha: response.body.sha
+      }
+    };
   }
 
   public async assign(assignees: GitLabUser[]): Promise<void> {
