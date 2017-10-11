@@ -246,7 +246,7 @@ namespace impl {
       return {
         status: response.status,
         headers,
-        body: response.status === 200 ? await response.json() : undefined
+        body: response.status >= 200 && response.status <= 300 ? await response.json() : undefined
       };
     };
   }
