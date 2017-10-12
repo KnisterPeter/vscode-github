@@ -15,6 +15,7 @@ import {
   ProjectIssuesBody
 } from './api';
 import { GitLabMergeRequest } from './merge-request';
+import { GitLabUser } from './user';
 
 export class GitLabRepository implements Repository {
 
@@ -170,5 +171,9 @@ export class GitLabRepository implements Repository {
         url: issue.web_url
       }))
     };
+  }
+
+  public async getUsers(): Promise<Response<GitLabUser[]>> {
+    throw new Error('Method not implemented.');
   }
 }

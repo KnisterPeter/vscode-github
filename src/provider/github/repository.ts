@@ -8,6 +8,7 @@ import {
 } from '../repository';
 import { GitHub, GithubRepositoryStruct } from './index';
 import { GithubPullRequest } from './pull-request';
+import { GithubUser } from './user';
 
 export class GithubRepository implements Repository {
 
@@ -110,6 +111,16 @@ export class GithubRepository implements Repository {
           title: issue.title,
           url: issue.html_url
         }))
+    };
+  }
+
+  public async getUsers(): Promise<Response<GithubUser[]>> {
+    const response = await this.client.listAssignees(
+      this.owner,
+      this.repository
+    );
+    return {
+      body: response.body.map(user => new GithubUser(this.client, user))
     };
   }
 }

@@ -5,6 +5,36 @@ import { TokenCommand } from '../command';
 import { showProgress } from '../helper';
 
 abstract class UserCommand extends TokenCommand {
+
+  protected async selectUser(): Promise<string | undefined> {
+    const assignees = await this.workflowManager.getAssignees();
+    const picks = assignees.map(assignee => ({
+      label: assignee.username,
+      description: '',
+      assignee
+    }));
+    picks.push({
+      label: 'Other',
+      description: '',
+      assignee: undefined as any
+    });
+    const selected = picks.length > 1
+      ? await vscode.window.showQuickPick(picks, {
+          ignoreFocusOut: true
+        })
+      : picks[0];
+    if (selected) {
+      let username: string | undefined;
+      if (!selected.assignee) {
+        username = await this.getUser();
+      } else {
+        username = selected.assignee.username;
+      }
+      return username;
+    }
+    return undefined;
+  }
+
   protected async getUser(): Promise<string | undefined> {
     return await vscode.window.showInputBox({
       ignoreFocusOut: true,
@@ -22,7 +52,7 @@ export class AddAssignee extends UserCommand {
   protected async runWithToken(): Promise<void> {
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
-      const user = await this.getUser();
+      const user = await this.selectUser();
       if (user) {
         await this.workflowManager.addAssignee(pullRequest, user);
         vscode.window.showInformationMessage(`Successfully assigned ${user} to the pull request`);
@@ -61,7 +91,7 @@ export class RequestReview extends UserCommand {
   protected async runWithToken(): Promise<void> {
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
-      const user = await this.getUser();
+      const user = await this.selectUser();
       if (user) {
         await this.workflowManager.requestReview(pullRequest.number, user);
         vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
@@ -82,7 +112,7 @@ export class DeleteReviewRequest extends UserCommand {
   protected async runWithToken(): Promise<void> {
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
     if (pullRequest) {
-      const user = await this.getUser();
+      const user = await this.selectUser();
       if (user) {
         await this.workflowManager.deleteReviewRequest(pullRequest.number, user);
         vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);

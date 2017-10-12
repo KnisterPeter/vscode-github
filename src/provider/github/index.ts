@@ -35,6 +35,8 @@ export interface GitHub {
   editIssue(owner: string, repo: string, number: number, body: EditIssueBody): Promise<GitHubResponse<EditIssueBody>>;
 
   getUser(username: string): Promise<GitHubResponse<UserResponse>>;
+
+  listAssignees(owner: string, repo: string): Promise<GitHubResponse<UserResponse[]>>;
 }
 
 export interface GitHubResponse<T> {
@@ -298,6 +300,9 @@ namespace impl {
 
     @Get('/users/:username')
     public getUser(): any {/* */}
+
+    @Get('/repos/:owner/:repo/assignees')
+    public listAssignees(): any {/* */}
   }
 
 }

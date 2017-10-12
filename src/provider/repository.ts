@@ -1,6 +1,7 @@
 import { Response } from './client';
 import { Issue } from './issue';
 import { PullRequest } from './pull-request';
+import { User } from './user';
 
 export interface Repository {
   name: string;
@@ -15,6 +16,7 @@ export interface Repository {
   getPullRequest(id: number): Promise<Response<PullRequest>>;
   createPullRequest(body: CreatePullRequestBody): Promise<Response<PullRequest>>;
   getIssues(parameters?: IssuesParameters): Promise<Response<Issue[]>>;
+  getUsers(): Promise<Response<User[]>>;
 }
 
 export interface ListPullRequestsParameters {
