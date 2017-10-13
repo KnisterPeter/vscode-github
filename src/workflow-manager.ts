@@ -6,6 +6,7 @@ import { createClient, Client } from './provider/client';
 import { Issue } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
+import { User } from './provider/user';
 
 import { GitHubError } from './provider/github';
 
@@ -236,6 +237,16 @@ export class WorkflowManager {
     const branch = await this.git.getCurrentBranch();
     const currentFile = file.replace(/^\//, '');
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${(line || 0) + 1}`;
+  }
+
+  public async getAssignees(): Promise<User[]> {
+    const repository = await this.getRepository();
+    try {
+      return (await repository.getUsers()).body;
+    } catch (e) {
+      this.log(e.message);
+      return [];
+    }
   }
 
   public async addAssignee(pullRequest: PullRequest, name: string): Promise<void> {
