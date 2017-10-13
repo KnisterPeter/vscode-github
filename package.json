@@ -215,7 +215,7 @@
     "standard-version": "4.2.0",
     "tslint": "5.7.0",
     "typescript": "^2.3.2",
-    "vscode": "1.1.5"
+    "vscode": "1.1.6"
   },
   "dependencies": {
     "conventional-changelog-lint-config-angular": "1.0.0",
