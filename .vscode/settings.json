@@ -8,5 +8,6 @@
     "typescript.tsdk": "./node_modules/typescript/lib",
     "editor.rulers": [
       120
-    ]
+    ],
+    "github.autoPublish": true
 }
