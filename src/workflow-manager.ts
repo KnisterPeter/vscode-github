@@ -46,9 +46,10 @@ export class WorkflowManager {
     return this.providers[uri.fsPath];
   }
 
-  private log(message: string): void {
-    this.channel.appendLine(message);
-    console.log(message);
+  private log(message: string, obj?: any): void {
+    const formatted = `${message} ` + (obj ? JSON.stringify(obj, undefined, ' ') : '');
+    this.channel.appendLine(formatted);
+    console.log(formatted);
   }
 
   public async canConnect(uri: vscode.Uri): Promise<boolean> {
@@ -158,8 +159,7 @@ export class WorkflowManager {
       title,
       body
     };
-    this.channel.appendLine('Create pull request:');
-    this.channel.appendLine(JSON.stringify(pullRequestBody, undefined, ' '));
+    this.log('pull request body:', pullRequestBody);
 
     const getRepository = async() => {
       if (upstream) {
@@ -178,9 +178,7 @@ export class WorkflowManager {
       return (await repository.createPullRequest(body)).body;
     } catch (e) {
       if (e instanceof GitHubError) {
-        console.log(e);
-        this.channel.appendLine('Create pull request error:');
-        this.channel.appendLine(JSON.stringify(e.response, undefined, ' '));
+        this.log('Create pull request error:', e.response);
       }
       throw e;
     }
@@ -233,8 +231,7 @@ export class WorkflowManager {
       if (!(e instanceof GitHubError)) {
         throw e;
       }
-      this.channel.appendLine('Error while merging:');
-      this.channel.appendLine(JSON.stringify(await e.response.json(), undefined, ' '));
+      this.log('Error while merging:', await e.response.json());
       // status 405 (method not allowed)
       // tslint:disable-next-line:comment-format
       // TODO...
