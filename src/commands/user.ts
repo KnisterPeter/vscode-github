@@ -6,8 +6,8 @@ import { showProgress } from '../helper';
 
 abstract class UserCommand extends TokenCommand {
 
-  protected async selectUser(): Promise<string | undefined> {
-    const assignees = await this.workflowManager.getAssignees();
+  protected async selectUser(uri: vscode.Uri): Promise<string | undefined> {
+    const assignees = await this.workflowManager.getAssignees(uri);
     const picks = assignees.map(assignee => ({
       label: assignee.username,
       description: '',
@@ -50,11 +50,11 @@ export class AddAssignee extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      const user = await this.selectUser();
+      const user = await this.selectUser(this.uri);
       if (user) {
-        await this.workflowManager.addAssignee(pullRequest, user);
+        await this.workflowManager.addAssignee(pullRequest, user, this.uri);
         vscode.window.showInformationMessage(`Successfully assigned ${user} to the pull request`);
       }
     } else {
@@ -71,7 +71,7 @@ export class RemoveAssignee extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       await this.workflowManager.removeAssignee(pullRequest);
       vscode.window.showInformationMessage(`Successfully unassigned the pull request`);
@@ -89,11 +89,11 @@ export class RequestReview extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      const user = await this.selectUser();
+      const user = await this.selectUser(this.uri);
       if (user) {
-        await this.workflowManager.requestReview(pullRequest.number, user);
+        await this.workflowManager.requestReview(pullRequest.number, user, this.uri);
         vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
       }
     } else {
@@ -110,11 +110,11 @@ export class DeleteReviewRequest extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      const user = await this.selectUser();
+      const user = await this.selectUser(this.uri);
       if (user) {
-        await this.workflowManager.deleteReviewRequest(pullRequest.number, user);
+        await this.workflowManager.deleteReviewRequest(pullRequest.number, user, this.uri);
         vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);
       }
     } else {

@@ -1,9 +1,11 @@
+import * as vscode from 'vscode';
 import { Response } from './client';
 import { Issue } from './issue';
 import { PullRequest } from './pull-request';
 import { User } from './user';
 
 export interface Repository {
+  uri: vscode.Uri | undefined;
   name: string;
   defaultBranch: string;
   allowMergeCommits: boolean;

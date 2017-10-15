@@ -21,35 +21,57 @@ export class StatusBarManager {
 
   private get customStatusBarCommand(): string | null {
     // #202: migrate from statusBarCommand to statusbar.command
-    return getConfiguration().statusBarCommand || getConfiguration().statusbar.command;
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return null;
+    }
+    return getConfiguration('github', uri).statusBarCommand || getConfiguration('github', uri).statusbar.command;
   }
 
   private get refreshInterval(): number {
     // #202: migrate from refreshPullRequestStatus to statusbar.refresh
-    return (getConfiguration().refreshPullRequestStatus || getConfiguration().statusbar.refresh) * 1000;
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return 0;
+    }
+    return (getConfiguration('github', uri).refreshPullRequestStatus
+      || getConfiguration('github', uri).statusbar.refresh) * 1000;
   }
 
   private get colored(): boolean {
-    return getConfiguration().statusbar.color;
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return true;
+    }
+    return getConfiguration('github', uri).statusbar.color;
   }
 
   private get successText(): string | undefined {
-    return getConfiguration().statusbar.successText;
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return undefined;
+    }
+    return getConfiguration('github', uri).statusbar.successText;
   }
 
   private get pendingText(): string | undefined {
-    return getConfiguration().statusbar.pendingText;
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return undefined;
+    }
+    return getConfiguration('github', uri).statusbar.pendingText;
   }
 
   private get failureText(): string | undefined {
-    return getConfiguration().statusbar.failureText;
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return undefined;
+    }
+    return getConfiguration('github', uri).statusbar.failureText;
   }
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
-
-  @inject('vscode.WorkspaceFolder')
-  private folder: vscode.WorkspaceFolder;
 
   @inject
   private git: Git;
@@ -57,14 +79,10 @@ export class StatusBarManager {
   private statusBar: vscode.StatusBarItem;
 
   @inject
-  private githubManager: WorkflowManager;
+  private workflowManager: WorkflowManager;
 
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
-
-  private get cwd(): string {
-    return this.folder.uri.fsPath;
-  }
 
   @initialize
   protected init(): void {
@@ -82,7 +100,8 @@ export class StatusBarManager {
   private async refreshStatus(): Promise<void> {
     setTimeout(() => { this.refreshStatus(); }, this.refreshInterval);
     try {
-      if (this.githubManager.connected) {
+      const uri = this.getActiveWorkspaceFolder();
+      if (uri && await this.workflowManager.canConnect(uri)) {
         await this.updateStatus();
       }
     } catch (e) {
@@ -96,26 +115,41 @@ export class StatusBarManager {
     }
   }
 
+  private getActiveWorkspaceFolder(): vscode.Uri | undefined {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return undefined;
+    }
+    const folder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+    if (!folder) {
+      return undefined;
+    }
+    return folder.uri;
+  }
+
   public async updateStatus(): Promise<void> {
-    const branch = await this.git.getCurrentBranch();
-    if (branch !== await this.githubManager.getDefaultBranch()) {
-      this.updatePullRequestStatus();
-    } else {
-      this.statusBar.show();
-      if (this.colored) {
-        this.statusBar.color = colors.none;
+    const uri = this.getActiveWorkspaceFolder();
+    if (uri) {
+      const branch = await this.git.getCurrentBranch(uri);
+      if (branch !== await this.workflowManager.getDefaultBranch(uri)) {
+        this.updatePullRequestStatus(uri);
+        return;
       }
-      this.statusBar.text = `${githubPullRequestIcon}`;
-      if (!this.customStatusBarCommand) {
-        this.statusBar.tooltip = 'Not on a pull request branch. Click to checkout pull request';
-        this.statusBar.command = 'vscode-github.checkoutPullRequests';
-      }
+    }
+    this.statusBar.show();
+    if (this.colored) {
+      this.statusBar.color = colors.none;
+    }
+    this.statusBar.text = `${githubPullRequestIcon}`;
+    if (!this.customStatusBarCommand) {
+      this.statusBar.tooltip = 'Not on a pull request branch. Click to checkout pull request';
+      this.statusBar.command = 'vscode-github.checkoutPullRequests';
     }
   }
 
-  private async updatePullRequestStatus(): Promise<void> {
+  private async updatePullRequestStatus(uri: vscode.Uri): Promise<void> {
     try {
-      const pullRequest = await this.githubManager.getPullRequestForCurrentBranch();
+      const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(uri);
       this.statusBar.show();
       if (pullRequest) {
         await this.showPullRequestStauts(pullRequest);

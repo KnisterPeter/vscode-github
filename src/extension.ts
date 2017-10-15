@@ -9,7 +9,7 @@ import { Git } from './git';
 import { GitHubError } from './provider/github';
 import { StatusBarManager } from './status-bar-manager';
 import { migrateToken } from './tokens';
-import { WorkflowManager, Tokens } from './workflow-manager';
+import { Tokens } from './workflow-manager';
 
 @component
 export class Extension {
@@ -29,9 +29,6 @@ export class Extension {
   @inject
   private git: Git;
 
-  @inject
-  private githubManager: WorkflowManager;
-
   @initialize
   protected async init(): Promise<void> {
     this.reporter.sendTelemetryEvent('start');
@@ -47,12 +44,9 @@ export class Extension {
       if (!vscode.workspace.workspaceFolders) {
         return;
       }
-      if (!await this.git.checkExistence()) {
+      if (!await this.git.checkExistence(vscode.Uri.file(process.cwd()))) {
         vscode.window.showWarningMessage('No git executable found. Please install git '
           + "and if required set it in your path. You may also set 'gitCommand'");
-      }
-      if (tokens) {
-        this.githubManager.connect(tokens);
       }
     } catch (e) {
       this.logAndShowError(e);

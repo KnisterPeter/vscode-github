@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { Response } from '../client';
 import { Issue } from '../issue';
 import {
@@ -11,6 +12,8 @@ import { GithubPullRequest } from './pull-request';
 import { GithubUser } from './user';
 
 export class GithubRepository implements Repository {
+
+  public readonly uri: vscode.Uri | undefined;
 
   private client: GitHub;
 
@@ -48,6 +51,7 @@ export class GithubRepository implements Repository {
       return undefined;
     }
     return new GithubRepository(
+      undefined,
       this.client,
       this.struct.parent.owner.login,
       this.struct.parent.name,
@@ -59,7 +63,14 @@ export class GithubRepository implements Repository {
     return this.struct.html_url;
   }
 
-  constructor(client: GitHub, owner: string, repository: string, struct: GithubRepositoryStruct) {
+  constructor(
+      uri: vscode.Uri | undefined,
+      client: GitHub,
+      owner: string,
+      repository: string,
+      struct: GithubRepositoryStruct
+    ) {
+    this.uri = uri;
     this.client = client;
     this.owner = owner;
     this.repository = repository;

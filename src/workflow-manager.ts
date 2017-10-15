@@ -7,6 +7,7 @@ import { Issue } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 import { User } from './provider/user';
+import { getTokens } from './tokens';
 
 import { GitHubError } from './provider/github';
 
@@ -20,8 +21,8 @@ export interface Tokens {
 @component
 export class WorkflowManager {
 
-  @inject('vscode.WorkspaceFolder')
-  private folder: vscode.WorkspaceFolder;
+  @inject({name: 'vscode.ExtensionContext'})
+  private context: vscode.ExtensionContext;
 
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
@@ -29,10 +30,20 @@ export class WorkflowManager {
   @inject
   private git: Git;
 
-  private provider: Client;
+  private providers: {[cwd: string]: Client} = {};
 
-  private get cwd(): string {
-    return this.folder.uri.fsPath;
+  private async connect(uri: vscode.Uri): Promise<void> {
+    const logger = (message: string) => this.log(message);
+    const provider = await createClient(this.git, getTokens(this.context.globalState), uri, logger);
+    this.log(`Connected with provider ${provider.name}`);
+    this.providers[uri.fsPath] = provider;
+  }
+
+  private async getProvider(uri: vscode.Uri): Promise<Client> {
+    if (!this.providers[uri.fsPath]) {
+      await this.connect(uri);
+    }
+    return this.providers[uri.fsPath];
   }
 
   private log(message: string): void {
@@ -40,27 +51,27 @@ export class WorkflowManager {
     console.log(message);
   }
 
-  public get connected(): boolean {
-    return Boolean(this.provider);
+  public async canConnect(uri: vscode.Uri): Promise<boolean> {
+    try {
+      await this.getProvider(uri);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  public async connect(tokens: Tokens): Promise<void> {
-    const logger = (message: string) => this.log(message);
-    this.provider = await createClient(this.git, tokens, logger);
-    this.log(`Connected with provider ${this.provider.name}`);
+  public async getRepository(uri: vscode.Uri): Promise<Repository> {
+    const [owner, repository] = await this.git.getGitProviderOwnerAndRepository(uri);
+    const provider = await this.getProvider(uri);
+    return (await provider.getRepository(uri, `${owner}/${repository}`)).body;
   }
 
-  public async getRepository(): Promise<Repository> {
-    const [owner, repository] = await this.git.getGitProviderOwnerAndRepository();
-    return (await this.provider.getRepository(`${owner}/${repository}`)).body;
+  public async getDefaultBranch(uri: vscode.Uri): Promise<string> {
+    return (await this.getRepository(uri)).defaultBranch;
   }
 
-  public async getDefaultBranch(): Promise<string> {
-    return (await this.getRepository()).defaultBranch;
-  }
-
-  public async getEnabledMergeMethods(): Promise<Set<MergeMethod>> {
-    const repo = await this.getRepository();
+  public async getEnabledMergeMethods(uri: vscode.Uri): Promise<Set<MergeMethod>> {
+    const repo = await this.getRepository(uri);
     const set = new Set();
     if (repo.allowMergeCommits) {
       set.add('merge');
@@ -74,47 +85,50 @@ export class WorkflowManager {
     return set;
   }
 
-  public async getPullRequestForCurrentBranch(): Promise<PullRequest|undefined> {
-    const branch = await this.git.getCurrentBranch();
-    const list = (await this.listPullRequests()).filter(pr => pr.sourceBranch === branch);
+  public async getPullRequestForCurrentBranch(uri: vscode.Uri): Promise<PullRequest|undefined> {
+    const branch = await this.git.getCurrentBranch(uri);
+    const list = (await this.listPullRequests(uri)).filter(pr => pr.sourceBranch === branch);
     if (list.length !== 1) {
       return undefined;
     }
-    const repository = await this.getRepository();
+    const repository = await this.getRepository(uri);
     return (await repository.getPullRequest(list[0].number)).body;
   }
 
-  public async hasPullRequestForCurrentBranch(): Promise<boolean> {
-    return Boolean(await this.getPullRequestForCurrentBranch());
+  public async hasPullRequestForCurrentBranch(uri: vscode.Uri): Promise<boolean> {
+    return Boolean(await this.getPullRequestForCurrentBranch(uri));
   }
 
-  public async createPullRequest(upstream?: {owner: string, repository: string, branch: string}):
+  public async createPullRequest(uri: vscode.Uri, upstream?: {owner: string, repository: string, branch: string}):
       Promise<PullRequest|undefined> {
-    if (await this.hasPullRequestForCurrentBranch()) {
+    if (await this.hasPullRequestForCurrentBranch(uri)) {
       return undefined;
     }
-    const branch = await this.git.getCurrentBranch();
+    const branch = await this.git.getCurrentBranch(uri);
     if (!branch) {
       throw new Error('No current branch');
     }
-    const defaultBranch = await this.getDefaultBranch();
+    const defaultBranch = await this.getDefaultBranch(uri);
     this.log(`Create pull request on branch '${branch}'`);
-    const firstCommit = await this.git.getFirstCommitOnBranch(branch, defaultBranch);
+    const firstCommit = await this.git.getFirstCommitOnBranch(branch, defaultBranch, uri);
     this.log(`First commit on branch '${firstCommit}'`);
-    const requestBody = await this.git.getPullRequestBody(firstCommit);
+    const requestBody = await this.git.getPullRequestBody(firstCommit, uri);
     if (requestBody === undefined) {
       vscode.window.showWarningMessage(
         `For some unknown reason no pull request body could be build; Aborting operation`);
       return undefined;
     }
 
-    return await this.createPullRequestFromData({
-      upstream,
-      sourceBranch: branch,
-      targetBranch: upstream ? upstream.branch : defaultBranch,
-      title: await this.git.getCommitMessage(firstCommit),
-      body: requestBody
-    });
+    return await this.createPullRequestFromData(
+      {
+        upstream,
+        sourceBranch: branch,
+        targetBranch: upstream ? upstream.branch : defaultBranch,
+        title: await this.git.getCommitMessage(firstCommit, uri),
+        body: requestBody
+      },
+      uri
+    );
   }
 
   public async createPullRequestFromData(
@@ -131,9 +145,10 @@ export class WorkflowManager {
         targetBranch: string;
         title: string;
         body?: string;
-      }
+      },
+      uri: vscode.Uri
   ): Promise<PullRequest|undefined> {
-    if (await this.hasPullRequestForCurrentBranch()) {
+    if (await this.hasPullRequestForCurrentBranch(uri)) {
       return undefined;
     }
     this.log(`Create pull request on branch '${sourceBranch}'`);
@@ -148,9 +163,10 @@ export class WorkflowManager {
 
     const getRepository = async() => {
       if (upstream) {
-        return (await this.provider.getRepository(`${upstream.owner}/${upstream.repository}`)).body;
+        const provider = await this.getProvider(uri);
+        return (await provider.getRepository(uri, `${upstream.owner}/${upstream.repository}`)).body;
       } else {
-        return await this.getRepository();
+        return await this.getRepository(uri);
       }
     };
     return await this.doCreatePullRequest(await getRepository(), pullRequestBody);
@@ -170,18 +186,18 @@ export class WorkflowManager {
     }
   }
 
-  public async updatePullRequest(pullRequest: PullRequest): Promise<void> {
-    if (await this.hasPullRequestForCurrentBranch()) {
+  public async updatePullRequest(pullRequest: PullRequest, uri: vscode.Uri): Promise<void> {
+    if (await this.hasPullRequestForCurrentBranch(uri)) {
       return undefined;
     }
-    const branch = await this.git.getCurrentBranch();
+    const branch = await this.git.getCurrentBranch(uri);
     if (!branch) {
       throw new Error('No current branch');
     }
     this.log(`Update pull request on branch '${branch}'`);
-    const firstCommit = await this.git.getFirstCommitOnBranch(branch, pullRequest.targetBranch);
+    const firstCommit = await this.git.getFirstCommitOnBranch(branch, pullRequest.targetBranch, uri);
     this.log(`First commit on branch '${firstCommit}'`);
-    const requestBody = await this.git.getPullRequestBody(firstCommit);
+    const requestBody = await this.git.getPullRequestBody(firstCommit, uri);
     if (requestBody === undefined) {
       vscode.window.showWarningMessage(
         `For some unknown reason no pull request body could be build; Aborting operation`);
@@ -189,14 +205,14 @@ export class WorkflowManager {
     }
     if (requestBody !== pullRequest.body) {
       await pullRequest.update({
-        title: await this.git.getCommitMessage(firstCommit),
+        title: await this.git.getCommitMessage(firstCommit, uri),
         body: requestBody
       });
     }
   }
 
-  public async listPullRequests(): Promise<PullRequest[]> {
-    const repository = await this.getRepository();
+  public async listPullRequests(uri: vscode.Uri): Promise<PullRequest[]> {
+    const repository = await this.getRepository(uri);
     const parameters: ListPullRequestsParameters = {
       state: 'open'
     };
@@ -226,21 +242,21 @@ export class WorkflowManager {
     }
   }
 
-  public async getRepositoryUrl(): Promise<string> {
-    const repository = await this.getRepository();
+  public async getRepositoryUrl(uri: vscode.Uri): Promise<string> {
+    const repository = await this.getRepository(uri);
     return repository.url;
   }
 
-  public async getGithubFileUrl(file: string, line?: number): Promise<string> {
-    const hostname = await this.git.getGitHostname();
-    const [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
-    const branch = await this.git.getCurrentBranch();
+  public async getGithubFileUrl(uri: vscode.Uri, file: string, line = 0): Promise<string> {
+    const hostname = await this.git.getGitHostname(uri);
+    const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
+    const branch = await this.git.getCurrentBranch(uri);
     const currentFile = file.replace(/^\//, '');
-    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${(line || 0) + 1}`;
+    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${line + 1}`;
   }
 
-  public async getAssignees(): Promise<User[]> {
-    const repository = await this.getRepository();
+  public async getAssignees(uri: vscode.Uri): Promise<User[]> {
+    const repository = await this.getRepository(uri);
     try {
       return (await repository.getUsers()).body;
     } catch (e) {
@@ -249,8 +265,9 @@ export class WorkflowManager {
     }
   }
 
-  public async addAssignee(pullRequest: PullRequest, name: string): Promise<void> {
-    const user = await this.provider.getUserByUsername(name);
+  public async addAssignee(pullRequest: PullRequest, name: string, uri: vscode.Uri): Promise<void> {
+    const provider = await this.getProvider(uri);
+    const user = await provider.getUserByUsername(name);
     await pullRequest.assign([user.body]);
   }
 
@@ -258,24 +275,24 @@ export class WorkflowManager {
     await pullRequest.unassign();
   }
 
-  public async requestReview(issue: number, name: string): Promise<void> {
-    const repository = await this.getRepository();
+  public async requestReview(issue: number, name: string, uri: vscode.Uri): Promise<void> {
+    const repository = await this.getRepository(uri);
     const pullRequest = await repository.getPullRequest(issue);
     await pullRequest.body.requestReview({
       reviewers: [name]
     });
   }
 
-  public async deleteReviewRequest(issue: number, name: string): Promise<void> {
-    const repository = await this.getRepository();
+  public async deleteReviewRequest(issue: number, name: string, uri: vscode.Uri): Promise<void> {
+    const repository = await this.getRepository(uri);
     const pullRequest = await repository.getPullRequest(issue);
     await pullRequest.body.cancelReview({
       reviewers: [name]
     });
   }
 
-  public async issues(): Promise<Issue[]> {
-    const repository = await this.getRepository();
+  public async issues(uri: vscode.Uri): Promise<Issue[]> {
+    const repository = await this.getRepository(uri);
     const result = await repository.getIssues({
       sort: 'updated',
       direction: 'desc'

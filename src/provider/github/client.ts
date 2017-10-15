@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import {
   Client,
   Response
@@ -27,11 +28,11 @@ export class GithubClient implements Client {
     return `${protocol}//${hostname}/api/v3`;
   }
 
-  public async getRepository(rid: string): Promise<Response<GithubRepository>> {
+  public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GithubRepository>> {
     const [owner, repository] = rid.split('/');
     const response = await this.client.getRepository(owner, repository);
     return {
-      body: new GithubRepository(this.client, owner, repository, response.body)
+      body: new GithubRepository(uri, this.client, owner, repository, response.body)
     };
   }
 

@@ -103,11 +103,14 @@ export class GitLabMergeRequest implements PullRequest {
   }
 
   public async merge(_body: MergeBody): Promise<Response<MergeResult>> {
+    const removeSourceBranch = this.repository.uri
+      ? getConfiguration('gitlab', this.repository.uri).removeSourceBranch
+      : false;
     const response = await this.client.acceptMergeRequest(
       encodeURIComponent(this.repository.pathWithNamespace),
       this.mergeRequest.iid,
       {
-        should_remove_source_branch: getConfiguration('gitlab').removeSourceBranch
+        should_remove_source_branch: removeSourceBranch
       }
     );
     return {
