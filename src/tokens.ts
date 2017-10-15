@@ -31,6 +31,10 @@ export function migrateToken(memento: Memento): void {
   }
 }
 
+export function getTokens(memento: Memento): Tokens {
+  return memento.get<Tokens>('tokens', {});
+}
+
 export function listTokenHosts(memento: Memento): string[] {
   const tokens: Tokens | undefined = memento.get('tokens');
   if (!tokens) {

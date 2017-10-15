@@ -14,7 +14,7 @@ abstract class PullRequestCommand extends TokenCommand {
   protected git: Git;
 
   protected async selectPullRequest(): Promise<PullRequest | undefined> {
-    const pullRequests = await this.workflowManager.listPullRequests();
+    const pullRequests = await this.workflowManager.listPullRequests(this.uri);
     const items = pullRequests.map(pullRequest => ({
       label: pullRequest.title,
       description: `#${pullRequest.number}`,
@@ -26,18 +26,18 @@ abstract class PullRequestCommand extends TokenCommand {
     return selected ? selected.pullRequest : undefined;
   }
 
-  private async hasRemoteTrackingBranch(): Promise<boolean> {
-    const localBranch = await this.git.getCurrentBranch();
+  private async hasRemoteTrackingBranch(uri: vscode.Uri): Promise<boolean> {
+    const localBranch = await this.git.getCurrentBranch(uri);
     if (!localBranch) {
       return false;
     }
-    return Boolean(await this.git.getRemoteTrackingBranch(localBranch));
+    return Boolean(await this.git.getRemoteTrackingBranch(localBranch, uri));
   }
 
-  protected async requireRemoteTrackingBranch(): Promise<boolean> {
-    const hasBranch = await this.hasRemoteTrackingBranch();
+  protected async requireRemoteTrackingBranch(uri: vscode.Uri): Promise<boolean> {
+    const hasBranch = await this.hasRemoteTrackingBranch(uri);
     if (!hasBranch) {
-      if (getConfiguration().autoPublish) {
+      if (getConfiguration('github', uri).autoPublish) {
         await vscode.commands.executeCommand('git.publish');
         return true;
       } else {
@@ -56,7 +56,6 @@ abstract class PullRequestCommand extends TokenCommand {
       vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.url));
     }
   }
-
 }
 
 @component({eager: true})
@@ -81,7 +80,7 @@ export class BrowseSimpleRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.url));
     } else {
@@ -121,15 +120,18 @@ export class CreatePullRequestWithParameters extends PullRequestCommand {
   @showProgress
   protected async runWithToken(sourceBranch: string, targetBranch: string,
       title: string, body?: string): Promise<void> {
-    if (!this.requireRemoteTrackingBranch()) {
+    if (!this.requireRemoteTrackingBranch(this.uri)) {
       return;
     }
-    const pullRequest = await this.workflowManager.createPullRequestFromData({
-      sourceBranch,
-      targetBranch,
-      title,
-      body
-    });
+    const pullRequest = await this.workflowManager.createPullRequestFromData(
+      {
+        sourceBranch,
+        targetBranch,
+        title,
+        body
+      },
+      this.uri
+    );
     if (pullRequest) {
       this.statusBarManager.updateStatus();
       this.showPullRequestNotification(pullRequest);
@@ -148,10 +150,10 @@ export class CreateSimplePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    if (!this.requireRemoteTrackingBranch()) {
+    if (!this.requireRemoteTrackingBranch(this.uri)) {
       return;
     }
-    const pullRequest = await this.workflowManager.createPullRequest();
+    const pullRequest = await this.workflowManager.createPullRequest(this.uri);
     if (pullRequest) {
       this.statusBarManager.updateStatus();
       this.showPullRequestNotification(pullRequest);
@@ -170,32 +172,35 @@ export class CreatePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    if (!this.requireRemoteTrackingBranch()) {
+    if (!this.requireRemoteTrackingBranch(this.uri)) {
       return;
     }
-    let [owner, repo] = await this.git.getGitProviderOwnerAndRepository();
-    const selectedRepository = await this.getRepository();
+    let [owner, repo] = await this.git.getGitProviderOwnerAndRepository(this.uri);
+    const selectedRepository = await this.getRepository(this.uri);
     if (!selectedRepository) {
       return;
     }
     [owner, repo] = selectedRepository.label.split('/');
-    const branch = await this.getTargetBranch(selectedRepository.repo.defaultBranch);
+    const branch = await this.getTargetBranch(selectedRepository.repo.defaultBranch, this.uri);
     if (!branch) {
       return;
     }
-    const pullRequest = await this.workflowManager.createPullRequest({
-      owner,
-      repository: repo,
-      branch
-    });
+    const pullRequest = await this.workflowManager.createPullRequest(
+      this.uri,
+      {
+        owner,
+        repository: repo,
+        branch
+      }
+    );
     if (pullRequest) {
       this.statusBarManager.updateStatus();
       this.showPullRequestNotification(pullRequest);
     }
   }
 
-  private async getRepository(): Promise<{label: string, repo: { defaultBranch: string }} | undefined> {
-    const repository = await this.workflowManager.getRepository();
+  private async getRepository(uri: vscode.Uri): Promise<{label: string, repo: { defaultBranch: string }} | undefined> {
+    const repository = await this.workflowManager.getRepository(uri);
     const items = [{
       label: repository.name,
       description: '',
@@ -215,9 +220,9 @@ export class CreatePullRequest extends PullRequestCommand {
       { placeHolder: 'Select a repository to create the pull request in' });
   }
 
-  private async getTargetBranch(defaultBranch: string): Promise<string | undefined> {
+  private async getTargetBranch(defaultBranch: string, uri: vscode.Uri): Promise<string | undefined> {
     // sort default branch up
-    const picks = (await this.git.getRemoteBranches())
+    const picks = (await this.git.getRemoteBranches(uri))
       .sort((b1, b2) => {
         if (b1 === defaultBranch) {
           return -1;
@@ -243,13 +248,13 @@ export class MergePullRequest extends PullRequestCommand {
   private statusBarManager: StatusBarManager;
 
   @showProgress
-  private async getMergeMethdod(): Promise<MergeMethod | undefined> {
-    const config = getConfiguration();
+  private async getMergeMethdod(uri: vscode.Uri): Promise<MergeMethod | undefined> {
+    const config = getConfiguration('github', uri);
     if (config.preferedMergeMethod) {
       return config.preferedMergeMethod;
     }
     const items: { label: string; description: string; method: MergeMethod; }[] = [];
-    const enabledMethods = await this.workflowManager.getEnabledMergeMethods();
+    const enabledMethods = await this.workflowManager.getEnabledMergeMethods(uri);
     if (enabledMethods.has('merge')) {
       items.push({
         label: 'Create merge commit',
@@ -277,9 +282,9 @@ export class MergePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest && pullRequest.mergeable) {
-      const method = await this.getMergeMethdod();
+      const method = await this.getMergeMethdod(this.uri);
       if (method) {
         if (await this.workflowManager.mergePullRequest(pullRequest, method)) {
           this.statusBarManager.updateStatus();
@@ -303,9 +308,9 @@ export class UpdatePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch();
+    const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      await this.workflowManager.updatePullRequest(pullRequest);
+      await this.workflowManager.updatePullRequest(pullRequest, this.uri);
     } else {
       vscode.window.showInformationMessage('No pull request for current branch found');
     }

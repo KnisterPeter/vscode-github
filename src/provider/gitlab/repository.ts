@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { getConfiguration } from '../../helper';
 import { Response } from '../client';
 import { Issue } from '../issue';
@@ -18,6 +19,8 @@ import { GitLabMergeRequest } from './merge-request';
 import { GitLabUser } from './user';
 
 export class GitLabRepository implements Repository {
+
+  public readonly uri: vscode.Uri | undefined;
 
   private client: GitLab;
   private project: Project;
@@ -54,7 +57,8 @@ export class GitLabRepository implements Repository {
     return this.project.web_url;
   }
 
-  constructor(client: GitLab, project: Project) {
+  constructor(uri: vscode.Uri | undefined, client: GitLab, project: Project) {
+    this.uri = uri;
     this.client = client;
     this.project = project;
   }
@@ -109,11 +113,14 @@ export class GitLabRepository implements Repository {
   }
 
   public async createPullRequest(body: CreatePullRequestBody): Promise<Response<GitLabMergeRequest>> {
+    const removeSourceBranch = this.uri
+      ? getConfiguration('gitlab', this.uri).removeSourceBranch
+      : false;
     const gitlabBody: CreateMergeRequestBody =  {
       source_branch: body.sourceBranch,
       target_branch: body.targetBranch,
       title: body.title,
-      remove_source_branch: getConfiguration('gitlab').removeSourceBranch
+      remove_source_branch: removeSourceBranch
     };
     if (body.body) {
      gitlabBody.description = body.body;

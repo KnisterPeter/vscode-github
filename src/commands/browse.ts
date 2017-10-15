@@ -11,7 +11,7 @@ export class BrowseProject extends TokenCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const url = await this.workflowManager.getRepositoryUrl();
+    const url = await this.workflowManager.getRepositoryUrl(this.uri);
     await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
 
@@ -24,7 +24,7 @@ export class BrowseOpenIssues extends TokenCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const issues = await this.workflowManager.issues();
+    const issues = await this.workflowManager.issues(this.uri);
     if (issues.length > 0) {
       const selected = await vscode.window.showQuickPick(issues.map(issue => ({
         label: `${issue.title}`,
@@ -46,13 +46,19 @@ export class BrowseCurrentFile extends TokenCommand {
 
   public id = 'vscode-github.browseCurrentFile';
 
+  protected requireProjectFolder = false;
+
   @showProgress
   protected async runWithToken(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
     if (vscode.workspace.workspaceFolders && editor) {
-      const file = editor.document.fileName.substring(vscode.workspace.workspaceFolders[0].uri.fsPath.length);
+      const folder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+      if (!folder) {
+        return;
+      }
+      const file = editor.document.fileName.substring(folder.uri.fsPath.length);
       const line = editor.selection.active.line;
-      const uri = vscode.Uri.parse(await this.workflowManager.getGithubFileUrl(file, line));
+      const uri = vscode.Uri.parse(await this.workflowManager.getGithubFileUrl(folder.uri, file, line));
       vscode.commands.executeCommand('vscode.open', uri);
     }
   }

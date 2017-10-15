@@ -21,6 +21,27 @@ export abstract class Command {
     };
     this.reporter.sendTelemetryEvent('vscode-github.command', properties);
   }
+
+  protected async getProjectFolder(): Promise<vscode.Uri | undefined> {
+    const folders = vscode.workspace.workspaceFolders;
+    if (!folders) {
+      return undefined;
+    }
+    if (folders.length === 1) {
+      return folders[0].uri;
+    }
+    const picks = folders.map(folder => ({
+      label: folder.name,
+      description: '',
+      folder
+    }));
+    const selected = await vscode.window.showQuickPick(picks, { ignoreFocusOut: true });
+    if (!selected) {
+      return undefined;
+    }
+    return selected.folder.uri;
+  }
+
 }
 
 export abstract class TokenCommand extends Command {
@@ -28,24 +49,36 @@ export abstract class TokenCommand extends Command {
   @inject
   protected workflowManager: WorkflowManager;
 
-  @inject('vscode.WorkspaceFolder')
-  protected folder: vscode.WorkspaceFolder;
-
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
+  protected requireProjectFolder = true;
+
+  protected uri: vscode.Uri;
+
   public async run(...args: any[]): Promise<void> {
-    if (!(this.workflowManager && this.workflowManager.connected && this.folder)) {
-      this.track('execute without token');
-      vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
-        + 'and open a GitHub project in your workspace');
-      return;
+    if (this.requireProjectFolder) {
+      const uri = await this.getProjectFolder();
+      if (!uri) {
+        return;
+      }
+      this.uri = uri;
+      if (!(this.workflowManager && await this.workflowManager.canConnect(this.uri))) {
+        this.track('execute without token');
+        vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
+          + 'and open a GitHub project in your workspace');
+        return;
+      }
     }
-    this.track('execute');
     try {
-      await this.runWithToken(...args);
-    } catch (e) {
-      this.logAndShowError(e);
+      this.track('execute');
+      try {
+        await this.runWithToken(...args);
+      } catch (e) {
+        this.logAndShowError(e);
+      }
+    } finally {
+      this.uri = undefined as any;
     }
   }
 

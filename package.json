@@ -35,20 +35,24 @@
       "properties": {
         "github.gitCommand": {
           "type": "string",
-          "description": "Path to the git executable. If it is in the OS path, this should not be necessary to set."
+          "description": "Path to the git executable. If it is in the OS path, this should not be necessary to set.",
+          "scope": "window"
         },
         "github.preferedMergeMethod": {
           "type": "string",
-          "description": "By default the extension asks the user during merge process. This could be set to on of 'merge', 'squash' or 'rebase' to define the prefered method and not to be asked every time."
+          "description": "By default the extension asks the user during merge process. This could be set to on of 'merge', 'squash' or 'rebase' to define the prefered method and not to be asked every time.",
+          "scope": "resource"
         },
         "github.remoteName": {
           "type": "string",
           "description": "Defines the name of the git remote. Defaults to 'origin'.",
-          "default": "origin"
+          "default": "origin",
+          "scope": "resource"
         },
         "github.upstream": {
           "type": "string",
-          "description": "By default the extension get the repository and user from .git/config. For forks where upstream is a different repository this could be configured here (e.g. microsoft/typescript)."
+          "description": "By default the extension get the repository and user from .git/config. For forks where upstream is a different repository this could be configured here (e.g. microsoft/typescript).",
+          "scope": "resource"
         },
         "github.customPullRequestDescription": {
           "type": "string",
@@ -58,12 +62,14 @@
             "gitEditor"
           ],
           "default": "off",
-          "description": "By default the pull request description is the first commit message. When this property is set, the user is asked for a description when creating the PR. This can be a single-line description via an input dialog ('singleLine') or a multi-line markdown description via the editor configured in git ('gitEditor')."
+          "description": "By default the pull request description is the first commit message. When this property is set, the user is asked for a description when creating the PR. This can be a single-line description via an input dialog ('singleLine') or a multi-line markdown description via the editor configured in git ('gitEditor').",
+          "scope": "resource"
         },
         "github.autoPublish": {
           "type": "boolean",
           "description": "Automatically publish the current branch before creating a pull request. Defaults to false",
-          "default": false
+          "default": false,
+          "scope": "resource"
         },
         "github.statusbar.command": {
           "type": [
@@ -71,34 +77,41 @@
             "null"
           ],
           "description": "Defines which command is executed when clicking the status bar item. Default behaviour is the create-pull-request-then-merge cycle (different command based on state). For example to open the current pull request set this to 'vscode-github.browserSimplePullRequest'",
-          "default": null
+          "default": null,
+          "scope": "window"
         },
         "github.statusbar.refresh": {
           "type": "number",
           "default": 5,
-          "description": "Interval in seconds to refresh the current pull request status."
+          "description": "Interval in seconds to refresh the current pull request status.",
+          "scope": "window"
         },
         "github.statusbar.color": {
           "type": "boolean",
           "default": true,
-          "description": "Enables or disables the coloring of the status bar based on the mergeable state."
+          "description": "Enables or disables the coloring of the status bar based on the mergeable state.",
+          "scope": "window"
         },
         "github.statusbar.successText": {
           "type": "string",
-          "description": "Overrides the default success text."
+          "description": "Overrides the default success text.",
+          "scope": "window"
         },
         "github.statusbar.pendingText": {
           "type": "string",
-          "description": "Overrides the default pending text."
+          "description": "Overrides the default pending text.",
+          "scope": "window"
         },
         "github.statusbar.failureText": {
           "type": "string",
-          "description": "Overrides the default failure text."
+          "description": "Overrides the default failure text.",
+          "scope": "window"
         },
         "gitlab.removeSourceBranch": {
           "type": "boolean",
           "description": "GitLab setting to 'remove_source_branch' per MergeRequest.",
-          "default": false
+          "default": false,
+          "scope": "resource"
         }
       }
     },

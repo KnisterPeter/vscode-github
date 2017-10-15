@@ -10,38 +10,35 @@ import { getConfiguration } from './helper';
 @component
 export class Git {
 
-  @inject('vscode.WorkspaceFolder')
-  protected folder: vscode.WorkspaceFolder;
-
   @inject('vscode.OutputChannel')
   private channel: vscode.OutputChannel;
 
-  private get remoteName(): string {
-    return getConfiguration().remoteName;
+  private getRemoteName(uri: vscode.Uri): string {
+    return getConfiguration('github', uri).remoteName;
   }
 
-  private async execute(cmd: string): Promise<{stdout: string, stderr: string}> {
+  private async execute(cmd: string, uri: vscode.Uri): Promise<{stdout: string, stderr: string}> {
     const [git, ...args] = cmd.split(' ');
-    const gitCommand = getConfiguration().gitCommand;
+    const gitCommand = getConfiguration('github', uri).gitCommand;
     this.channel.appendLine(`${gitCommand || git} ${args.join(' ')}`);
-    return await execa(gitCommand || git, args, {cwd: this.folder.uri.fsPath});
+    return await execa(gitCommand || git, args, { cwd: uri.fsPath });
   }
 
-  public async checkExistence(): Promise<boolean> {
+  public async checkExistence(uri: vscode.Uri): Promise<boolean> {
     try {
-      await this.execute('git --version');
+      await this.execute('git --version', uri);
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  public async getRemoteBranches(): Promise<string[]> {
-    const response = await this.execute('git branch --list --remotes --no-color');
+  public async getRemoteBranches(uri: vscode.Uri): Promise<string[]> {
+    const response = await this.execute('git branch --list --remotes --no-color', uri);
     return response.stdout
       .split('\n')
       .filter(line => !line.match('->'))
-      .map(line => line.replace(`${this.remoteName}/`, ''))
+      .map(line => line.replace(`${this.getRemoteName(uri)}/`, ''))
       .map(line => line.trim());
   }
 
@@ -49,28 +46,27 @@ export class Git {
    * Check config for a default upstream and if none found look in .git/config for a remote origin and
    * parses it to get username and repository.
    *
-   * @param {string} cwd The directory to find the .git/config file in.
    * @return {Promise<string[]>} A tuple of username and repository (e.g. KnisterPeter/vscode-github)
    * @throws Throws if the could not be parsed as a github url
    */
-  public async getGitProviderOwnerAndRepository(): Promise<string[]> {
-    const defaultUpstream = getConfiguration().upstream;
+  public async getGitProviderOwnerAndRepository(uri: vscode.Uri): Promise<string[]> {
+    const defaultUpstream = getConfiguration('github', uri).upstream;
     if (defaultUpstream) {
       return Promise.resolve(defaultUpstream.split('/'));
     }
-    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig()).slice(2, 4);
+    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(uri)).slice(2, 4);
   }
 
-  public async getGitHostname(): Promise<string> {
-    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig())[1];
+  public async getGitHostname(uri: vscode.Uri): Promise<string> {
+    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(uri))[1];
   }
 
-  public async getGitProtocol(): Promise<string> {
-    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig())[0];
+  public async getGitProtocol(uri: vscode.Uri): Promise<string> {
+    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(uri))[0];
   }
 
-  private async getGitProviderOwnerAndRepositoryFromGitConfig(): Promise<string[]> {
-    const remote = (await this.execute(`git config --local --get remote.${this.remoteName}.url`))
+  private async getGitProviderOwnerAndRepositoryFromGitConfig(uri: vscode.Uri): Promise<string[]> {
+    const remote = (await this.execute(`git config --local --get remote.${this.getRemoteName(uri)}.url`, uri))
       .stdout.trim();
     if (!remote.length) {
       throw new Error('Git remote is empty!');
@@ -110,35 +106,35 @@ export class Git {
     return [protocol, hostname, ...match.slice(1, 3)];
   }
 
-  public async getCurrentBranch(): Promise<string|undefined> {
-    const stdout = (await this.execute('git branch')).stdout;
+  public async getCurrentBranch(uri: vscode.Uri): Promise<string|undefined> {
+    const stdout = (await this.execute('git branch', uri)).stdout;
     const match = stdout.match(/^\* (.*)$/m);
     return match ? match[1] : undefined;
   }
 
-  public async getCommitMessage(sha: string): Promise<string> {
-    return (await this.execute(`git log -n 1 --format=%s ${sha}`)).stdout.trim();
+  public async getCommitMessage(sha: string, uri: vscode.Uri): Promise<string> {
+    return (await this.execute(`git log -n 1 --format=%s ${sha}`, uri)).stdout.trim();
   }
 
-  public async getFirstCommitOnBranch(branch: string, defaultBranch: string): Promise<string> {
-    return (await this.execute(`git rev-list ^${defaultBranch} ${branch}`)).stdout.trim().split('\n')[0];
+  public async getFirstCommitOnBranch(branch: string, defaultBranch: string, uri: vscode.Uri): Promise<string> {
+    return (await this.execute(`git rev-list ^${defaultBranch} ${branch}`, uri)).stdout.trim().split('\n')[0];
   }
 
-  public async getCommitBody(sha: string): Promise<string> {
-    return (await this.execute(`git log --format=%b -n 1 ${sha}`)).stdout.trim();
+  public async getCommitBody(sha: string, uri: vscode.Uri): Promise<string> {
+    return (await this.execute(`git log --format=%b -n 1 ${sha}`, uri)).stdout.trim();
   }
 
-  public async getPullRequestBody(sha: string): Promise<string|undefined> {
-    const bodyMethod = getConfiguration().customPullRequestDescription;
+  public async getPullRequestBody(sha: string, uri: vscode.Uri): Promise<string|undefined> {
+    const bodyMethod = getConfiguration('github', uri).customPullRequestDescription;
 
     switch (bodyMethod) {
       case 'singleLine':
         return this.getSingleLinePullRequestBody();
       case 'gitEditor':
-        return this.getGitEditorPullRequestBody();
+        return this.getGitEditorPullRequestBody(uri);
       case 'off':
       default:
-        return this.getCommitBody(sha);
+        return this.getCommitBody(sha, uri);
     }
   }
 
@@ -146,8 +142,8 @@ export class Git {
     return await vscode.window.showInputBox({prompt: 'Pull request description'});
   }
 
-  private async getGitEditorPullRequestBody(): Promise<string> {
-    const path = resolve(this.folder.uri.fsPath, 'PR_EDITMSG');
+  private async getGitEditorPullRequestBody(uri: vscode.Uri): Promise<string> {
+    const path = resolve(uri, 'PR_EDITMSG');
 
     const [editorName, ...params] = (await execa('git', ['config', '--get', 'core.editor'])).stdout.split(' ');
     await execa(editorName, [...params, path]);
@@ -159,9 +155,9 @@ export class Git {
     return fileContents;
   }
 
-  public async getRemoteTrackingBranch(branch: string): Promise<string|undefined> {
+  public async getRemoteTrackingBranch(branch: string, uri: vscode.Uri): Promise<string|undefined> {
     try {
-      return (await this.execute(`git config --get branch.${branch}.merge`)).stdout.trim().split('\n')[0];
+      return (await this.execute(`git config --get branch.${branch}.merge`, uri)).stdout.trim().split('\n')[0];
     } catch (e) {
       return undefined;
     }

@@ -3,8 +3,7 @@ import * as vscode from 'vscode';
 
 import { Command } from '../command';
 import { getHostname } from '../helper';
-import { listTokenHosts, removeToken } from '../tokens';
-import { WorkflowManager, Tokens } from '../workflow-manager';
+import { getTokens, listTokenHosts, removeToken } from '../tokens';
 
 @component({eager: true})
 export class SetGithubToken extends Command {
@@ -13,9 +12,6 @@ export class SetGithubToken extends Command {
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
-
-  @inject
-  private workflowManager: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -26,13 +22,12 @@ export class SetGithubToken extends Command {
     };
     const input = await vscode.window.showInputBox(options);
     if (input) {
-      const tokens = this.context.globalState.get<Tokens>('tokens', {});
+      const tokens = getTokens(this.context.globalState);
       tokens['github.com'] = {
         token: input,
         provider: 'github'
       };
       this.context.globalState.update('tokens', tokens);
-      await this.workflowManager.connect(tokens);
     }
   }
 
@@ -45,9 +40,6 @@ export class SetGithubEnterpriseToken extends Command {
 
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
-
-  @inject
-  private workflowManager: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -62,13 +54,12 @@ export class SetGithubEnterpriseToken extends Command {
         placeHolder: 'GitHub Enterprise Token'
       });
       if (tokenInput) {
-        const tokens = this.context.globalState.get<Tokens>('tokens', {});
+        const tokens = getTokens(this.context.globalState);
         tokens[getHostname(hostInput)] = {
           token: tokenInput,
           provider: 'github'
         };
         this.context.globalState.update('tokens', tokens);
-        this.workflowManager.connect(tokens);
       }
     }
   }
@@ -83,9 +74,6 @@ export class SetGitLabToken extends Command {
   @inject('vscode.ExtensionContext')
   private context: vscode.ExtensionContext;
 
-  @inject
-  private workflowManager: WorkflowManager;
-
   public async run(): Promise<void> {
     this.track('execute');
     const hostInput = await vscode.window.showInputBox({
@@ -99,13 +87,12 @@ export class SetGitLabToken extends Command {
         placeHolder: 'GitLab Token (Personal Access Tokens)'
       });
       if (tokenInput) {
-        const tokens = this.context.globalState.get<Tokens>('tokens', {});
+        const tokens = getTokens(this.context.globalState);
         tokens[getHostname(hostInput)] = {
           token: tokenInput,
           provider: 'gitlab'
         };
         this.context.globalState.update('tokens', tokens);
-        this.workflowManager.connect(tokens);
       }
     }
   }

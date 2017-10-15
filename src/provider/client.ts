@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { Git } from '../git';
 import { Tokens } from '../workflow-manager';
 import { Repository } from './repository';
@@ -6,11 +7,15 @@ import { User } from './user';
 import { GithubClient } from './github/client';
 import { GitLabClient } from './gitlab/client';
 
-export async function createClient(git: Git, tokens: Tokens, logger: (message: string) => void): Promise<Client> {
-  const gitProtocol = await git.getGitProtocol();
+export async function createClient(git: Git, tokens: Tokens, uri: vscode.Uri,
+    logger: (message: string) => void): Promise<Client> {
+  const gitProtocol = await git.getGitProtocol(uri);
   const protocol = gitProtocol.startsWith('http') ? gitProtocol : 'https:';
-  const hostname = await git.getGitHostname();
+  const hostname = await git.getGitHostname(uri);
   const tokenInfo = tokens[hostname];
+  if (!tokenInfo) {
+    throw new Error('No token');
+  }
   switch (tokenInfo.provider) {
     case 'github':
       return new GithubClient(protocol, hostname, tokens[hostname].token, logger);
@@ -25,7 +30,7 @@ export interface Client {
 
   name: string;
 
-  getRepository(rid: string): Promise<Response<Repository>>;
+  getRepository(uri: vscode.Uri, rid: string): Promise<Response<Repository>>;
 
   getUserByUsername(username: string): Promise<Response<User>>;
 
