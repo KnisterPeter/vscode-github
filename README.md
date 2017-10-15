@@ -30,6 +30,7 @@ Current it is possible to do the following:
 * Browse the current open file (including current cursor position)
 * Configure the statusbar behaviour by setting the `github.statusBarCommand` configuration value.
 * Specify a GitLab private access token and connect to a GitLab server
+* Support multi folder setup
 
 ![Create pull request](images/create-pull-request.png)
 
