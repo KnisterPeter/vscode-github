@@ -244,6 +244,12 @@ export class WorkflowManager {
     return repository.url;
   }
 
+  public async getIssueUrl(uri: vscode.Uri, id: string): Promise<string | undefined> {
+    const hostname = await this.git.getGitHostname(uri);
+    const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
+    return `https://${hostname}/${owner}/${repo}/issues/${id}`;
+  }
+
   public async getGithubFileUrl(uri: vscode.Uri, file: string, line = 0): Promise<string> {
     const hostname = await this.git.getGitHostname(uri);
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);

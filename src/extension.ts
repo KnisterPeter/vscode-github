@@ -6,6 +6,7 @@ import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { CommandManager } from './command-manager';
 import { Git } from './git';
+import { HoverProvider } from './issues';
 import { GitHubError } from './provider/github';
 import { StatusBarManager } from './status-bar-manager';
 import { migrateToken } from './tokens';
@@ -40,6 +41,7 @@ export class Extension {
 
       this.tsdi.get(CommandManager);
       this.tsdi.get(StatusBarManager);
+      this.tsdi.get(HoverProvider);
 
       if (!vscode.workspace.workspaceFolders) {
         return;
