@@ -294,11 +294,12 @@ export class WorkflowManager {
     });
   }
 
-  public async issues(uri: vscode.Uri): Promise<Issue[]> {
+  public async issues(uri: vscode.Uri, state: 'closed' | 'all' | 'open' = 'all'): Promise<Issue[]> {
     const repository = await this.getRepository(uri);
     const result = await repository.getIssues({
       sort: 'updated',
-      direction: 'desc'
+      direction: 'desc',
+      state
     });
     return result.body;
   }

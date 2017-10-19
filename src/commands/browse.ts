@@ -24,7 +24,7 @@ export class BrowseOpenIssues extends TokenCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
-    const issues = await this.workflowManager.issues(this.uri);
+    const issues = await this.workflowManager.issues(this.uri, 'open');
     if (issues.length > 0) {
       const selected = await vscode.window.showQuickPick(issues.map(issue => ({
         label: `${issue.title}`,
