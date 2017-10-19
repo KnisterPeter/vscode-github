@@ -15,6 +15,7 @@ import {
   CreateMergeRequestBody,
   ProjectIssuesBody
 } from './api';
+import { GitLabIssue } from './issue';
 import { GitLabMergeRequest } from './merge-request';
 import { GitLabUser } from './user';
 
@@ -172,11 +173,7 @@ export class GitLabRepository implements Repository {
       body
     );
     return {
-      body: response.body.map(issue => ({
-        number: issue.iid,
-        title: issue.title,
-        url: issue.web_url
-      }))
+      body: response.body.map(issue => new GitLabIssue(this.client, this, issue))
     };
   }
 

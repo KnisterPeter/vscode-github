@@ -37,12 +37,19 @@ export interface GitHub {
   getUser(username: string): Promise<GitHubResponse<UserResponse>>;
 
   listAssignees(owner: string, repo: string): Promise<GitHubResponse<UserResponse[]>>;
+
+  getIssueComments(owner: string, repo: string, number: number): Promise<GitHubResponse<IssueComment[]>>;
 }
 
 export interface GitHubResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface IssueComment {
+  body: string;
+  user: UserResponse;
 }
 
 export interface UpdatePullRequestBody {
@@ -78,6 +85,7 @@ export interface Issue {
   number: number;
   state: 'open';
   title: string;
+  body: string;
   pull_request?: object;
 }
 
@@ -254,6 +262,7 @@ namespace impl {
   }
 
   export class GitHubBlueprint implements GitHub {
+
     @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
     public getRepository(): any {/* */}
@@ -303,6 +312,10 @@ namespace impl {
 
     @Get('/repos/:owner/:repo/assignees')
     public listAssignees(): any {/* */}
+
+    @Get('/repos/:owner/:repo/issues/:number/comments')
+    public getIssueComments(): any {/* */}
+
   }
 
 }
