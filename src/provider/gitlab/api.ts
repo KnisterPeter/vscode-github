@@ -18,12 +18,18 @@ export interface GitLab {
     : Promise<GitLabResponse<AcceptMergeRequestResponse>>;
   getProjectIssues(id: string, body: ProjectIssuesBody): Promise<GitLabResponse<Issue[]>>;
   searchUser(parameters?: SearchUsersParameters): Promise<GitLabResponse<UserResponse[]>>;
+  getIssueNotes(id: string, issue_iid: number): Promise<GitLabResponse<IssueNote[]>>;
 }
 
 export interface GitLabResponse<T> {
   status: number;
   headers: {[name: string]: string[]};
   body: T;
+}
+
+export interface IssueNote {
+  body: string;
+  author: UserResponse;
 }
 
 export interface AcceptMergeRequestBody {
@@ -55,6 +61,7 @@ export interface Issue {
   iid: number;
   title: string;
   web_url: string;
+  description: string;
 }
 
 export interface CreateMergeRequestBody {
@@ -207,6 +214,9 @@ namespace impl {
 
     @Get('/projects/:id/issues')
     public getProjectIssues(): any {/* */}
+
+    @Get('/projects/:id/issues/:issue_iid/notes')
+    public getIssueNotes(): any {/* */}
 
   }
 

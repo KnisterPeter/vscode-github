@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 import { Git } from './git';
 import { createClient, Client } from './provider/client';
-import { Issue } from './provider/issue';
+import { Issue, IssueComment } from './provider/issue';
 import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
 import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
 import { User } from './provider/user';
@@ -306,6 +306,10 @@ export class WorkflowManager {
 
   public async getPullRequestReviewComments(pullRequest: PullRequest): Promise<Comment[]> {
     return (await pullRequest.getComments()).body;
+  }
+
+  public async getIssueComments(issue: Issue): Promise<IssueComment[]> {
+    return (await issue.comments()).body;
   }
 
 }

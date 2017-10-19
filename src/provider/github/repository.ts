@@ -8,6 +8,7 @@ import {
   IssuesParameters
 } from '../repository';
 import { GitHub, GithubRepositoryStruct } from './index';
+import { GithubIssue } from './issue';
 import { GithubPullRequest } from './pull-request';
 import { GithubUser } from './user';
 
@@ -117,11 +118,7 @@ export class GithubRepository implements Repository {
     return {
       body: response.body
         .filter(issue => !Boolean(issue.pull_request))
-        .map(issue => ({
-          number: issue.number,
-          title: issue.title,
-          url: issue.html_url
-        }))
+        .map(issue => new GithubIssue(this.client, this, issue))
     };
   }
 
