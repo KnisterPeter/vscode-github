@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.23.0"></a>
+# [0.23.0](https://github.com/KnisterPeter/vscode-github/compare/v0.22.0...v0.23.0) (2017-10-24)
+
+
+### Bug Fixes
+
+* correct usage of lru typings ([39b0977](https://github.com/KnisterPeter/vscode-github/commit/39b0977))
+* only list open issues ([55d11c8](https://github.com/KnisterPeter/vscode-github/commit/55d11c8))
+* parse response codes above 200 ([d32b080](https://github.com/KnisterPeter/vscode-github/commit/d32b080))
+* update logging ([e363349](https://github.com/KnisterPeter/vscode-github/commit/e363349))
+* **package:** update tsdi to version 0.15.0 ([e3a4f75](https://github.com/KnisterPeter/vscode-github/commit/e3a4f75))
+
+
+### Features
+
+* add multi folder support ([e103165](https://github.com/KnisterPeter/vscode-github/commit/e103165))
+* add request logging ([4bbffb6](https://github.com/KnisterPeter/vscode-github/commit/4bbffb6))
+* add test connect per provider ([d3583dd](https://github.com/KnisterPeter/vscode-github/commit/d3583dd))
+* add update pull request command ([f17eb3c](https://github.com/KnisterPeter/vscode-github/commit/f17eb3c))
+* hover issue ([ae9606c](https://github.com/KnisterPeter/vscode-github/commit/ae9606c)), closes [#241](https://github.com/KnisterPeter/vscode-github/issues/241)
+* link to issues from source ([968dabf](https://github.com/KnisterPeter/vscode-github/commit/968dabf)), closes [#241](https://github.com/KnisterPeter/vscode-github/issues/241)
+* provide list of assignees ([33b4742](https://github.com/KnisterPeter/vscode-github/commit/33b4742)), closes [#84](https://github.com/KnisterPeter/vscode-github/issues/84)
+* run test on connect ([60468ef](https://github.com/KnisterPeter/vscode-github/commit/60468ef))
+* support merging in gitlab ([66ff9ee](https://github.com/KnisterPeter/vscode-github/commit/66ff9ee))
+
+
+
 <a name="0.22.0"></a>
 # [0.22.0](https://github.com/KnisterPeter/vscode-github/compare/v0.21.0...v0.22.0) (2017-10-06)
 
