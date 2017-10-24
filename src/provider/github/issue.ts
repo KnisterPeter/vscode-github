@@ -1,6 +1,6 @@
 import { Response } from '../client';
 import { Issue, IssueComment } from '../issue';
-import { GitHub, Issue as IssueStruct } from './index';
+import { GitHub, Issue as IssueStruct } from './api';
 import { GithubRepository } from './repository';
 import { GithubUser } from './user';
 

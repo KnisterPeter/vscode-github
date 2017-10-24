@@ -2,7 +2,7 @@ import { inject } from 'tsdi';
 import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
-import { GitHubError } from './provider/github';
+import { GitHubError } from './provider/github/api';
 import { WorkflowManager } from './workflow-manager';
 
 export abstract class Command {

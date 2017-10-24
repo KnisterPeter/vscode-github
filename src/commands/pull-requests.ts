@@ -4,8 +4,7 @@ import * as vscode from 'vscode';
 import { TokenCommand } from '../command';
 import { Git } from '../git';
 import { getConfiguration, showProgress } from '../helper';
-import { MergeMethod } from '../provider/github';
-import { PullRequest } from '../provider/pull-request';
+import { MergeMethod, PullRequest } from '../provider/pull-request';
 import { StatusBarManager } from '../status-bar-manager';
 
 abstract class PullRequestCommand extends TokenCommand {

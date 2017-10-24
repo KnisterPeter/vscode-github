@@ -1,5 +1,5 @@
 import { User } from '../user';
-import { GitHub, UserResponse } from './index';
+import { GitHub, UserResponse } from './api';
 
 export class GithubUser implements User {
 

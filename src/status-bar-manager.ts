@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 import { Git } from './git';
 import { getConfiguration } from './helper';
-import { GitHubError, PullRequestStatus } from './provider/github';
+import { GitHubError, PullRequestStatus } from './provider/github/api';
 import { PullRequest } from './provider/pull-request';
 import { WorkflowManager} from './workflow-manager';
 

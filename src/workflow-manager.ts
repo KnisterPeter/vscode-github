@@ -9,7 +9,7 @@ import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from '.
 import { User } from './provider/user';
 import { getTokens } from './tokens';
 
-import { GitHubError } from './provider/github';
+import { GitHubError } from './provider/github/api';
 
 export interface Tokens {
   [host: string]: {
