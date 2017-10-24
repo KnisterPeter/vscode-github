@@ -35,6 +35,12 @@ export class WorkflowManager {
   private async connect(uri: vscode.Uri): Promise<void> {
     const logger = (message: string) => this.log(message);
     const provider = await createClient(this.git, getTokens(this.context.globalState), uri, logger);
+    try {
+      provider.test();
+    } catch (e) {
+      throw new Error(`Connection with ${provider.name} failed. Please make sure your git executable`
+        + `is setup correct, and your token has enought access rights.`);
+    }
     this.log(`Connected with provider ${provider.name}`);
     this.providers[uri.fsPath] = provider;
   }
