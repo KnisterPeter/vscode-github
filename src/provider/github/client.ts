@@ -4,7 +4,7 @@ import {
   Response
 } from '../client';
 
-import { GitHub, getClient } from './index';
+import { GitHub, getClient } from './api';
 import { GithubRepository } from './repository';
 import { GithubUser } from './user';
 
@@ -26,6 +26,10 @@ export class GithubClient implements Client {
       return `${hostname}/api/v3`;
     }
     return `${protocol}//${hostname}/api/v3`;
+  }
+
+  public async test(): Promise<void> {
+    await this.client.getRepositories();
   }
 
   public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GithubRepository>> {

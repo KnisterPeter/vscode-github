@@ -7,7 +7,7 @@ import {
   CreatePullRequestBody,
   IssuesParameters
 } from '../repository';
-import { GitHub, GithubRepositoryStruct } from './index';
+import { GitHub, GithubRepositoryStruct } from './api';
 import { GithubIssue } from './issue';
 import { GithubPullRequest } from './pull-request';
 import { GithubUser } from './user';

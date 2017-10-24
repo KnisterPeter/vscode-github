@@ -8,7 +8,7 @@ import {
   Comment,
   UpdateBody
 } from '../pull-request';
-import { GitHub, PullRequestStruct } from './index';
+import { GitHub, PullRequestStruct } from './api';
 import { GithubRepository } from './repository';
 import { GithubUser } from './user';
 

@@ -18,6 +18,10 @@ export class GitLabClient implements Client {
     return `${protocol}//${hostname}/api/v4`;
   }
 
+  public async test(): Promise<void> {
+    await this.client.getProjects();
+  }
+
   public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GitLabRepository>> {
     const response = (await this.client.getProject(encodeURIComponent(rid))).body;
     return {

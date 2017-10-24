@@ -4,6 +4,8 @@ import {Pretend, Get, Post, Put, Patch, Delete, Headers, Interceptor, IPretendRe
 
 export interface GitHub {
 
+  getRepositories(): Promise<GitHubResponse<GithubRepositoryStruct>>;
+
   getRepository(owner: string, repo: string): Promise<GitHubResponse<GithubRepositoryStruct>>;
 
   getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestStruct>>;
@@ -262,6 +264,8 @@ namespace impl {
   }
 
   export class GitHubBlueprint implements GitHub {
+    @Get('/user/repos')
+    public getRepositories(): any {/* */}
 
     @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')

@@ -9,15 +9,25 @@ import {
 } from 'pretend';
 
 export interface GitLab {
+  getProjects(): Promise<GitLabResponse<Project>>;
+
   getProject(id: string): Promise<GitLabResponse<Project>>;
+
   getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
+
   getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
+
   createMergeRequest(id: string, body: CreateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
+
   updateMergeRequest(id: string, mr_iid: number, body: UpdateMergeRequestBody): Promise<GitLabResponse<MergeRequest>>;
+
   acceptMergeRequest(id: string, mr_iid: number, body: AcceptMergeRequestBody)
     : Promise<GitLabResponse<AcceptMergeRequestResponse>>;
+
   getProjectIssues(id: string, body: ProjectIssuesBody): Promise<GitLabResponse<Issue[]>>;
+
   searchUser(parameters?: SearchUsersParameters): Promise<GitLabResponse<UserResponse[]>>;
+
   getIssueNotes(id: string, issue_iid: number): Promise<GitLabResponse<IssueNote[]>>;
 }
 
@@ -190,6 +200,8 @@ namespace impl {
   }
 
   export class GitLabBlueprint implements GitLab {
+    @Get('/projects')
+    public getProjects(): any {/* */}
 
     @Get('/users', true)
     public searchUser(): any {/* */}
