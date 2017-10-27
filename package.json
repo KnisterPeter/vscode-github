@@ -234,7 +234,7 @@
     "conventional-changelog-lint-config-angular": "1.0.0",
     "execa": "^0.8.0",
     "lru-cache": "^4.1.1",
-    "pretend": "^0.7.0",
+    "pretend": "^1.0.0",
     "sander": "^0.6.0",
     "tsdi": "0.15.0",
     "vscode-extension-telemetry": "0.0.8"
