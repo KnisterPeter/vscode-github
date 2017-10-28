@@ -1,3 +1,4 @@
+import 'isomorphic-fetch';
 import { TSDI, factory } from 'tsdi';
 import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
