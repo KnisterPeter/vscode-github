@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.24.0"></a>
+# [0.24.0](https://github.com/KnisterPeter/vscode-github/compare/v0.23.0...v0.24.0) (2017-11-17)
+
+
+### Bug Fixes
+
+* **package:** update pretend to version 1.0.0 ([2b9a6b0](https://github.com/KnisterPeter/vscode-github/commit/2b9a6b0))
+* **package:** update tsdi to version 0.16.0 ([0b79af2](https://github.com/KnisterPeter/vscode-github/commit/0b79af2))
+* **package:** update tsdi to version 0.17.0 ([601c72d](https://github.com/KnisterPeter/vscode-github/commit/601c72d))
+* unable to determine first commit ([d821930](https://github.com/KnisterPeter/vscode-github/commit/d821930))
+* update status for single workspace ([0789682](https://github.com/KnisterPeter/vscode-github/commit/0789682))
+
+
+### Features
+
+* add current user api ([bd08db9](https://github.com/KnisterPeter/vscode-github/commit/bd08db9))
+
+
+
 <a name="0.23.0"></a>
 # [0.23.0](https://github.com/KnisterPeter/vscode-github/compare/v0.22.0...v0.23.0) (2017-10-24)
 
