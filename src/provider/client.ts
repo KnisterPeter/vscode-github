@@ -32,6 +32,8 @@ export interface Client {
 
   test(): Promise<void>;
 
+  getCurrentUser(): Promise<Response<User>>;
+
   getRepository(uri: vscode.Uri, rid: string): Promise<Response<Repository>>;
 
   getUserByUsername(username: string): Promise<Response<User>>;

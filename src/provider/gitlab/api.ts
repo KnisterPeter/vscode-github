@@ -26,6 +26,8 @@ export interface GitLab {
 
   getProjectIssues(id: string, body: ProjectIssuesBody): Promise<GitLabResponse<Issue[]>>;
 
+  getAuthenticatedUser(): Promise<GitLabResponse<UserResponse>>;
+
   searchUser(parameters?: SearchUsersParameters): Promise<GitLabResponse<UserResponse[]>>;
 
   getIssueNotes(id: string, issue_iid: number): Promise<GitLabResponse<IssueNote[]>>;
@@ -158,6 +160,7 @@ namespace impl {
 
   export function gitlabTokenAuthenticator(token: string): IPretendRequestInterceptor {
     return request => {
+      request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('PRIVATE-TOKEN', `${token}`);
       return request;
     };
@@ -166,6 +169,7 @@ namespace impl {
   export function formEncoding(): IPretendRequestInterceptor {
     return request => {
       if (request.options.method !== 'GET') {
+        request.options.headers = new Headers(request.options.headers);
         request.options.headers.set('Content-Type', 'application/x-www-form-urlencoded');
         if (request.options.body) {
           const body = JSON.parse(request.options.body);
@@ -200,8 +204,12 @@ namespace impl {
   }
 
   export class GitLabBlueprint implements GitLab {
+
     @Get('/projects')
     public getProjects(): any {/* */}
+
+    @Get('/user', true)
+    public getAuthenticatedUser(): any {/* */}
 
     @Get('/users', true)
     public searchUser(): any {/* */}

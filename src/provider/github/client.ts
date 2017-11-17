@@ -32,6 +32,13 @@ export class GithubClient implements Client {
     await this.client.getRepositories();
   }
 
+  public async getCurrentUser(): Promise<Response<GithubUser>> {
+    const response = await this.client.getAuthenticatedUser();
+    return {
+      body: new  GithubUser(this.client, response.body)
+    };
+  }
+
   public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GithubRepository>> {
     const [owner, repository] = rid.split('/');
     const response = await this.client.getRepository(owner, repository);
