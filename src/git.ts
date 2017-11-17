@@ -117,10 +117,14 @@ export class Git {
   }
 
   public async getFirstCommitOnBranch(branch: string, defaultBranch: string, uri: vscode.Uri): Promise<string> {
-    return (await this.execute(`git rev-list ^${defaultBranch} ${branch}`, uri)).stdout.trim().split('\n')[0];
+    const sha = (await this.execute(`git rev-list ^${defaultBranch} ${branch}`, uri)).stdout.trim().split('\n')[0];
+    if (!sha) {
+      return 'master';
+    }
+    return sha;
   }
 
-  public async getCommitBody(sha: string, uri: vscode.Uri): Promise<string> {
+  private async getCommitBody(sha: string, uri: vscode.Uri): Promise<string> {
     return (await this.execute(`git log --format=%b -n 1 ${sha}`, uri)).stdout.trim();
   }
 
