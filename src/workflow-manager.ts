@@ -318,4 +318,11 @@ export class WorkflowManager {
     return (await issue.comments()).body;
   }
 
+  public async createRepository(uri: vscode.Uri, name: string): Promise<Repository> {
+    const provider = await this.getProvider(uri);
+    const user = await provider.getCurrentUser();
+    const repository = await provider.createRepository(user.body, name);
+    return repository.body;
+  }
+
 }

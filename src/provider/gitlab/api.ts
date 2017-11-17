@@ -13,6 +13,8 @@ export interface GitLab {
 
   getProject(id: string): Promise<GitLabResponse<Project>>;
 
+  createProject(id: number, body: { name: string }): Promise<GitLabResponse<Project>>;
+
   getMergeRequests(id: string, parameters?: GetMergeRequestParameters): Promise<GitLabResponse<MergeRequest[]>>;
 
   getMergeRequest(id: string, mr_iid: number): Promise<GitLabResponse<MergeRequest>>;
@@ -208,6 +210,9 @@ namespace impl {
 
     @Get('/projects/:id')
     public getProject(): any {/* */}
+
+    @Post('/projects/user/:user_id')
+    public createProject(): any {/* */}
 
     @Get('/projects/:id/merge_requests', true)
     public getMergeRequests(): any {/* */}

@@ -22,6 +22,13 @@ export class GitLabClient implements Client {
     await this.client.getProjects();
   }
 
+  public async createRepository(user: GitLabUser, name: string): Promise<Response<GitLabRepository>> {
+    const response = await this.client.createProject(user.id, {name});
+    return {
+      body: new GitLabRepository(undefined, this.client, response.body)
+    };
+  }
+
   public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GitLabRepository>> {
     const response = (await this.client.getProject(encodeURIComponent(rid))).body;
     return {

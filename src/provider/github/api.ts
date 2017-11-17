@@ -8,6 +8,8 @@ export interface GitHub {
 
   getRepository(owner: string, repo: string): Promise<GitHubResponse<GithubRepositoryStruct>>;
 
+  createRepository(body: { name: string }): Promise<GitHubResponse<GithubRepositoryStruct>>;
+
   getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestStruct>>;
 
   listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
@@ -270,6 +272,9 @@ namespace impl {
     @Headers('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
     public getRepository(): any {/* */}
+
+    @Post('/user/repos')
+    public createRepository(): any {/* */}
 
     @Get('/repos/:owner/:repo/pulls/:number')
     public getPullRequest(): any {/* */}

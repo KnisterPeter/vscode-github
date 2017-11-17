@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 
 import { Command } from './command';
 import './commands/browse';
+import './commands/create';
 import './commands/pull-requests';
 import './commands/token';
 import './commands/user';

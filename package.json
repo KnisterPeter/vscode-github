@@ -135,6 +135,11 @@
         "category": "GitHub"
       },
       {
+        "command": "vscode-github.createRepository",
+        "title": "Create repository...",
+        "category": "GitHub"
+      },
+      {
         "command": "vscode-github.browseProject",
         "title": "Browse project",
         "category": "GitHub"
