@@ -116,6 +116,15 @@ export class StatusBarManager {
   }
 
   private getActiveWorkspaceFolder(): vscode.Uri | undefined {
+    if (!vscode.workspace.workspaceFolders) {
+      // no workspace open
+      return undefined;
+    }
+    if (vscode.workspace.workspaceFolders.length === 1) {
+      // just one workspace open
+      return vscode.workspace.workspaceFolders[0].uri;
+    }
+    // check which workspace status should be visible
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return undefined;
