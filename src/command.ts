@@ -30,16 +30,11 @@ export abstract class Command {
     if (folders.length === 1) {
       return folders[0].uri;
     }
-    const picks = folders.map(folder => ({
-      label: folder.name,
-      description: '',
-      folder
-    }));
-    const selected = await vscode.window.showQuickPick(picks, { ignoreFocusOut: true });
-    if (!selected) {
+    const folder = await vscode.window.showWorkspaceFolderPick();
+    if (!folder) {
       return undefined;
     }
-    return selected.folder.uri;
+    return folder.uri;
   }
 
 }
