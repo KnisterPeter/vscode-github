@@ -1,5 +1,5 @@
 import * as LRUCache from 'lru-cache';
-import {Pretend, Get, Post, Put, Patch, Delete, Headers, Interceptor, IPretendRequestInterceptor,
+import {Pretend, Get, Post, Put, Patch, Delete, Headers as Header, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
 
 export interface GitHub {
@@ -35,6 +35,8 @@ export interface GitHub {
   getPullRequestComments(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestComment[]>>;
 
   editIssue(owner: string, repo: string, number: number, body: EditIssueBody): Promise<GitHubResponse<EditIssueBody>>;
+
+  getAuthenticatedUser(): Promise<GitHubResponse<UserResponse>>;
 
   getUser(username: string): Promise<GitHubResponse<UserResponse>>;
 
@@ -222,6 +224,7 @@ namespace impl {
       const entry = cache.get(request.url);
       if (entry) {
         // when we have a cache hit, send etag
+        request.options.headers = new Headers(request.options.headers);
         request.options.headers.set('If-None-Match', entry.etag);
       }
       const response = await chain(request);
@@ -240,6 +243,7 @@ namespace impl {
 
   export function githubTokenAuthenticator(token: string): IPretendRequestInterceptor {
     return request => {
+      request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('Authorization', `token ${token}`);
       return request;
     };
@@ -264,10 +268,13 @@ namespace impl {
   }
 
   export class GitHubBlueprint implements GitHub {
+    @Get('/user')
+    public getAuthenticatedUser(): any {/* */}
+
     @Get('/user/repos')
     public getRepositories(): any {/* */}
 
-    @Headers('Accept: application/vnd.github.polaris-preview')
+    @Header('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
     public getRepository(): any {/* */}
 
@@ -286,7 +293,7 @@ namespace impl {
     @Get('/repos/:owner/:repo/commits/:ref/status')
     public getStatusForRef(): any {/* */}
 
-    @Headers('Accept: application/vnd.github.polaris-preview+json')
+    @Header('Accept: application/vnd.github.polaris-preview+json')
     @Put('/repos/:owner/:repo/pulls/:number/merge')
     public mergePullRequest(): any {/* */}
 
