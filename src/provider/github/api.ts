@@ -211,7 +211,9 @@ namespace impl {
         // console.log('response', response);
         return response;
       } catch (e) {
-        logger(`${(e as GitHubError).response.status} ${e.message}`);
+        if ((e as GitHubError).response) {
+          logger(`${(e as GitHubError).response.status} ${e.message}`);
+        }
         throw e;
       }
     };
