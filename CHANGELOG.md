@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.24.1"></a>
+## [0.24.1](https://github.com/KnisterPeter/vscode-github/compare/v0.24.0...v0.24.1) (2017-12-19)
+
+
+### Bug Fixes
+
+* **package:** update common-tags to version 1.5.1 ([333d77f](https://github.com/KnisterPeter/vscode-github/commit/333d77f)), closes [#270](https://github.com/KnisterPeter/vscode-github/issues/270)
+* **package:** update tsdi to version 0.18.0 ([2304d3a](https://github.com/KnisterPeter/vscode-github/commit/2304d3a))
+* **package:** update tsdi to version 0.18.1 ([6e5f0af](https://github.com/KnisterPeter/vscode-github/commit/6e5f0af))
+* do not assume github error ([15b7c0f](https://github.com/KnisterPeter/vscode-github/commit/15b7c0f)), closes [#278](https://github.com/KnisterPeter/vscode-github/issues/278)
+
+
+
 <a name="0.24.0"></a>
 # [0.24.0](https://github.com/KnisterPeter/vscode-github/compare/v0.23.0...v0.24.0) (2017-11-17)
 
