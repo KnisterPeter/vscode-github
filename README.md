@@ -38,6 +38,7 @@ Current it is possible to do the following:
 
 To use this extension one needs to create a new GitHub Personal Access Token and registers it in the extension.
 The 'GitHub: Set Personal Access Token' should be executed for that.
+To execute the 'GitHub: Set Personal Access Token' type Ctrl+Shift+p in VSCode to open the command palette and type 'GitHub: Set Personal Access Token'. You will then be prompted to enter the token generated from GitHub.
 
 ![GitHub Personal Access Token](images/github-personal-access-token.png)
 
