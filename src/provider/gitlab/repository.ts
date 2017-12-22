@@ -178,6 +178,9 @@ export class GitLabRepository implements Repository {
   }
 
   public async getUsers(): Promise<Response<GitLabUser[]>> {
-    throw new Error('Method not implemented.');
+    const response = await this.client.searchUser();
+    return {
+      body: response.body.map(user => new GitLabUser(this.client, user))
+    };
   }
 }
