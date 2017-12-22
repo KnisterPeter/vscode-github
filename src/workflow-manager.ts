@@ -63,7 +63,7 @@ export class WorkflowManager {
       await this.getProvider(uri);
       return true;
     } catch (e) {
-      this.log(`Failed to connect to provier uri ${uri.toString()}`, e.message);
+      this.log(`Failed to connect to provider`, e.message);
       return false;
     }
   }

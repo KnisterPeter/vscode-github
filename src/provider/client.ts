@@ -14,7 +14,7 @@ export async function createClient(git: Git, tokens: Tokens, uri: vscode.Uri,
   const hostname = await git.getGitHostname(uri);
   const tokenInfo = tokens[hostname];
   if (!tokenInfo) {
-    throw new Error('No token');
+    throw new Error(`No token found for host ${hostname}`);
   }
   switch (tokenInfo.provider) {
     case 'github':
