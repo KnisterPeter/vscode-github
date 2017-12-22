@@ -53,6 +53,15 @@ suite('vscode-github extension tests', () => {
     assert.equal(repo, 'repo');
   });
 
+  test('should parse username and repository from github git@ url', () => {
+    const git = new Git();
+    const [proto, host, user, repo] = git.parseGitUrl('git@github.mycompany.io:org-name/repo-name.git');
+    assert.equal(proto, 'git:');
+    assert.equal(host, 'github.mycompany.io');
+    assert.equal(user, 'org-name');
+    assert.equal(repo, 'repo-name');
+  });
+
   test('should migrate tokens to a provider structure', (done: MochaDone) => {
     tokens.migrateToken({
       get(name: string): any {
