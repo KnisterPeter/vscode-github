@@ -235,7 +235,7 @@
     "execa": "^0.8.0",
     "isomorphic-fetch": "2.2.1",
     "lru-cache": "^4.1.1",
-    "pretend": "^1.0.0",
+    "pretend": "^1.2.1",
     "sander": "^0.6.0",
     "tsdi": "0.18.1",
     "vscode-extension-telemetry": "0.0.8"
