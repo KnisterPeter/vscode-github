@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.25.0"></a>
+# [0.25.0](https://github.com/KnisterPeter/vscode-github/compare/v0.24.1...v0.25.0) (2017-12-28)
+
+
+### Bug Fixes
+
+* **package:** update common-tags to version 1.6.0 ([49c484e](https://github.com/KnisterPeter/vscode-github/commit/49c484e))
+
+
+### Features
+
+* add user list to gitlab api ([f07aa80](https://github.com/KnisterPeter/vscode-github/commit/f07aa80))
+
+
+
 <a name="0.24.1"></a>
 ## [0.24.1](https://github.com/KnisterPeter/vscode-github/compare/v0.24.0...v0.24.1) (2017-12-19)
 
