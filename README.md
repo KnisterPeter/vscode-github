@@ -46,6 +46,12 @@ To execute the 'GitHub: Set Personal Access Token' type Ctrl+Shift+p in VSCode t
 
 ![Set GitHub Personal Access Token](images/set-personal-access-token.png)
 
+Additionally, by default this extension assumes your remote for a checked out repo is named "origin".  If
+you wish to use a remote with a different name, you can control this by the ```github.remoteName``` setting.
+
+There are additional settings for this extension as well, enter ```github.``` in the User Settings pane of
+VS Code to see them all.
+
 ## Usage
 
 ### Create a new pull request
@@ -65,7 +71,7 @@ To execute the 'GitHub: Set Personal Access Token' type Ctrl+Shift+p in VSCode t
 1. Commit your changes
 1. Push your changes to your remote
 1. Then execute `Create pull request...`
-1. Select the upstream repository you want to create the pull requets for  
+1. Select the upstream repository you want to create the pull requests for
    **Note**: The status bar will not reflect the pull request status in this case
 
 ### Checkout pull request
@@ -89,4 +95,4 @@ To execute the 'GitHub: Set Personal Access Token' type Ctrl+Shift+p in VSCode t
 ### Telemetry data (extension usage)
 
 This extension collects telemetry data to track and improve usage.
-The collection of data could be disabled as described here https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting.
+The collection of data could be disabled as described here <https://code.visualstudio.com/docs/supporting/faq#_how-to-disable-telemetry-reporting>.
