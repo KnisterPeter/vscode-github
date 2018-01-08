@@ -219,7 +219,7 @@
     "@types/common-tags": "1.4.0",
     "@types/lru-cache": "^4.1.0",
     "@types/mocha": "^2.2.40",
-    "@types/node": "^8.0.0",
+    "@types/node": "^9.3.0",
     "conventional-changelog-lint": "^2.0.0",
     "cz-customizable": "5.2.0",
     "husky": "^0.14.1",
