@@ -147,7 +147,7 @@ export class Git {
   }
 
   private async getGitEditorPullRequestBody(uri: vscode.Uri): Promise<string> {
-    const path = resolve(uri, 'PR_EDITMSG');
+    const path = resolve(uri.fsPath, 'PR_EDITMSG');
 
     const [editorName, ...params] = (await execa('git', ['config', '--get', 'core.editor'])).stdout.split(' ');
     await execa(editorName, [...params, path]);
