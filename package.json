@@ -232,7 +232,7 @@
   "dependencies": {
     "common-tags": "1.7.0",
     "conventional-changelog-lint-config-angular": "1.0.0",
-    "execa": "^0.8.0",
+    "execa": "^0.9.0",
     "isomorphic-fetch": "2.2.1",
     "lru-cache": "^4.1.1",
     "pretend": "^1.2.1",
