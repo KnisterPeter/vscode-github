@@ -230,7 +230,7 @@
     "vscode": "1.1.10"
   },
   "dependencies": {
-    "common-tags": "1.6.0",
+    "common-tags": "1.7.0",
     "conventional-changelog-lint-config-angular": "1.0.0",
     "execa": "^0.8.0",
     "isomorphic-fetch": "2.2.1",
