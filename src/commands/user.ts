@@ -49,10 +49,12 @@ export class AddAssignee extends UserCommand {
   public id = 'vscode-github.addAssignee';
 
   @showProgress
-  protected async runWithToken(): Promise<void> {
+  protected async runWithToken(user?: string): Promise<void> {
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      const user = await this.selectUser(this.uri);
+      if (!user) {
+        user = await this.selectUser(this.uri);
+      }
       if (user) {
         await this.workflowManager.addAssignee(pullRequest, user, this.uri);
         vscode.window.showInformationMessage(`Successfully assigned ${user} to the pull request`);
@@ -88,10 +90,12 @@ export class RequestReview extends UserCommand {
   public id = 'vscode-github.requestReview';
 
   @showProgress
-  protected async runWithToken(): Promise<void> {
+  protected async runWithToken(user?: string): Promise<void> {
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      const user = await this.selectUser(this.uri);
+      if (!user) {
+        user = await this.selectUser(this.uri);
+      }
       if (user) {
         await this.workflowManager.requestReview(pullRequest.number, user, this.uri);
         vscode.window.showInformationMessage(`Successfully requested review from ${user}`);
@@ -109,10 +113,12 @@ export class DeleteReviewRequest extends UserCommand {
   public id = 'vscode-github.deleteReviewRequest';
 
   @showProgress
-  protected async runWithToken(): Promise<void> {
+  protected async runWithToken(user?: string): Promise<void> {
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
-      const user = await this.selectUser(this.uri);
+      if (!user) {
+        user = await this.selectUser(this.uri);
+      }
       if (user) {
         await this.workflowManager.deleteReviewRequest(pullRequest.number, user, this.uri);
         vscode.window.showInformationMessage(`Successfully canceled review request from ${user}`);
