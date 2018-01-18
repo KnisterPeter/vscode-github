@@ -276,12 +276,14 @@ export class WorkflowManager {
   }
 
   public async addAssignee(pullRequest: PullRequest, name: string, uri: vscode.Uri): Promise<void> {
+    this.log('Add assignee', { pullRequest, name });
     const provider = await this.getProvider(uri);
     const user = await provider.getUserByUsername(name);
     await pullRequest.assign([user.body]);
   }
 
   public async removeAssignee(pullRequest: PullRequest): Promise<void> {
+    this.log('Remove assignee', { pullRequest });
     await pullRequest.unassign();
   }
 
