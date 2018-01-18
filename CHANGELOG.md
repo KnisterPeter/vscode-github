@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.26.0"></a>
+# [0.26.0](https://github.com/KnisterPeter/vscode-github/compare/v0.25.0...v0.26.0) (2018-01-18)
+
+
+### Bug Fixes
+
+* use uri fspath ([883a33d](https://github.com/KnisterPeter/vscode-github/commit/883a33d))
+* **package:** update common-tags to version 1.7.0 ([af3826f](https://github.com/KnisterPeter/vscode-github/commit/af3826f))
+* **package:** update execa to version 0.9.0 ([8cc2549](https://github.com/KnisterPeter/vscode-github/commit/8cc2549))
+* **package:** update tsdi to version 0.18.2 ([ad0a916](https://github.com/KnisterPeter/vscode-github/commit/ad0a916))
+* **package:** update vscode-extension-telemetry to version 0.0.9 ([57ffe73](https://github.com/KnisterPeter/vscode-github/commit/57ffe73))
+
+
+### Features
+
+* add parameters to user commands ([35b468a](https://github.com/KnisterPeter/vscode-github/commit/35b468a))
+
+
+
 <a name="0.25.0"></a>
 # [0.25.0](https://github.com/KnisterPeter/vscode-github/compare/v0.24.1...v0.25.0) (2017-12-28)
 
