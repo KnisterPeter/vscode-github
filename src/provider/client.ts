@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Git } from '../git';
+import { getConfiguration } from '../helper';
 import { Tokens } from '../workflow-manager';
 import { Repository } from './repository';
 import { User } from './user';
@@ -13,14 +14,16 @@ export async function createClient(git: Git, tokens: Tokens, uri: vscode.Uri,
   const protocol = gitProtocol.startsWith('http') ? gitProtocol : 'https:';
   const hostname = await git.getGitHostname(uri);
   const tokenInfo = tokens[hostname];
+  const allowUnsafeSSL = !!getConfiguration('github', uri).allowUnsafeSSL;
   if (!tokenInfo) {
     throw new Error(`No token found for host ${hostname}`);
   }
   switch (tokenInfo.provider) {
     case 'github':
-      return new GithubClient(protocol, hostname, tokens[hostname].token, logger);
+      return new GithubClient(
+        protocol, hostname, tokens[hostname].token, logger, allowUnsafeSSL);
     case 'gitlab':
-      return new GitLabClient(protocol, hostname, tokens[hostname].token, logger);
+      return new GitLabClient(protocol, hostname, tokens[hostname].token, logger, allowUnsafeSSL);
     default:
       throw new Error(`Unknown git provider '${tokenInfo.provider}'`);
   }
