@@ -68,6 +68,12 @@
           "default": false,
           "scope": "resource"
         },
+        "github.allowUnsafeSSL": {
+          "type": "boolean",
+          "description": "Allow SSL connnection with unauthorized self-signed certificates. Defaults to false",
+          "default": false,
+          "scope": "resource"
+        },
         "github.statusbar.command": {
           "type": [
             "string",
@@ -233,6 +239,7 @@
     "common-tags": "1.7.0",
     "conventional-changelog-lint-config-angular": "1.0.0",
     "execa": "^0.9.0",
+    "https": "1.0.0",
     "isomorphic-fetch": "2.2.1",
     "lru-cache": "^4.1.1",
     "pretend": "^1.2.1",
