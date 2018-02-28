@@ -1,3 +1,4 @@
+import * as https from 'https';
 import * as LRUCache from 'lru-cache';
 import {Pretend, Get, Post, Put, Patch, Delete, Headers as Header, Interceptor, IPretendRequestInterceptor,
   IPretendDecoder} from 'pretend';
@@ -180,11 +181,13 @@ export interface PullRequestStruct {
   mergeable?: boolean|null;
 }
 
-export function getClient(endpoint: string, token: string, logger: (message: string) => void): GitHub {
+export function getClient(endpoint: string, token: string, logger: (message: string) => void,
+                          allowUnsafeSSL = false): GitHub {
   return Pretend
     .builder()
     .interceptor(impl.githubCache())
     .requestInterceptor(impl.githubTokenAuthenticator(token))
+    .requestInterceptor(impl.githubHttpsAgent(!allowUnsafeSSL))
     .interceptor(impl.logger(logger))
     .decode(impl.githubDecoder())
     .target(impl.GitHubBlueprint, endpoint);
@@ -247,6 +250,16 @@ namespace impl {
     return request => {
       request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('Authorization', `token ${token}`);
+      return request;
+    };
+  }
+
+  export function githubHttpsAgent(rejectUnauthorized: boolean): IPretendRequestInterceptor {
+    return request => {
+      if (!request.url.startsWith('https://')) {
+        return request;
+      }
+      request.options.agent = new https.Agent({ rejectUnauthorized });
       return request;
     };
   }

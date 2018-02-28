@@ -8,6 +8,7 @@ export interface Configuration {
   upstream?: string;
   customPullRequestDescription: 'off' | 'singleLine' | 'gitEditor';
   autoPublish?: boolean;
+  allowUnsafeSSL?: boolean;
   statusBarCommand: string | null;
   statusbar: {
     refresh: number;

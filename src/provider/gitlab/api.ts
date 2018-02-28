@@ -1,3 +1,4 @@
+import * as https from 'https';
 import {
   Pretend,
   Interceptor,
@@ -121,10 +122,12 @@ export interface Project {
   merge_requests_enabled: boolean;
 }
 
-export function getClient(endpoint: string, token: string, logger: (message: string) => void): GitLab {
+export function getClient(endpoint: string, token: string, logger: (message: string) => void,
+                          allowUnsafeSSL = false): GitLab {
   return Pretend
     .builder()
     .requestInterceptor(impl.gitlabTokenAuthenticator(token))
+    .requestInterceptor(impl.gitlabHttpsAgent(!allowUnsafeSSL))
     .requestInterceptor(impl.formEncoding())
     .interceptor(impl.logger(logger))
     .decode(impl.gitlabDecoder())
@@ -162,6 +165,16 @@ namespace impl {
     return request => {
       request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('PRIVATE-TOKEN', `${token}`);
+      return request;
+    };
+  }
+
+  export function gitlabHttpsAgent(rejectUnauthorized: boolean): IPretendRequestInterceptor {
+    return request => {
+      if (!request.url.startsWith('https://')) {
+        return request;
+      }
+      request.options.agent = new https.Agent({ rejectUnauthorized });
       return request;
     };
   }
