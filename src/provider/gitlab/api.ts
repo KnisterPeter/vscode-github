@@ -185,7 +185,7 @@ namespace impl {
         request.options.headers = new Headers(request.options.headers);
         request.options.headers.set('Content-Type', 'application/x-www-form-urlencoded');
         if (request.options.body) {
-          const body = JSON.parse(request.options.body);
+          const body = JSON.parse(request.options.body.toString());
           const encodedBody = Object.keys(body)
             .reduce((query, name) => {
               return `${query}&${name}=${encodeURIComponent(body[name])}`;
