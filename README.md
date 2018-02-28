@@ -3,7 +3,7 @@
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 [![Installs](https://vsmarketplacebadge.apphb.com/installs/knisterpeter.vscode-github.svg)](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-github)
 [![Travis](https://img.shields.io/travis/KnisterPeter/vscode-github.svg)](https://travis-ci.org/KnisterPeter/vscode-github)
-[![Greenkeeper badge](https://badges.greenkeeper.io/KnisterPeter/vscode-github.svg)](https://greenkeeper.io/)
+[![renovate badge](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovateapp.com/)
 
 This vscode extension integrates with GitHub.
 
