@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.27.0"></a>
+# [0.27.0](https://github.com/KnisterPeter/vscode-github/compare/v0.26.0...v0.27.0) (2018-02-28)
+
+
+### Bug Fixes
+
+* **package:** update tsdi to version 0.19.2 ([d4a3b92](https://github.com/KnisterPeter/vscode-github/commit/d4a3b92)), closes [#303](https://github.com/KnisterPeter/vscode-github/issues/303)
+* **package:** update vscode-extension-telemetry to version 0.0.11 ([cf6d3be](https://github.com/KnisterPeter/vscode-github/commit/cf6d3be))
+* **package:** update vscode-extension-telemetry to version 0.0.12 ([b99e27b](https://github.com/KnisterPeter/vscode-github/commit/b99e27b))
+* **package:** update vscode-extension-telemetry to version 0.0.13 ([9a7497d](https://github.com/KnisterPeter/vscode-github/commit/9a7497d))
+* **package:** update vscode-extension-telemetry to version 0.0.14 ([974898e](https://github.com/KnisterPeter/vscode-github/commit/974898e))
+* **package:** update vscode-extension-telemetry to version 0.0.15 ([5cc6485](https://github.com/KnisterPeter/vscode-github/commit/5cc6485))
+* add agent to global RequestInit interface ([fc8a875](https://github.com/KnisterPeter/vscode-github/commit/fc8a875)), closes [#306](https://github.com/KnisterPeter/vscode-github/issues/306) [#306](https://github.com/KnisterPeter/vscode-github/issues/306)
+
+
+### Features
+
+* add allowUnsafeSSL for self-signed certificates ([74949ca](https://github.com/KnisterPeter/vscode-github/commit/74949ca))
+
+
+
 <a name="0.26.0"></a>
 # [0.26.0](https://github.com/KnisterPeter/vscode-github/compare/v0.25.0...v0.26.0) (2018-01-18)
 
