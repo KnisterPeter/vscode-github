@@ -223,7 +223,7 @@
     "conventional-changelog-lint": "2.1.1",
     "cz-customizable": "5.2.0",
     "husky": "0.14.3",
-    "mocha": "5.0.0",
+    "mocha": "5.0.1",
     "standard-version": "4.3.0",
     "tslint": "5.9.0",
     "typescript": "2.4.1",
