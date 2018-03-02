@@ -14,8 +14,6 @@ matrix:
 branches:
   only:
     - master
-    - /^greenkeeper-.*$/
-    - /^greenkeeper/.*$/
 cache:
   directories:
   - node_modules
@@ -33,8 +31,10 @@ before_install:
     fi
   - mkdir /tmp/test-workspace && cd /tmp/test-workspace && git init && cd -
 install:
-  - npm install
-  - npm run vscode:prepublish
-before_script: 'npm run linter'
-script: 'npm run test'
+  - yarn
+  - yarn vscode:prepublish
+before_script:
+  - yarn linter
+script:
+  - yarn test
 #after_script: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
