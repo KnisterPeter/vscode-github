@@ -3,7 +3,7 @@ import { GitLab, UserResponse } from './api';
 
 export class GitLabUser implements User {
 
-  private client: GitLab;
+  // private client: GitLab;
 
   private struct: UserResponse;
 
@@ -15,8 +15,8 @@ export class GitLabUser implements User {
     return this.struct.username;
   }
 
-  constructor(client: GitLab, struct: UserResponse) {
-    this.client = client;
+  constructor(_client: GitLab, struct: UserResponse) {
+    // this.client = client;
     this.struct = struct;
   }
 

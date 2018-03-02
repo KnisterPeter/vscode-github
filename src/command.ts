@@ -8,11 +8,11 @@ import { WorkflowManager } from './workflow-manager';
 export abstract class Command {
 
   @inject
-  private reporter: TelemetryReporter;
+  private reporter!: TelemetryReporter;
 
   public abstract get id(): string;
 
-  public abstract run(): void;
+  public abstract run(...args: any[]): void;
 
   protected track(message: string): void {
     const properties = {
@@ -42,14 +42,14 @@ export abstract class Command {
 export abstract class TokenCommand extends Command {
 
   @inject
-  protected workflowManager: WorkflowManager;
+  protected workflowManager!: WorkflowManager;
 
   @inject('vscode.OutputChannel')
-  private channel: vscode.OutputChannel;
+  private channel!: vscode.OutputChannel;
 
   protected requireProjectFolder = true;
 
-  protected uri: vscode.Uri;
+  protected uri?: vscode.Uri;
 
   public async run(...args: any[]): Promise<void> {
     if (this.requireProjectFolder) {
