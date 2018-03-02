@@ -71,18 +71,18 @@ export class StatusBarManager {
   }
 
   @inject('vscode.ExtensionContext')
-  private context: vscode.ExtensionContext;
+  private context!: vscode.ExtensionContext;
 
   @inject
-  private git: Git;
+  private git!: Git;
 
-  private statusBar: vscode.StatusBarItem;
+  private statusBar!: vscode.StatusBarItem;
 
   @inject
-  private workflowManager: WorkflowManager;
+  private workflowManager!: WorkflowManager;
 
   @inject('vscode.OutputChannel')
-  private channel: vscode.OutputChannel;
+  private channel!: vscode.OutputChannel;
 
   @initialize
   protected init(): void {

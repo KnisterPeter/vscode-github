@@ -11,6 +11,9 @@ export class BrowseProject extends TokenCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const url = await this.workflowManager.getRepositoryUrl(this.uri);
     await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }
@@ -24,6 +27,9 @@ export class BrowseOpenIssues extends TokenCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const issues = await this.workflowManager.issues(this.uri, 'open');
     if (issues.length > 0) {
       const selected = await vscode.window.showQuickPick(issues.map(issue => ({

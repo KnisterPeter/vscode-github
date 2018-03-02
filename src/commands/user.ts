@@ -50,6 +50,9 @@ export class AddAssignee extends UserCommand {
 
   @showProgress
   protected async runWithToken(user?: string): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       if (!user) {
@@ -73,6 +76,9 @@ export class RemoveAssignee extends UserCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       await this.workflowManager.removeAssignee(pullRequest);
@@ -91,6 +97,9 @@ export class RequestReview extends UserCommand {
 
   @showProgress
   protected async runWithToken(user?: string): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       if (!user) {
@@ -114,6 +123,9 @@ export class DeleteReviewRequest extends UserCommand {
 
   @showProgress
   protected async runWithToken(user?: string): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       if (!user) {

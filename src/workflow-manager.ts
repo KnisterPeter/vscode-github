@@ -22,13 +22,13 @@ export interface Tokens {
 export class WorkflowManager {
 
   @inject({name: 'vscode.ExtensionContext'})
-  private context: vscode.ExtensionContext;
+  private context!: vscode.ExtensionContext;
 
   @inject('vscode.OutputChannel')
-  private channel: vscode.OutputChannel;
+  private channel!: vscode.OutputChannel;
 
   @inject
-  private git: Git;
+  private git!: Git;
 
   private providers: {[cwd: string]: Client} = {};
 

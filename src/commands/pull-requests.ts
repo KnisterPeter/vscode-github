@@ -10,9 +10,12 @@ import { StatusBarManager } from '../status-bar-manager';
 abstract class PullRequestCommand extends TokenCommand {
 
   @inject
-  protected git: Git;
+  protected git!: Git;
 
   protected async selectPullRequest(): Promise<PullRequest | undefined> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequests = await this.workflowManager.listPullRequests(this.uri);
     const items = pullRequests.map(pullRequest => ({
       label: pullRequest.title,
@@ -79,6 +82,9 @@ export class BrowseSimpleRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pullRequest.url));
@@ -95,7 +101,7 @@ export class CheckoutPullRequest extends PullRequestCommand {
   public id = 'vscode-github.checkoutPullRequests';
 
   @inject
-  private statusBarManager: StatusBarManager;
+  private statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -114,11 +120,14 @@ export class CreatePullRequestWithParameters extends PullRequestCommand {
   public id = 'vscode-github.createPullRequestWithParameters';
 
   @inject
-  private statusBarManager: StatusBarManager;
+  private statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(sourceBranch: string, targetBranch: string,
       title: string, body?: string): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     if (!this.requireRemoteTrackingBranch(this.uri)) {
       return;
     }
@@ -145,10 +154,13 @@ export class CreateSimplePullRequest extends PullRequestCommand {
   public id = 'vscode-github.createSimplePullRequest';
 
   @inject
-  private statusBarManager: StatusBarManager;
+  private statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     if (!this.requireRemoteTrackingBranch(this.uri)) {
       return;
     }
@@ -167,10 +179,13 @@ export class CreatePullRequest extends PullRequestCommand {
   public id = 'vscode-github.createPullRequest';
 
   @inject
-  private statusBarManager: StatusBarManager;
+  private statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     if (!this.requireRemoteTrackingBranch(this.uri)) {
       return;
     }
@@ -244,7 +259,7 @@ export class MergePullRequest extends PullRequestCommand {
   public id = 'vscode-github.mergePullRequest';
 
   @inject
-  private statusBarManager: StatusBarManager;
+  private statusBarManager!: StatusBarManager;
 
   @showProgress
   private async getMergeMethdod(uri: vscode.Uri): Promise<MergeMethod | undefined> {
@@ -281,6 +296,9 @@ export class MergePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest && pullRequest.mergeable) {
       const method = await this.getMergeMethdod(this.uri);
@@ -307,6 +325,9 @@ export class UpdatePullRequest extends PullRequestCommand {
 
   @showProgress
   protected async runWithToken(): Promise<void> {
+    if (!this.uri) {
+      throw new Error('uri is undefined');
+    }
     const pullRequest = await this.workflowManager.getPullRequestForCurrentBranch(this.uri);
     if (pullRequest) {
       await this.workflowManager.updatePullRequest(pullRequest, this.uri);

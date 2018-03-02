@@ -11,7 +11,7 @@ import { getConfiguration } from './helper';
 export class Git {
 
   @inject('vscode.OutputChannel')
-  private channel: vscode.OutputChannel;
+  private channel!: vscode.OutputChannel;
 
   private getRemoteName(uri: vscode.Uri): string {
     return getConfiguration('github', uri).remoteName;

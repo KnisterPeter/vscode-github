@@ -16,19 +16,19 @@ import { Tokens } from './workflow-manager';
 export class Extension {
 
   @inject
-  private tsdi: TSDI;
+  private tsdi!: TSDI;
 
   @inject
-  private reporter: TelemetryReporter;
+  private reporter!: TelemetryReporter;
 
   @inject('vscode.ExtensionContext')
-  private context: vscode.ExtensionContext;
+  private context!: vscode.ExtensionContext;
 
   @inject('vscode.OutputChannel')
-  private channel: vscode.OutputChannel;
+  private channel!: vscode.OutputChannel;
 
   @inject
-  private git: Git;
+  private git!: Git;
 
   @initialize
   protected async init(): Promise<void> {
