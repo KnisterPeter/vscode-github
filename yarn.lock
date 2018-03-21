@@ -3281,9 +3281,9 @@ vscode-extension-telemetry@0.0.15:
   dependencies:
     applicationinsights "1.0.1"
 
-vscode@1.1.13:
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/vscode/-/vscode-1.1.13.tgz#dcea0c5f3ec1ff6eca333216b4b20dd994d18d9a"
+vscode@1.1.14:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/vscode/-/vscode-1.1.14.tgz#f327f5fd45c085d12def616962af205b2bc75db5"
   dependencies:
     glob "^7.1.2"
     gulp-chmod "^2.0.0"
