@@ -271,7 +271,7 @@ namespace impl {
         throw new GitHubError(`${body.message || response.statusText}`, response);
       }
       const headers = {};
-      response.headers.forEach((value, index) => {
+      response.headers.forEach((value: string, index: number) => {
         headers[index] = [...(headers[index] || []), value];
       });
       return {

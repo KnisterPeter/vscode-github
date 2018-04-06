@@ -205,7 +205,7 @@ namespace impl {
         throw new GitLabError(`${body.error || response.statusText}`, response);
       }
       const headers = {};
-      response.headers.forEach((value, index) => {
+      response.headers.forEach((value: string, index: number) => {
         headers[index] = [...(headers[index] || []), value];
       });
       return {
