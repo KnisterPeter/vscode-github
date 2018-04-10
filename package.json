@@ -244,7 +244,7 @@
     "lru-cache": "^4.1.1",
     "pretend": "^1.2.1",
     "sander": "^0.6.0",
-    "tsdi": "0.20.0",
+    "tsdi": "0.20.1",
     "vscode-extension-telemetry": "0.0.15"
   },
   "repository": {
