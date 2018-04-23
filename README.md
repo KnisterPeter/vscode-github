@@ -9,7 +9,7 @@ This vscode extension integrates with GitHub.
 
 ## Features
 
-Current it is possible to do the following:
+Currently it is possible to do the following:
 
 * Checkout one of the open pull requests
 * Open github page for the current project in your default browser
