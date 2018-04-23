@@ -758,12 +758,6 @@ dateformat@^3.0.0:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
 
-debug@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.0.1.tgz#0564c612b521dc92d9f2988f0549e34f9c98db64"
-  dependencies:
-    ms "2.0.0"
-
 debug@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -3093,11 +3087,11 @@ trim-off-newlines@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-off-newlines/-/trim-off-newlines-1.0.1.tgz#9f9ba9d9efa8764c387698bcbfeb2c848f11adb3"
 
-tsdi@0.20.1:
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.20.1.tgz#8e31bf254438055d5b7c057169709fe1dbb55418"
+tsdi@0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.20.2.tgz#7c0abae7b6a93675d496fe479ff1a901ec96e721"
   dependencies:
-    debug "3.0.1"
+    debug "3.1.0"
     reflect-metadata "0.1.12"
 
 tslib@^1.8.0, tslib@^1.8.1:
