@@ -115,7 +115,12 @@
           "description": "GitLab setting to 'remove_source_branch' per MergeRequest.",
           "default": false,
           "scope": "resource"
-        }
+        },
+        "github.gitEditor": {
+          "type": "string",
+          "description": "The editor to use to edit messages for commits, pull requests etc. Defaults to the editor configured in `git.config.core.editor`.",
+          "scope": "window"
+        },
       }
     },
     "commands": [
