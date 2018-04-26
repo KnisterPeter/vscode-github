@@ -148,9 +148,15 @@ export class Git {
 
   private async getGitEditorPullRequestBody(uri: vscode.Uri): Promise<string> {
     const path = resolve(uri.fsPath, 'PR_EDITMSG');
+    const editorFromConfig = getConfiguration('github', uri).gitEditor;
 
-    const [editorName, ...params] = (await execa('git', ['config', '--get', 'core.editor'])).stdout.split(' ');
-    await execa(editorName, [...params, path]);
+    if (editorFromConfig) {
+      const [ gitEditor, ...geParams ] = editorFromConfig.split(' ');
+      yield execa(gitEditor, [...geParams, path]);
+    } else {
+      const [editorName, ...params] = (yield execa('git', ['config', '--get', 'core.editor'])).stdout.split(' ');
+      yield execa(editorName, [...params, path]);
+    }
 
     const fileContents = (await readFile(path)).toString();
 
