@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.27.2"></a>
+## [0.27.2](https://github.com/KnisterPeter/vscode-github/compare/v0.27.1...v0.27.2) (2018-05-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency common-tags to v1.7.2 ([33c164b](https://github.com/KnisterPeter/vscode-github/commit/33c164b))
+* **deps:** update dependency execa to ^0.10.0 ([b4f4f18](https://github.com/KnisterPeter/vscode-github/commit/b4f4f18))
+* add types to callbacks ([df8d702](https://github.com/KnisterPeter/vscode-github/commit/df8d702))
+* allow definite assignment check ([22b114b](https://github.com/KnisterPeter/vscode-github/commit/22b114b))
+* **deps:** update dependency tsdi to v0.20.0 ([e8a0e60](https://github.com/KnisterPeter/vscode-github/commit/e8a0e60))
+* **deps:** update dependency tsdi to v0.20.1 ([27456c2](https://github.com/KnisterPeter/vscode-github/commit/27456c2))
+* **deps:** update dependency tsdi to v0.20.2 ([3cb1f50](https://github.com/KnisterPeter/vscode-github/commit/3cb1f50))
+* **deps:** update dependency vscode-extension-telemetry to v0.0.16 ([710dd76](https://github.com/KnisterPeter/vscode-github/commit/710dd76))
+* **deps:** update dependency vscode-extension-telemetry to v0.0.17 ([1d11c12](https://github.com/KnisterPeter/vscode-github/commit/1d11c12))
+* cache repository data per workspace and gitconfig ([b2736c6](https://github.com/KnisterPeter/vscode-github/commit/b2736c6)), closes [#356](https://github.com/KnisterPeter/vscode-github/issues/356)
+
+
+
 <a name="0.27.1"></a>
 ## [0.27.1](https://github.com/KnisterPeter/vscode-github/compare/v0.27.0...v0.27.1) (2018-02-28)
 
