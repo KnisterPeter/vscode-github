@@ -4,7 +4,7 @@ import {
   Response
 } from '../client';
 
-import { GitHub, getClient } from './api';
+import { GitHub, getClient, GithubRepositoryStruct } from './api';
 import { GithubRepository } from './repository';
 import { GithubUser } from './user';
 
@@ -13,6 +13,8 @@ export class GithubClient implements Client {
   private client: GitHub;
 
   public name = 'GitHub Client';
+
+  private repositories = new Map<string, GithubRepositoryStruct>();
 
   constructor(protocol: string, hostname: string, token: string, logger: (message: string) => void,
               allowUnsafeSSL = false) {
@@ -42,7 +44,15 @@ export class GithubClient implements Client {
 
   public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GithubRepository>> {
     const [owner, repository] = rid.split('/');
+    const cacheKey = `${uri.toString()}$$${rid}`;
+    const cacheHit = this.repositories.get(cacheKey);
+    if (cacheHit) {
+      return {
+        body: new GithubRepository(uri, this.client, owner, repository, cacheHit)
+      };
+    }
     const response = await this.client.getRepository(owner, repository);
+    this.repositories.set(cacheKey, response.body);
     return {
       body: new GithubRepository(uri, this.client, owner, repository, response.body)
     };
