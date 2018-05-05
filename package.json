@@ -221,7 +221,7 @@
     "publish-extension": "vsce publish $(node -e \"console.log(require('./package.json').version)\")"
   },
   "devDependencies": {
-    "@knisterpeter/standard-tslint": "1.6.0",
+    "@knisterpeter/standard-tslint": "1.7.2",
     "@types/common-tags": "1.4.0",
     "@types/lru-cache": "4.1.0",
     "@types/mocha": "5.2.0",
