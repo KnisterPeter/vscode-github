@@ -11,7 +11,7 @@ import { getConfiguration } from './helper';
 export class Git {
 
   @inject('vscode.OutputChannel')
-  private channel!: vscode.OutputChannel;
+  private readonly channel!: vscode.OutputChannel;
 
   private getRemoteName(uri: vscode.Uri): string {
     return getConfiguration('github', uri).remoteName;
@@ -21,7 +21,7 @@ export class Git {
     const [git, ...args] = cmd.split(' ');
     const gitCommand = getConfiguration('github', uri).gitCommand;
     this.channel.appendLine(`${gitCommand || git} ${args.join(' ')}`);
-    return await execa(gitCommand || git, args, { cwd: uri.fsPath });
+    return execa(gitCommand || git, args, { cwd: uri.fsPath });
   }
 
   public async checkExistence(uri: vscode.Uri): Promise<boolean> {
@@ -143,7 +143,7 @@ export class Git {
   }
 
   private async getSingleLinePullRequestBody(): Promise<string|undefined> {
-    return await vscode.window.showInputBox({prompt: 'Pull request description'});
+    return vscode.window.showInputBox({prompt: 'Pull request description'});
   }
 
   private async getGitEditorPullRequestBody(uri: vscode.Uri): Promise<string> {

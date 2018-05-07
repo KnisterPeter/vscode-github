@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import { Configuration, GitLabConfiguration } from './configuration';
 
-export function showProgress(_target: Object, _propertyKey: string | symbol,
+export function showProgress(_target: object, _propertyKey: string | symbol,
     descriptor: PropertyDescriptor): PropertyDescriptor {
   const fn = descriptor.value;
   descriptor.value = async function(...args: any[]): Promise<any> {
@@ -10,8 +10,8 @@ export function showProgress(_target: Object, _propertyKey: string | symbol,
       location: vscode.ProgressLocation.Window,
       title: 'GitHub'
     };
-    return await vscode.window.withProgress(options, async() => {
-      return await fn.call(this, ...args);
+    return vscode.window.withProgress(options, async() => {
+      return fn.call(this, ...args);
     });
   };
   return descriptor;

@@ -23,8 +23,8 @@ export class GitLabRepository implements Repository {
 
   public readonly uri: vscode.Uri | undefined;
 
-  private client: GitLab;
-  private project: Project;
+  private readonly client: GitLab;
+  private readonly project: Project;
 
   public get name(): string {
     return this.project.name;

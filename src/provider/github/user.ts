@@ -5,7 +5,7 @@ export class GithubUser implements User {
 
   // private client: GitHub;
 
-  private struct: UserResponse;
+  private readonly struct: UserResponse;
 
   public get id(): number {
     return this.struct.id;

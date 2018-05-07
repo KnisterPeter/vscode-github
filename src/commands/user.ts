@@ -36,7 +36,7 @@ abstract class UserCommand extends TokenCommand {
   }
 
   protected async getUser(): Promise<string | undefined> {
-    return await vscode.window.showInputBox({
+    return vscode.window.showInputBox({
       ignoreFocusOut: true,
       placeHolder: 'username, email or fullname'
     });

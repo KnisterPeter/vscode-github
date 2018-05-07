@@ -16,19 +16,19 @@ import { Tokens } from './workflow-manager';
 export class Extension {
 
   @inject
-  private tsdi!: TSDI;
+  private readonly tsdi!: TSDI;
 
   @inject
-  private reporter!: TelemetryReporter;
+  private readonly reporter!: TelemetryReporter;
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   @inject('vscode.OutputChannel')
-  private channel!: vscode.OutputChannel;
+  private readonly channel!: vscode.OutputChannel;
 
   @inject
-  private git!: Git;
+  private readonly git!: Git;
 
   @initialize
   protected async init(): Promise<void> {
@@ -37,7 +37,7 @@ export class Extension {
       migrateToken(this.context.globalState);
       this.channel.appendLine('Visual Studio Code GitHub Extension');
       const tokens = this.context.globalState.get<Tokens>('tokens');
-      this.checkVersionAndToken(this.context, tokens);
+      await this.checkVersionAndToken(this.context, tokens);
 
       this.tsdi.get(CommandManager);
       this.tsdi.get(StatusBarManager);

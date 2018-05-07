@@ -6,9 +6,9 @@ import { GitLabUser } from './user';
 
 export class GitLabIssue implements Issue {
 
-  private client: GitLab;
-  private repository: GitLabRepository;
-  private struct: IssueStruct;
+  private readonly client: GitLab;
+  private readonly repository: GitLabRepository;
+  private readonly struct: IssueStruct;
 
   public get number(): number {
     return this.struct.iid;

@@ -22,21 +22,21 @@ export interface Tokens {
 export class WorkflowManager {
 
   @inject({name: 'vscode.ExtensionContext'})
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   @inject('vscode.OutputChannel')
-  private channel!: vscode.OutputChannel;
+  private readonly channel!: vscode.OutputChannel;
 
   @inject
-  private git!: Git;
+  private readonly git!: Git;
 
-  private providers: {[cwd: string]: Client} = {};
+  private readonly providers: {[cwd: string]: Client} = {};
 
   private async connect(uri: vscode.Uri): Promise<void> {
     const logger = (message: string) => this.log(message);
     const provider = await createClient(this.git, getTokens(this.context.globalState), uri, logger);
     try {
-      provider.test();
+      await provider.test();
     } catch (e) {
       throw new Error(`Connection with ${provider.name} failed. Please make sure your git executable`
         + `is setup correct, and your token has enought access rights.`);
@@ -127,7 +127,7 @@ export class WorkflowManager {
       return undefined;
     }
 
-    return await this.createPullRequestFromData(
+    return this.createPullRequestFromData(
       {
         upstream,
         sourceBranch: branch,
@@ -173,10 +173,10 @@ export class WorkflowManager {
         const provider = await this.getProvider(uri);
         return (await provider.getRepository(uri, `${upstream.owner}/${upstream.repository}`)).body;
       } else {
-        return await this.getRepository(uri);
+        return this.getRepository(uri);
       }
     };
-    return await this.doCreatePullRequest(await getRepository(), pullRequestBody);
+    return this.doCreatePullRequest(await getRepository(), pullRequestBody);
   }
 
   private async doCreatePullRequest(repository: Repository,

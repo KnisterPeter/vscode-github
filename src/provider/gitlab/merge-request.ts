@@ -15,9 +15,9 @@ import { GitLabUser } from './user';
 
 export class GitLabMergeRequest implements PullRequest {
 
-  private client: GitLab;
-  private repository: GitLabRepository;
-  private mergeRequest: MergeRequest;
+  private readonly client: GitLab;
+  private readonly repository: GitLabRepository;
+  private readonly mergeRequest: MergeRequest;
 
   public get id(): number {
     return this.mergeRequest.id;

@@ -6,9 +6,9 @@ import { GithubUser } from './user';
 
 export class GithubIssue implements Issue {
 
-  private client: GitHub;
-  private repository: GithubRepository;
-  private struct: IssueStruct;
+  private readonly client: GitHub;
+  private readonly repository: GithubRepository;
+  private readonly struct: IssueStruct;
 
   public get number(): number {
     return this.struct.number;

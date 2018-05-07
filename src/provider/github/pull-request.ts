@@ -14,9 +14,9 @@ import { GithubUser } from './user';
 
 export class GithubPullRequest implements PullRequest {
 
-  private client: GitHub;
-  private repository: GithubRepository;
-  private struct: PullRequestStruct;
+  private readonly client: GitHub;
+  private readonly repository: GithubRepository;
+  private readonly struct: PullRequestStruct;
 
   get id(): number {
     return this.struct.id;

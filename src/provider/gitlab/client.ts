@@ -6,7 +6,7 @@ import { GitLabUser } from './user';
 
 export class GitLabClient implements Client {
 
-  private client: GitLab;
+  private readonly client: GitLab;
 
   public name = 'GitLab Client';
 

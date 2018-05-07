@@ -8,7 +8,7 @@ import { WorkflowManager } from './workflow-manager';
 export abstract class Command {
 
   @inject
-  private reporter!: TelemetryReporter;
+  private readonly reporter!: TelemetryReporter;
 
   public abstract get id(): string;
 
@@ -42,10 +42,10 @@ export abstract class Command {
 export abstract class TokenCommand extends Command {
 
   @inject
-  protected workflowManager!: WorkflowManager;
+  protected readonly workflowManager!: WorkflowManager;
 
   @inject('vscode.OutputChannel')
-  private channel!: vscode.OutputChannel;
+  private readonly channel!: vscode.OutputChannel;
 
   protected requireProjectFolder = true;
 

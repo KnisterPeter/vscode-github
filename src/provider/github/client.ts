@@ -10,11 +10,11 @@ import { GithubUser } from './user';
 
 export class GithubClient implements Client {
 
-  private client: GitHub;
+  private readonly client: GitHub;
 
   public name = 'GitHub Client';
 
-  private repositories = new Map<string, GithubRepositoryStruct>();
+  private readonly repositories = new Map<string, GithubRepositoryStruct>();
 
   constructor(protocol: string, hostname: string, token: string, logger: (message: string) => void,
               allowUnsafeSSL = false) {

@@ -7,10 +7,10 @@ import { WorkflowManager } from './workflow-manager';
 export class HoverProvider implements vscode.DocumentLinkProvider, vscode.HoverProvider {
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   @inject
-  private workflowManager!: WorkflowManager;
+  private readonly workflowManager!: WorkflowManager;
 
   private hoverContent: {[target: string]: string} = {};
 
