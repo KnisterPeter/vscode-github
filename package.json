@@ -207,7 +207,7 @@
     ]
   },
   "scripts": {
-    "linter": "tslint --project ./tsconfig.json --type-check",
+    "linter": "tslint --project ./tsconfig.json",
     "pretest": "rm -rf /tmp/test-workspace && mkdir /tmp/test-workspace && cd /tmp/test-workspace && git init && cd -",
     "test": "CODE_TESTS_WORKSPACE=/tmp/test-workspace node ./node_modules/vscode/bin/test",
     "vscode:prepublish": "npm run compile",

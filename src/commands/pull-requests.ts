@@ -101,14 +101,14 @@ export class CheckoutPullRequest extends PullRequestCommand {
   public id = 'vscode-github.checkoutPullRequests';
 
   @inject
-  private statusBarManager!: StatusBarManager;
+  private readonly statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(): Promise<void> {
     const selected = await this.selectPullRequest();
     if (selected) {
       await vscode.commands.executeCommand('git.checkout', selected.sourceBranch);
-      this.statusBarManager.updateStatus();
+      await this.statusBarManager.updateStatus();
     }
   }
 
@@ -120,7 +120,7 @@ export class CreatePullRequestWithParameters extends PullRequestCommand {
   public id = 'vscode-github.createPullRequestWithParameters';
 
   @inject
-  private statusBarManager!: StatusBarManager;
+  private readonly statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(sourceBranch: string, targetBranch: string,
@@ -141,8 +141,8 @@ export class CreatePullRequestWithParameters extends PullRequestCommand {
       this.uri
     );
     if (pullRequest) {
-      this.statusBarManager.updateStatus();
-      this.showPullRequestNotification(pullRequest);
+      await this.statusBarManager.updateStatus();
+      await this.showPullRequestNotification(pullRequest);
     }
   }
 
@@ -154,7 +154,7 @@ export class CreateSimplePullRequest extends PullRequestCommand {
   public id = 'vscode-github.createSimplePullRequest';
 
   @inject
-  private statusBarManager!: StatusBarManager;
+  private readonly statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -166,8 +166,8 @@ export class CreateSimplePullRequest extends PullRequestCommand {
     }
     const pullRequest = await this.workflowManager.createPullRequest(this.uri);
     if (pullRequest) {
-      this.statusBarManager.updateStatus();
-      this.showPullRequestNotification(pullRequest);
+      await this.statusBarManager.updateStatus();
+      await this.showPullRequestNotification(pullRequest);
     }
   }
 
@@ -179,7 +179,7 @@ export class CreatePullRequest extends PullRequestCommand {
   public id = 'vscode-github.createPullRequest';
 
   @inject
-  private statusBarManager!: StatusBarManager;
+  private readonly statusBarManager!: StatusBarManager;
 
   @showProgress
   protected async runWithToken(): Promise<void> {
@@ -208,8 +208,8 @@ export class CreatePullRequest extends PullRequestCommand {
       }
     );
     if (pullRequest) {
-      this.statusBarManager.updateStatus();
-      this.showPullRequestNotification(pullRequest);
+      await this.statusBarManager.updateStatus();
+      await this.showPullRequestNotification(pullRequest);
     }
   }
 
@@ -230,7 +230,7 @@ export class CreatePullRequest extends PullRequestCommand {
     if (items.length === 1) {
       return items[0];
     }
-    return await vscode.window.showQuickPick(items,
+    return vscode.window.showQuickPick(items,
       { placeHolder: 'Select a repository to create the pull request in' });
   }
 
@@ -245,7 +245,7 @@ export class CreatePullRequest extends PullRequestCommand {
         }
         return b1.localeCompare(b2);
       });
-    return await vscode.window.showQuickPick(picks, {
+    return vscode.window.showQuickPick(picks, {
       ignoreFocusOut: true,
       placeHolder: 'Select a branch to create the pull request for'
     });
@@ -259,7 +259,7 @@ export class MergePullRequest extends PullRequestCommand {
   public id = 'vscode-github.mergePullRequest';
 
   @inject
-  private statusBarManager!: StatusBarManager;
+  private readonly statusBarManager!: StatusBarManager;
 
   @showProgress
   private async getMergeMethdod(uri: vscode.Uri): Promise<MergeMethod | undefined> {
@@ -304,7 +304,7 @@ export class MergePullRequest extends PullRequestCommand {
       const method = await this.getMergeMethdod(this.uri);
       if (method) {
         if (await this.workflowManager.mergePullRequest(pullRequest, method)) {
-          this.statusBarManager.updateStatus();
+          await this.statusBarManager.updateStatus();
           vscode.window.showInformationMessage(`Successfully merged`);
         } else {
           vscode.window.showInformationMessage(`Merge failed for unknown reason`);

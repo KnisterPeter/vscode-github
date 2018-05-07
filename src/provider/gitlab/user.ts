@@ -5,7 +5,7 @@ export class GitLabUser implements User {
 
   // private client: GitLab;
 
-  private struct: UserResponse;
+  private readonly struct: UserResponse;
 
   public get id(): number {
     return this.struct.id;

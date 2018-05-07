@@ -11,10 +11,10 @@ import './commands/user';
 export class CommandManager implements LifecycleListener {
 
   @inject
-  private tsdi!: TSDI;
+  private readonly tsdi!: TSDI;
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   @initialize
   protected init(): void {

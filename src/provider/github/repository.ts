@@ -16,9 +16,9 @@ export class GithubRepository implements Repository {
 
   public readonly uri: vscode.Uri | undefined;
 
-  private client: GitHub;
+  private readonly client: GitHub;
 
-  private struct: GithubRepositoryStruct;
+  private readonly struct: GithubRepositoryStruct;
 
   public owner: string;
   public repository: string;

@@ -71,18 +71,18 @@ export class StatusBarManager {
   }
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   @inject
-  private git!: Git;
+  private readonly git!: Git;
 
   private statusBar!: vscode.StatusBarItem;
 
   @inject
-  private workflowManager!: WorkflowManager;
+  private readonly workflowManager!: WorkflowManager;
 
   @inject('vscode.OutputChannel')
-  private channel!: vscode.OutputChannel;
+  private readonly channel!: vscode.OutputChannel;
 
   @initialize
   protected init(): void {
@@ -94,11 +94,15 @@ export class StatusBarManager {
     }
     this.context.subscriptions.push(this.statusBar);
 
-    this.refreshStatus();
+    this.refreshStatus()
+      .catch(() => { /* drop error (handled in refreshStatus) */ });
   }
 
   private async refreshStatus(): Promise<void> {
-    setTimeout(() => { this.refreshStatus(); }, this.refreshInterval);
+    setTimeout(() => {
+      this.refreshStatus()
+        .catch(() => { /* drop error (handled in refreshStatus) */ });
+    }, this.refreshInterval);
     try {
       const uri = this.getActiveWorkspaceFolder();
       if (uri && await this.workflowManager.canConnect(uri)) {
@@ -141,8 +145,7 @@ export class StatusBarManager {
     if (uri) {
       const branch = await this.git.getCurrentBranch(uri);
       if (branch !== await this.workflowManager.getDefaultBranch(uri)) {
-        this.updatePullRequestStatus(uri);
-        return;
+        return this.updatePullRequestStatus(uri);
       }
     }
     this.statusBar.show();

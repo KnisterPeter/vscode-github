@@ -11,7 +11,7 @@ export class SetGithubToken extends Command {
   public id = 'vscode-github.setGitHubToken';
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -39,7 +39,7 @@ export class SetGithubEnterpriseToken extends Command {
   public id = 'vscode-github.setGitHubEnterpriseToken';
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -72,7 +72,7 @@ export class SetGitLabToken extends Command {
   public id = 'vscode-github.setGitlabToken';
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -105,7 +105,7 @@ export class ClearToken extends Command {
   public id = 'vscode-github.clearToken';
 
   @inject('vscode.ExtensionContext')
-  private context!: vscode.ExtensionContext;
+  private readonly context!: vscode.ExtensionContext;
 
   public async run(): Promise<void> {
     this.track('execute');
