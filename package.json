@@ -74,6 +74,12 @@
           "default": false,
           "scope": "resource"
         },
+        "github.statusbar.enabled": {
+          "type": "boolean",
+          "description": "True if the statusbar integration should be enabled. Defaults to true",
+          "default": true,
+          "scope": "window"
+        },
         "github.statusbar.command": {
           "type": [
             "string",
