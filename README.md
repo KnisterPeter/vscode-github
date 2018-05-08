@@ -15,7 +15,7 @@ Currently it is possible to do the following:
 * Open github page for the current project in your default browser
 * Browse one of the open pull requests in your default browser
 * Browse the pull requests of your current branch
-* Display pull request and current status (e.g. mergeable, travis build done, ...) in the StatusBar
+* Display pull request and current status (e.g. mergeable, travis build done, ...) in the StatusBar (if enabled)
 * Create a new pull request based on the current branch and the last commit
   The current branch will be requested to merge into master and the pull request title is the commit message summary, or a custom message if configured that way.
 * Create a pull request in forked repositories

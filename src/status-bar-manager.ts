@@ -19,6 +19,14 @@ const githubPullRequestIcon = '$(git-pull-request)';
 @component
 export class StatusBarManager {
 
+  private get enabled(): boolean {
+    const uri = this.getActiveWorkspaceFolder();
+    if (!uri) {
+      return true;
+    }
+    return getConfiguration('github', uri).statusbar.enabled;
+  }
+
   private get customStatusBarCommand(): string | null {
     // #202: migrate from statusBarCommand to statusbar.command
     const uri = this.getActiveWorkspaceFolder();
@@ -96,6 +104,10 @@ export class StatusBarManager {
 
     this.refreshStatus()
       .catch(() => { /* drop error (handled in refreshStatus) */ });
+
+    if (!this.enabled) {
+      this.statusBar.hide();
+    }
   }
 
   private async refreshStatus(): Promise<void> {
@@ -141,6 +153,9 @@ export class StatusBarManager {
   }
 
   public async updateStatus(): Promise<void> {
+    if (!this.enabled) {
+      return;
+    }
     const uri = this.getActiveWorkspaceFolder();
     if (uri) {
       const branch = await this.git.getCurrentBranch(uri);

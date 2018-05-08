@@ -11,6 +11,7 @@ export interface Configuration {
   allowUnsafeSSL?: boolean;
   statusBarCommand: string | null;
   statusbar: {
+    enabled: boolean;
     refresh: number;
     command: string | null;
     color: boolean;
