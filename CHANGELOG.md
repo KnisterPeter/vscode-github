@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.28.0"></a>
+# [0.28.0](https://github.com/KnisterPeter/vscode-github/compare/v0.27.2...v0.28.0) (2018-05-08)
+
+
+### Bug Fixes
+
+* set statusbar item priority ([12af194](https://github.com/KnisterPeter/vscode-github/commit/12af194)), closes [#336](https://github.com/KnisterPeter/vscode-github/issues/336)
+
+
+### Features
+
+* allow to enable/disable statusbar integration ([099b5df](https://github.com/KnisterPeter/vscode-github/commit/099b5df)), closes [#345](https://github.com/KnisterPeter/vscode-github/issues/345)
+
+
+
 <a name="0.27.2"></a>
 ## [0.27.2](https://github.com/KnisterPeter/vscode-github/compare/v0.27.1...v0.27.2) (2018-05-02)
 
