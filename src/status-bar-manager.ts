@@ -86,7 +86,7 @@ export class StatusBarManager {
 
   @initialize
   protected init(): void {
-    this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+    this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
     this.statusBar.command = this.customStatusBarCommand || '';
     this.statusBar.text = `${githubPullRequestIcon} ...`;
     if (this.colored) {
