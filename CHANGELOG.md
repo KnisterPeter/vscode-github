@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.28.1"></a>
+## [0.28.1](https://github.com/KnisterPeter/vscode-github/compare/v0.28.0...v0.28.1) (2018-05-09)
+
+
+### Bug Fixes
+
+* browser current file respect git root ([481f68c](https://github.com/KnisterPeter/vscode-github/commit/481f68c)), closes [#354](https://github.com/KnisterPeter/vscode-github/issues/354)
+
+
+
 <a name="0.28.0"></a>
 # [0.28.0](https://github.com/KnisterPeter/vscode-github/compare/v0.27.2...v0.28.0) (2018-05-08)
 
