@@ -1,7 +1,8 @@
-import { component } from 'tsdi';
+import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { TokenCommand } from '../command';
+import { Git } from '../git';
 import { showProgress } from '../helper';
 
 @component({eager: true})
@@ -52,6 +53,9 @@ export class BrowseCurrentFile extends TokenCommand {
 
   public id = 'vscode-github.browseCurrentFile';
 
+  @inject
+  private readonly git!: Git;
+
   protected requireProjectFolder = false;
 
   @showProgress
@@ -62,7 +66,8 @@ export class BrowseCurrentFile extends TokenCommand {
       if (!folder) {
         return;
       }
-      const file = editor.document.fileName.substring(folder.uri.fsPath.length);
+      const root = await this.git.getGitRoot(folder.uri);
+      const file = editor.document.fileName.substring(root.length);
       const line = editor.selection.active.line;
       const uri = vscode.Uri.parse(await this.workflowManager.getGithubFileUrl(folder.uri, file, line));
       vscode.commands.executeCommand('vscode.open', uri);
