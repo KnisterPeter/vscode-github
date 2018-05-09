@@ -33,6 +33,11 @@ export class Git {
     }
   }
 
+  public async getGitRoot(uri: vscode.Uri): Promise<string> {
+    const response = await this.execute('git rev-parse --show-toplevel', uri);
+    return response.stdout.trim();
+  }
+
   public async getRemoteBranches(uri: vscode.Uri): Promise<string[]> {
     const response = await this.execute('git branch --list --remotes --no-color', uri);
     return response.stdout
