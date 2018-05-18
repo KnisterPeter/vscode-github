@@ -557,9 +557,9 @@ conventional-changelog-lint-config-angular@1.0.0, conventional-changelog-lint-co
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/conventional-changelog-lint-config-angular/-/conventional-changelog-lint-config-angular-1.0.0.tgz#cbd96b4f337223dee52186162f972769b2ce4223"
 
-conventional-changelog-lint@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/conventional-changelog-lint/-/conventional-changelog-lint-2.1.1.tgz#4fb9700bec1b1cf17ba44f047de61f7c8b0fedef"
+conventional-changelog-lint@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/conventional-changelog-lint/-/conventional-changelog-lint-2.1.0.tgz#704cda8b9dc2d94ecd6c09c51750bdcbb625e323"
   dependencies:
     babel-polyfill "6.20.0"
     babel-runtime "6.23.0"
@@ -571,7 +571,6 @@ conventional-changelog-lint@2.1.1:
     get-stdin "5.0.1"
     git-raw-commits "1.1.2"
     git-toplevel "1.1.1"
-    import-from "^2.1.0"
     lodash "4.17.4"
     meow "3.7.0"
     mz "2.6.0"
@@ -1413,12 +1412,6 @@ husky@0.14.3:
 iconv-lite@~0.4.13:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
-
-import-from@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/import-from/-/import-from-2.1.0.tgz#335db7f2a7affd53aaa471d4b8021dee36b7f3b1"
-  dependencies:
-    resolve-from "^3.0.0"
 
 indent-string@^2.1.0:
   version "2.1.0"
@@ -2583,10 +2576,6 @@ require-main-filename@^1.0.1:
 requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
-
-resolve-from@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-3.0.0.tgz#b22c7af7d9d6881bc8b6e653335eebcb0a188748"
 
 resolve@^1.3.2:
   version "1.5.0"
