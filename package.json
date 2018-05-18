@@ -243,7 +243,7 @@
   },
   "dependencies": {
     "common-tags": "1.7.2",
-    "conventional-changelog-lint-config-angular": "1.0.0",
+    "conventional-changelog-lint-config-angular": "0.4.1",
     "execa": "^0.10.0",
     "https": "1.0.0",
     "isomorphic-fetch": "2.2.1",

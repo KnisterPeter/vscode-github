@@ -553,7 +553,11 @@ conventional-changelog-jshint@^0.3.4:
     compare-func "^1.3.1"
     q "^1.5.1"
 
-conventional-changelog-lint-config-angular@1.0.0, conventional-changelog-lint-config-angular@^1.0.0:
+conventional-changelog-lint-config-angular@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/conventional-changelog-lint-config-angular/-/conventional-changelog-lint-config-angular-0.4.1.tgz#0f1d090883636ca45f08304ce72ee0b2c60d9ffa"
+
+conventional-changelog-lint-config-angular@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/conventional-changelog-lint-config-angular/-/conventional-changelog-lint-config-angular-1.0.0.tgz#cbd96b4f337223dee52186162f972769b2ce4223"
 
