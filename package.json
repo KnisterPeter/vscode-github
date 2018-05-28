@@ -242,7 +242,7 @@
     "vscode": "1.1.18"
   },
   "dependencies": {
-    "common-tags": "1.7.2",
+    "common-tags": "1.8.0",
     "conventional-changelog-lint-config-angular": "1.0.0",
     "execa": "^0.10.0",
     "https": "1.0.0",
