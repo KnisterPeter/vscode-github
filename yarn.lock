@@ -2818,9 +2818,9 @@ trim-off-newlines@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-off-newlines/-/trim-off-newlines-1.0.1.tgz#9f9ba9d9efa8764c387698bcbfeb2c848f11adb3"
 
-tsdi@0.20.2:
-  version "0.20.2"
-  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.20.2.tgz#7c0abae7b6a93675d496fe479ff1a901ec96e721"
+tsdi@0.20.3:
+  version "0.20.3"
+  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.20.3.tgz#b4da8d853d6328d0c63d24e982d12277489a18cc"
   dependencies:
     debug "3.1.0"
     reflect-metadata "0.1.12"
