@@ -229,7 +229,7 @@
   "devDependencies": {
     "@knisterpeter/standard-tslint": "1.7.2",
     "@types/common-tags": "1.4.0",
-    "@types/lru-cache": "4.1.0",
+    "@types/lru-cache": "4.1.1",
     "@types/mocha": "5.2.1",
     "@types/node": "9.6.19",
     "conventional-changelog-lint": "2.1.1",
