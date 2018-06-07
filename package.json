@@ -244,12 +244,12 @@
   "dependencies": {
     "common-tags": "1.8.0",
     "conventional-changelog-lint-config-angular": "1.0.0",
-    "execa": "^0.10.0",
+    "execa": "0.10.0",
     "https": "1.0.0",
     "isomorphic-fetch": "2.2.1",
-    "lru-cache": "^4.1.1",
-    "pretend": "^1.2.1",
-    "sander": "^0.6.0",
+    "lru-cache": "4.1.1",
+    "pretend": "1.2.1",
+    "sander": "0.6.0",
     "tsdi": "0.20.3",
     "vscode-extension-telemetry": "0.0.17"
   },
