@@ -853,7 +853,7 @@ event-stream@^3.3.1, event-stream@^3.3.4, event-stream@~3.3.4:
     stream-combiner "~0.0.4"
     through "~2.3.1"
 
-execa@^0.10.0:
+execa@0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-0.10.0.tgz#ff456a8f53f90f8eccc71a96d11bdfc7f082cb50"
   dependencies:
@@ -1727,7 +1727,7 @@ loud-rejection@^1.0.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
-lru-cache@^4.0.1, lru-cache@^4.1.1:
+lru-cache@4.1.1, lru-cache@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.1.tgz#622e32e82488b49279114a4f9ecf45e7cd6bba55"
   dependencies:
@@ -2165,9 +2165,9 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-pretend@^1.2.1:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/pretend/-/pretend-1.4.0.tgz#56e2145728c553b7785dfb1af84326d7e18f22ef"
+pretend@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/pretend/-/pretend-1.2.1.tgz#3cbedea3fb4f35395aad391e4dfd08debbc017cd"
 
 process-nextick-args@^1.0.6:
   version "1.0.7"
@@ -2466,7 +2466,7 @@ safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-sander@^0.6.0:
+sander@0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/sander/-/sander-0.6.0.tgz#af1624cd7fb6dfad98ebef565319f920078da925"
   dependencies:
