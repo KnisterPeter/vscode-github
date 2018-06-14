@@ -6,6 +6,7 @@ export interface Configuration {
   refreshPullRequestStatus: number;
   remoteName: string;
   upstream?: string;
+  customPullRequestTitle: boolean;
   customPullRequestDescription: 'off' | 'singleLine' | 'gitEditor';
   autoPublish?: boolean;
   allowUnsafeSSL?: boolean;
