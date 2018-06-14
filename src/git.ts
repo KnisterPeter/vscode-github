@@ -136,7 +136,7 @@ export class Git {
   public async getPullRequestTitle(sha: string, uri: vscode.Uri): Promise<string|undefined> {
     const customTitle = getConfiguration('github', uri).customPullRequestTitle;
 
-    if( customTitle ){
+    if (customTitle) {
         return this.getSingleLinePullRequestTitle();
     }
 
