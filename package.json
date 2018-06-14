@@ -51,6 +51,12 @@
           "description": "By default the extension get the repository and user from .git/config. For forks where upstream is a different repository this could be configured here (e.g. microsoft/typescript).",
           "scope": "resource"
         },
+        "github.customPullRequestTitle": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ask the user for a custom title when creating the PR. If false, defaults to the last commit message.",
+          "scope": "resource"
+        },
         "github.customPullRequestDescription": {
           "type": "string",
           "enum": [
