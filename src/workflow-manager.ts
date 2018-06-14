@@ -127,12 +127,19 @@ export class WorkflowManager {
       return undefined;
     }
 
+    const requestTitle = await this.git.getPullRequestTitle(firstCommit, uri);
+    if (requestTitle === undefined) {
+      vscode.window.showWarningMessage(
+        `For some unknown reason no pull request title could be build; Aborting operation`);
+      return undefined;
+    }
+
     return this.createPullRequestFromData(
       {
         upstream,
         sourceBranch: branch,
         targetBranch: upstream ? upstream.branch : defaultBranch,
-        title: await this.git.getCommitMessage(firstCommit, uri),
+        title: requestTitle,
         body: requestBody
       },
       uri

@@ -133,6 +133,20 @@ export class Git {
     return (await this.execute(`git log --format=%b -n 1 ${sha}`, uri)).stdout.trim();
   }
 
+  public async getPullRequestTitle(sha: string, uri: vscode.Uri): Promise<string|undefined> {
+    const customTitle = getConfiguration('github', uri).customPullRequestTitle;
+
+    if( customTitle ){
+        return this.getSingleLinePullRequestTitle();
+    }
+
+    return this.getCommitMessage(sha, uri);
+  }
+
+  private async getSingleLinePullRequestTitle(): Promise<string|undefined> {
+    return vscode.window.showInputBox({prompt: 'Pull request title'});
+  }
+
   public async getPullRequestBody(sha: string, uri: vscode.Uri): Promise<string|undefined> {
     const bodyMethod = getConfiguration('github', uri).customPullRequestDescription;
 
