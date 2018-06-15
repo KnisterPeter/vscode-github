@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.29.0"></a>
+# [0.29.0](https://github.com/KnisterPeter/vscode-github/compare/v0.28.1...v0.29.0) (2018-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency common-tags to v1.8.0 ([4f77c3e](https://github.com/KnisterPeter/vscode-github/commit/4f77c3e))
+* **deps:** update dependency lru-cache to v4.1.3 ([6e3af89](https://github.com/KnisterPeter/vscode-github/commit/6e3af89))
+* **deps:** update dependency pretend to v1.5.1 ([2601b3b](https://github.com/KnisterPeter/vscode-github/commit/2601b3b))
+* **deps:** update dependency tsdi to v0.20.3 ([baee7c6](https://github.com/KnisterPeter/vscode-github/commit/baee7c6))
+
+
+### Features
+
+* add custom title when creating a new pull request ([34432ce](https://github.com/KnisterPeter/vscode-github/commit/34432ce))
+
+
+
 <a name="0.28.1"></a>
 ## [0.28.1](https://github.com/KnisterPeter/vscode-github/compare/v0.28.0...v0.28.1) (2018-05-09)
 
