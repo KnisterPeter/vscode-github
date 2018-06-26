@@ -14,7 +14,6 @@ import { GitLabRepository } from './repository';
 import { GitLabUser } from './user';
 
 export class GitLabMergeRequest implements PullRequest {
-
   private readonly client: GitLab;
   private readonly repository: GitLabRepository;
   private readonly mergeRequest: MergeRequest;
@@ -64,7 +63,19 @@ export class GitLabMergeRequest implements PullRequest {
     }
   }
 
-  constructor(client: GitLab, repository: GitLabRepository, mergeRequest: MergeRequest) {
+  public get head(): never {
+    throw new Error('not implemented');
+  }
+
+  public get base(): never {
+    throw new Error('not implemented');
+  }
+
+  constructor(
+    client: GitLab,
+    repository: GitLabRepository,
+    mergeRequest: MergeRequest
+  ) {
     this.client = client;
     this.repository = repository;
     this.mergeRequest = mergeRequest;
@@ -79,7 +90,9 @@ export class GitLabMergeRequest implements PullRequest {
       gitlabBody.description = body.body;
     }
     if (body.state) {
-      const mapState = (state: UpdateBody['state']): UpdateMergeRequestBody['state_event'] => {
+      const mapState = (
+        state: UpdateBody['state']
+      ): UpdateMergeRequestBody['state_event'] => {
         switch (state) {
           case 'open':
             return 'reopen';
@@ -87,7 +100,7 @@ export class GitLabMergeRequest implements PullRequest {
             return 'close';
           default:
             return undefined;
-          }
+        }
       };
       gitlabBody.state_event = mapState(body.state);
     }

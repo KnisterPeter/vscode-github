@@ -1,4 +1,5 @@
 import { Response } from './client';
+import { Repository } from './repository';
 import { User } from './user';
 
 export interface PullRequest {
@@ -10,7 +11,13 @@ export interface PullRequest {
   url: string;
   sourceBranch: string;
   targetBranch: string;
-  mergeable?: boolean|null;
+  mergeable?: boolean | null;
+  head: {
+    repository: Repository;
+  };
+  base: {
+    repository: Repository;
+  };
 
   update(body: UpdateBody): Promise<void>;
   getComments(): Promise<Response<Comment[]>>;

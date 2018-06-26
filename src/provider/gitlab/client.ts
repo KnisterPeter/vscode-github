@@ -5,14 +5,23 @@ import { GitLabRepository } from './repository';
 import { GitLabUser } from './user';
 
 export class GitLabClient implements Client {
-
   private readonly client: GitLab;
 
   public name = 'GitLab Client';
 
-  constructor(protocol: string, hostname: string, token: string, logger: (message: string) => void,
-              allowUnsafeSSL: boolean) {
-    this.client = getClient(this.getApiEndpoint(protocol, hostname), token, logger, allowUnsafeSSL);
+  constructor(
+    protocol: string,
+    hostname: string,
+    token: string,
+    logger: (message: string) => void,
+    allowUnsafeSSL: boolean
+  ) {
+    this.client = getClient(
+      this.getApiEndpoint(protocol, hostname),
+      token,
+      logger,
+      allowUnsafeSSL
+    );
   }
 
   private getApiEndpoint(protocol: string, hostname: string): string {
@@ -30,14 +39,20 @@ export class GitLabClient implements Client {
     };
   }
 
-  public async getRepository(uri: vscode.Uri, rid: string): Promise<Response<GitLabRepository>> {
-    const response = (await this.client.getProject(encodeURIComponent(rid))).body;
+  public async getRepository(
+    uri: vscode.Uri,
+    rid: string
+  ): Promise<Response<GitLabRepository>> {
+    const response = (await this.client.getProject(encodeURIComponent(rid)))
+      .body;
     return {
       body: new GitLabRepository(uri, this.client, response)
     };
   }
 
-  public async getUserByUsername(username: string): Promise<Response<GitLabUser>> {
+  public async getUserByUsername(
+    username: string
+  ): Promise<Response<GitLabUser>> {
     const response = await this.client.searchUser({
       username
     });
@@ -45,5 +60,4 @@ export class GitLabClient implements Client {
       body: new GitLabUser(this.client, response.body[0])
     };
   }
-
 }

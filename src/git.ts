@@ -281,6 +281,22 @@ export class Git {
     }
   }
 
+  public async branch(
+    name: string,
+    base: string,
+    uri: vscode.Uri
+  ): Promise<void> {
+    await this.execute(`git checkout -b ${name} ${base}`, uri);
+  }
+
+  public async pullExternal(
+    repositoryUrl: string,
+    branch: string,
+    uri: vscode.Uri
+  ): Promise<void> {
+    await this.execute(`git pull ${repositoryUrl} ${branch}`, uri);
+  }
+
   private logAndShowError(e: Error): void {
     if (this.channel) {
       this.channel.appendLine(e.message);

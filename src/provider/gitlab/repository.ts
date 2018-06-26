@@ -20,7 +20,6 @@ import { GitLabMergeRequest } from './merge-request';
 import { GitLabUser } from './user';
 
 export class GitLabRepository implements Repository {
-
   public readonly uri: vscode.Uri | undefined;
 
   private readonly client: GitLab;
@@ -58,15 +57,22 @@ export class GitLabRepository implements Repository {
     return this.project.web_url;
   }
 
+  public get cloneUrl(): string {
+    throw new Error('not implemented');
+  }
+
   constructor(uri: vscode.Uri | undefined, client: GitLab, project: Project) {
     this.uri = uri;
     this.client = client;
     this.project = project;
   }
 
-  public async getPullRequests(parameters: ListPullRequestsParameters = {}):
-      Promise<Response<GitLabMergeRequest[]>> {
-    function getState(state: ListPullRequestsParameters['state']): GetMergeRequestParameters['state'] {
+  public async getPullRequests(
+    parameters: ListPullRequestsParameters = {}
+  ): Promise<Response<GitLabMergeRequest[]>> {
+    function getState(
+      state: ListPullRequestsParameters['state']
+    ): GetMergeRequestParameters['state'] {
       switch (state) {
         case 'open':
           return 'opened';
@@ -76,7 +82,9 @@ export class GitLabRepository implements Repository {
           return undefined;
       }
     }
-    function getOrderBy(orderBy: ListPullRequestsParameters['sort']): GetMergeRequestParameters['order_by'] {
+    function getOrderBy(
+      orderBy: ListPullRequestsParameters['sort']
+    ): GetMergeRequestParameters['order_by'] {
       switch (orderBy) {
         case 'created':
           return 'created_at';
@@ -97,13 +105,20 @@ export class GitLabRepository implements Repository {
     if (parameters.direction) {
       params.sort = parameters.direction;
     }
-    const respose = await this.client.getMergeRequests(encodeURIComponent(this.project.path_with_namespace), params);
+    const respose = await this.client.getMergeRequests(
+      encodeURIComponent(this.project.path_with_namespace),
+      params
+    );
     return {
-      body: respose.body.map(mergeRequest => new GitLabMergeRequest(this.client, this, mergeRequest))
+      body: respose.body.map(
+        mergeRequest => new GitLabMergeRequest(this.client, this, mergeRequest)
+      )
     };
   }
 
-  public async getPullRequest(id: number): Promise<Response<GitLabMergeRequest>> {
+  public async getPullRequest(
+    id: number
+  ): Promise<Response<GitLabMergeRequest>> {
     const response = await this.client.getMergeRequest(
       encodeURIComponent(this.project.path_with_namespace),
       id
@@ -113,18 +128,20 @@ export class GitLabRepository implements Repository {
     };
   }
 
-  public async createPullRequest(body: CreatePullRequestBody): Promise<Response<GitLabMergeRequest>> {
+  public async createPullRequest(
+    body: CreatePullRequestBody
+  ): Promise<Response<GitLabMergeRequest>> {
     const removeSourceBranch = this.uri
       ? getConfiguration('gitlab', this.uri).removeSourceBranch
       : false;
-    const gitlabBody: CreateMergeRequestBody =  {
+    const gitlabBody: CreateMergeRequestBody = {
       source_branch: body.sourceBranch,
       target_branch: body.targetBranch,
       title: body.title,
       remove_source_branch: removeSourceBranch
     };
     if (body.body) {
-     gitlabBody.description = body.body;
+      gitlabBody.description = body.body;
     }
     const response = await this.client.createMergeRequest(
       encodeURIComponent(this.project.path_with_namespace),
@@ -135,8 +152,12 @@ export class GitLabRepository implements Repository {
     };
   }
 
-  public async getIssues(parameters?: IssuesParameters | undefined): Promise<Response<Issue[]>> {
-    function getState(state: IssuesParameters['state']): ProjectIssuesBody['state'] {
+  public async getIssues(
+    parameters?: IssuesParameters | undefined
+  ): Promise<Response<Issue[]>> {
+    function getState(
+      state: IssuesParameters['state']
+    ): ProjectIssuesBody['state'] {
       switch (state) {
         case 'open':
           return 'opened';
@@ -145,7 +166,9 @@ export class GitLabRepository implements Repository {
       }
       return undefined;
     }
-    function getOrderBy(orderBy: IssuesParameters['sort']): ProjectIssuesBody['order_by'] {
+    function getOrderBy(
+      orderBy: IssuesParameters['sort']
+    ): ProjectIssuesBody['order_by'] {
       switch (orderBy) {
         case 'created':
           return 'created_at';
@@ -173,7 +196,9 @@ export class GitLabRepository implements Repository {
       body
     );
     return {
-      body: response.body.map(issue => new GitLabIssue(this.client, this, issue))
+      body: response.body.map(
+        issue => new GitLabIssue(this.client, this, issue)
+      )
     };
   }
 
