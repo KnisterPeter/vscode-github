@@ -1,5 +1,11 @@
 import { Memento } from 'vscode';
-import { Tokens } from './workflow-manager';
+
+export interface Tokens {
+  [host: string]: {
+    token: string;
+    provider: 'github' | 'gitlab';
+  };
+}
 
 export function migrateToken(memento: Memento): void {
   const token = memento.get<string | undefined>('token');
@@ -13,7 +19,7 @@ export function migrateToken(memento: Memento): void {
     memento.update(token, undefined);
   }
   let migrated = false;
-  const tokens = memento.get<{[host: string]: string}>('tokens', {});
+  const tokens = memento.get<{ [host: string]: string }>('tokens', {});
   const struct = Object.keys(tokens).reduce((akku: Tokens, host) => {
     if (typeof tokens[host] === 'string') {
       migrated = true;

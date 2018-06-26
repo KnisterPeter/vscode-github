@@ -20,13 +20,6 @@ import { getTokens } from './tokens';
 
 import { GitHubError } from './provider/github/api';
 
-export interface Tokens {
-  [host: string]: {
-    token: string;
-    provider: 'github' | 'gitlab';
-  };
-}
-
 @component
 export class WorkflowManager {
   @inject({ name: 'vscode.ExtensionContext' })
@@ -37,9 +30,9 @@ export class WorkflowManager {
 
   @inject private readonly git!: Git;
 
-  private readonly providers: { [cwd: string]: Client } = {};
+  private providers: { [cwd: string]: Client } = {};
 
-  private async connect(uri: vscode.Uri): Promise<void> {
+  private async connect(uri: vscode.Uri): Promise<Client> {
     const logger = (message: string) => this.log(message);
     const provider = await createClient(
       this.git,
@@ -58,14 +51,18 @@ export class WorkflowManager {
       );
     }
     this.log(`Connected with provider ${provider.name}`);
-    this.providers[uri.fsPath] = provider;
+    return provider;
   }
 
   private async getProvider(uri: vscode.Uri): Promise<Client> {
     if (!this.providers[uri.fsPath]) {
-      await this.connect(uri);
+      this.providers[uri.fsPath] = await this.connect(uri);
     }
     return this.providers[uri.fsPath];
+  }
+
+  public resetProviders(): void {
+    this.providers = {};
   }
 
   private log(message: string, obj?: any): void {
