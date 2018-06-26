@@ -6,9 +6,7 @@ import { GitHubError } from './provider/github/api';
 import { WorkflowManager } from './workflow-manager';
 
 export abstract class Command {
-
-  @inject
-  private readonly reporter!: TelemetryReporter;
+  @inject private readonly reporter!: TelemetryReporter;
 
   public abstract get id(): string;
 
@@ -36,13 +34,10 @@ export abstract class Command {
     }
     return folder.uri;
   }
-
 }
 
 export abstract class TokenCommand extends Command {
-
-  @inject
-  protected readonly workflowManager!: WorkflowManager;
+  @inject protected readonly workflowManager!: WorkflowManager;
 
   @inject('vscode.OutputChannel')
   private readonly channel!: vscode.OutputChannel;
@@ -58,10 +53,15 @@ export abstract class TokenCommand extends Command {
         return;
       }
       this.uri = uri;
-      if (!(this.workflowManager && await this.workflowManager.canConnect(this.uri))) {
+      if (
+        !this.workflowManager ||
+        !Boolean(await this.workflowManager.canConnect(this.uri))
+      ) {
         this.track('execute without token');
-        vscode.window.showWarningMessage('Please setup your Github Personal Access Token '
-          + 'and open a GitHub project in your workspace');
+        vscode.window.showWarningMessage(
+          'Please setup your Github Personal Access Token ' +
+            'and open a GitHub project in your workspace'
+        );
         return;
       }
     }

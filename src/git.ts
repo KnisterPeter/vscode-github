@@ -9,7 +9,6 @@ import { getConfiguration } from './helper';
 
 @component
 export class Git {
-
   @inject('vscode.OutputChannel')
   private readonly channel!: vscode.OutputChannel;
 
@@ -17,7 +16,22 @@ export class Git {
     return getConfiguration('github', uri).remoteName;
   }
 
-  private async execute(cmd: string, uri: vscode.Uri): Promise<{stdout: string, stderr: string}> {
+  private async getRemoteNames(uri: vscode.Uri): Promise<string[]> {
+    const remotes = (await this.execute(
+      `git config --local --get-regexp ^remote.*.url`,
+      uri
+    )).stdout.trim();
+    return remotes
+      .split('\n')
+      .map(line => new RegExp('^remote.([^.]+).url.*').exec(line))
+      .map(match => match && match[1])
+      .filter(name => Boolean(name)) as string[];
+  }
+
+  private async execute(
+    cmd: string,
+    uri: vscode.Uri
+  ): Promise<{ stdout: string; stderr: string }> {
     const [git, ...args] = cmd.split(' ');
     const gitCommand = getConfiguration('github', uri).gitCommand;
     this.channel.appendLine(`${gitCommand || git} ${args.join(' ')}`);
@@ -39,7 +53,10 @@ export class Git {
   }
 
   public async getRemoteBranches(uri: vscode.Uri): Promise<string[]> {
-    const response = await this.execute('git branch --list --remotes --no-color', uri);
+    const response = await this.execute(
+      'git branch --list --remotes --no-color',
+      uri
+    );
     return response.stdout
       .split('\n')
       .filter(line => !line.match('->'))
@@ -54,12 +71,16 @@ export class Git {
    * @return {Promise<string[]>} A tuple of username and repository (e.g. KnisterPeter/vscode-github)
    * @throws Throws if the could not be parsed as a github url
    */
-  public async getGitProviderOwnerAndRepository(uri: vscode.Uri): Promise<string[]> {
+  public async getGitProviderOwnerAndRepository(
+    uri: vscode.Uri
+  ): Promise<string[]> {
     const defaultUpstream = getConfiguration('github', uri).upstream;
     if (defaultUpstream) {
       return Promise.resolve(defaultUpstream.split('/'));
     }
-    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(uri)).slice(2, 4);
+    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(
+      uri
+    )).slice(2, 4);
   }
 
   public async getGitHostname(uri: vscode.Uri): Promise<string> {
@@ -70,13 +91,31 @@ export class Git {
     return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(uri))[0];
   }
 
-  private async getGitProviderOwnerAndRepositoryFromGitConfig(uri: vscode.Uri): Promise<string[]> {
-    const remote = (await this.execute(`git config --local --get remote.${this.getRemoteName(uri)}.url`, uri))
-      .stdout.trim();
-    if (!remote.length) {
-      throw new Error('Git remote is empty!');
+  private async getGitProviderOwnerAndRepositoryFromGitConfig(
+    uri: vscode.Uri
+  ): Promise<string[]> {
+    const remoteName = this.getRemoteName(uri);
+    try {
+      const remote = (await this.execute(
+        `git config --local --get remote.${remoteName}.url`,
+        uri
+      )).stdout.trim();
+      if (!remote.length) {
+        throw new Error('Git remote is empty!');
+      }
+      return this.parseGitUrl(remote);
+    } catch (e) {
+      const remotes = await this.getRemoteNames(uri);
+      if (!remotes.includes(remoteName)) {
+        this.logAndShowError(e);
+
+        this.channel.appendLine(
+          '\n\nYour configuration contains an invalid remoteName. You should probably use one of these:\n'
+        );
+        this.channel.appendLine(remotes.join('\n') + '\n');
+      }
+      throw e;
     }
-    return this.parseGitUrl(remote);
   }
 
   public parseGitUrl(remote: string): string[] {
@@ -90,14 +129,21 @@ export class Git {
   }
 
   public parseGitProviderUrl(remote: string): string[] {
-    const match = new RegExp('^git(?:@|://)([^:/]+)(?::|:/|/)([^/]+)/(.+?)(?:.git)?$', 'i').exec(remote);
+    const match = new RegExp(
+      '^git(?:@|://)([^:/]+)(?::|:/|/)([^/]+)/(.+?)(?:.git)?$',
+      'i'
+    ).exec(remote);
     if (!match) {
-      throw new Error(`'${remote}' does not seem to be a valid git provider url.`);
+      throw new Error(
+        `'${remote}' does not seem to be a valid git provider url.`
+      );
     }
     return ['git:', ...match.slice(1, 4)];
   }
 
-  private getGitProviderOwnerAndRepositoryFromHttpUrl(remote: string): string[] {
+  private getGitProviderOwnerAndRepositoryFromHttpUrl(
+    remote: string
+  ): string[] {
     // it must be http or https based remote
     const { protocol = 'https:', hostname, pathname } = parse(remote);
     // domain names are not case-sensetive
@@ -111,18 +157,30 @@ export class Git {
     return [protocol, hostname, ...match.slice(1, 3)];
   }
 
-  public async getCurrentBranch(uri: vscode.Uri): Promise<string|undefined> {
+  public async getCurrentBranch(uri: vscode.Uri): Promise<string | undefined> {
     const stdout = (await this.execute('git branch', uri)).stdout;
     const match = stdout.match(/^\* (.*)$/m);
     return match ? match[1] : undefined;
   }
 
   public async getCommitMessage(sha: string, uri: vscode.Uri): Promise<string> {
-    return (await this.execute(`git log -n 1 --format=%s ${sha}`, uri)).stdout.trim();
+    return (await this.execute(
+      `git log -n 1 --format=%s ${sha}`,
+      uri
+    )).stdout.trim();
   }
 
-  public async getFirstCommitOnBranch(branch: string, defaultBranch: string, uri: vscode.Uri): Promise<string> {
-    const sha = (await this.execute(`git rev-list ^${defaultBranch} ${branch}`, uri)).stdout.trim().split('\n')[0];
+  public async getFirstCommitOnBranch(
+    branch: string,
+    defaultBranch: string,
+    uri: vscode.Uri
+  ): Promise<string> {
+    const sha = (await this.execute(
+      `git rev-list ^${defaultBranch} ${branch}`,
+      uri
+    )).stdout
+      .trim()
+      .split('\n')[0];
     if (!sha) {
       return 'master';
     }
@@ -130,25 +188,35 @@ export class Git {
   }
 
   private async getCommitBody(sha: string, uri: vscode.Uri): Promise<string> {
-    return (await this.execute(`git log --format=%b -n 1 ${sha}`, uri)).stdout.trim();
+    return (await this.execute(
+      `git log --format=%b -n 1 ${sha}`,
+      uri
+    )).stdout.trim();
   }
 
-  public async getPullRequestTitle(sha: string, uri: vscode.Uri): Promise<string|undefined> {
+  public async getPullRequestTitle(
+    sha: string,
+    uri: vscode.Uri
+  ): Promise<string | undefined> {
     const customTitle = getConfiguration('github', uri).customPullRequestTitle;
 
     if (customTitle) {
-        return this.getSingleLinePullRequestTitle();
+      return this.getSingleLinePullRequestTitle();
     }
 
     return this.getCommitMessage(sha, uri);
   }
 
-  private async getSingleLinePullRequestTitle(): Promise<string|undefined> {
-    return vscode.window.showInputBox({prompt: 'Pull request title'});
+  private async getSingleLinePullRequestTitle(): Promise<string | undefined> {
+    return vscode.window.showInputBox({ prompt: 'Pull request title' });
   }
 
-  public async getPullRequestBody(sha: string, uri: vscode.Uri): Promise<string|undefined> {
-    const bodyMethod = getConfiguration('github', uri).customPullRequestDescription;
+  public async getPullRequestBody(
+    sha: string,
+    uri: vscode.Uri
+  ): Promise<string | undefined> {
+    const bodyMethod = getConfiguration('github', uri)
+      .customPullRequestDescription;
 
     switch (bodyMethod) {
       case 'singleLine':
@@ -161,14 +229,18 @@ export class Git {
     }
   }
 
-  private async getSingleLinePullRequestBody(): Promise<string|undefined> {
-    return vscode.window.showInputBox({prompt: 'Pull request description'});
+  private async getSingleLinePullRequestBody(): Promise<string | undefined> {
+    return vscode.window.showInputBox({ prompt: 'Pull request description' });
   }
 
   private async getGitEditorPullRequestBody(uri: vscode.Uri): Promise<string> {
     const path = resolve(uri.fsPath, 'PR_EDITMSG');
 
-    const [editorName, ...params] = (await execa('git', ['config', '--get', 'core.editor'])).stdout.split(' ');
+    const [editorName, ...params] = (await execa('git', [
+      'config',
+      '--get',
+      'core.editor'
+    ])).stdout.split(' ');
     await execa(editorName, [...params, path]);
 
     const fileContents = (await readFile(path)).toString();
@@ -178,11 +250,29 @@ export class Git {
     return fileContents;
   }
 
-  public async getRemoteTrackingBranch(branch: string, uri: vscode.Uri): Promise<string|undefined> {
+  public async getRemoteTrackingBranch(
+    branch: string,
+    uri: vscode.Uri
+  ): Promise<string | undefined> {
     try {
-      return (await this.execute(`git config --get branch.${branch}.merge`, uri)).stdout.trim().split('\n')[0];
+      return (await this.execute(
+        `git config --get branch.${branch}.merge`,
+        uri
+      )).stdout
+        .trim()
+        .split('\n')[0];
     } catch (e) {
       return undefined;
+    }
+  }
+
+  private logAndShowError(e: Error): void {
+    if (this.channel) {
+      this.channel.appendLine(e.message);
+      if (e.stack) {
+        this.channel.appendLine(e.stack);
+      }
+      this.channel.show();
     }
   }
 }
