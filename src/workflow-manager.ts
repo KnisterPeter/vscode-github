@@ -2,6 +2,7 @@ import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
 
 import { Git } from './git';
+import { getConfiguration } from './helper';
 import { createClient, Client } from './provider/client';
 import { Issue, IssueComment } from './provider/issue';
 import {
@@ -158,10 +159,10 @@ export class WorkflowManager {
       return undefined;
     }
 
-    const requestTitle = await this.git.getPullRequestTitle(firstCommit, uri);
+    const requestTitle = await this.getTitle(firstCommit, uri);
     if (requestTitle === undefined) {
-      vscode.window.showWarningMessage(
-        `For some unknown reason no pull request title could be build; Aborting operation`
+      this.channel.appendLine(
+        `No pull request title created; Aborting operation`
       );
       return undefined;
     }
@@ -176,6 +177,18 @@ export class WorkflowManager {
       },
       uri
     );
+  }
+
+  private async getTitle(firstCommit: string, uri: vscode.Uri): Promise<string | undefined> {
+    const customTitle = getConfiguration('github', uri).customPullRequestTitle;
+    if (customTitle) {
+      const title = await vscode.window.showInputBox({ prompt: 'Pull request title' });
+      if (!title) {
+        return undefined;
+      }
+      return title;
+    }
+    return this.git.getCommitMessage(firstCommit, uri);
   }
 
   public async createPullRequestFromData(
