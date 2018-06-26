@@ -1,54 +1,130 @@
 import * as https from 'https';
 import * as LRUCache from 'lru-cache';
-import {Pretend, Get, Post, Put, Patch, Delete, Headers as Header, Interceptor, IPretendRequestInterceptor,
-  IPretendDecoder} from 'pretend';
+import {
+  Pretend,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Headers as Header,
+  Interceptor,
+  IPretendRequestInterceptor,
+  IPretendDecoder
+} from 'pretend';
 
 export interface GitHub {
-
   getRepositories(): Promise<GitHubResponse<GithubRepositoryStruct>>;
 
-  getRepository(owner: string, repo: string): Promise<GitHubResponse<GithubRepositoryStruct>>;
+  getRepository(
+    owner: string,
+    repo: string
+  ): Promise<GitHubResponse<GithubRepositoryStruct>>;
 
-  getPullRequest(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestStruct>>;
+  getPullRequest(
+    owner: string,
+    repo: string,
+    number: number
+  ): Promise<GitHubResponse<PullRequestStruct>>;
 
-  listPullRequests(owner: string, repo: string, parameters?: ListPullRequestsParameters):
-    Promise<GitHubResponse<PullRequestStruct[]>>;
+  listPullRequests(
+    owner: string,
+    repo: string,
+    parameters?: ListPullRequestsParameters
+  ): Promise<GitHubResponse<PullRequestStruct[]>>;
 
-  createPullRequest(owner: string, repo: string, body: CreatePullRequestBody):
-    Promise<GitHubResponse<PullRequestStruct>>;
+  createPullRequest(
+    owner: string,
+    repo: string,
+    body: CreatePullRequestBody
+  ): Promise<GitHubResponse<PullRequestStruct>>;
 
-  updatePullRequest(owner: string, repo: string, number: number, body: UpdatePullRequestBody): Promise<void>;
+  updatePullRequest(
+    owner: string,
+    repo: string,
+    number: number,
+    body: UpdatePullRequestBody
+  ): Promise<void>;
 
-  getStatusForRef(owner: string, repo: string, ref: string): Promise<GitHubResponse<CombinedStatus>>;
+  getStatusForRef(
+    owner: string,
+    repo: string,
+    ref: string
+  ): Promise<GitHubResponse<CombinedStatus>>;
 
-  mergePullRequest(owner: string, repo: string, number: number, body: Merge): Promise<GitHubResponse<MergeResult>>;
+  mergePullRequest(
+    owner: string,
+    repo: string,
+    number: number,
+    body: Merge
+  ): Promise<GitHubResponse<MergeResult>>;
 
-  addAssignees(owner: string, repo: string, numer: number, body: Assignees): Promise<void>;
+  addAssignees(
+    owner: string,
+    repo: string,
+    numer: number,
+    body: Assignees
+  ): Promise<void>;
 
-  removeAssignees(owner: string, repo: string, numer: number, body: Assignees): Promise<void>;
+  removeAssignees(
+    owner: string,
+    repo: string,
+    numer: number,
+    body: Assignees
+  ): Promise<void>;
 
-  requestReview(owner: string, repo: string, numer: number, body: Reviewers): Promise<void>;
+  requestReview(
+    owner: string,
+    repo: string,
+    numer: number,
+    body: Reviewers
+  ): Promise<void>;
 
-  deleteReviewRequest(owner: string, repo: string, numer: number, body: Reviewers): Promise<void>;
+  deleteReviewRequest(
+    owner: string,
+    repo: string,
+    numer: number,
+    body: Reviewers
+  ): Promise<void>;
 
-  issues(owner: string, repo: string, parameters?: IssuesParameters): Promise<GitHubResponse<Issue[]>>;
+  issues(
+    owner: string,
+    repo: string,
+    parameters?: IssuesParameters
+  ): Promise<GitHubResponse<Issue[]>>;
 
-  getPullRequestComments(owner: string, repo: string, number: number): Promise<GitHubResponse<PullRequestComment[]>>;
+  getPullRequestComments(
+    owner: string,
+    repo: string,
+    number: number
+  ): Promise<GitHubResponse<PullRequestComment[]>>;
 
-  editIssue(owner: string, repo: string, number: number, body: EditIssueBody): Promise<GitHubResponse<EditIssueBody>>;
+  editIssue(
+    owner: string,
+    repo: string,
+    number: number,
+    body: EditIssueBody
+  ): Promise<GitHubResponse<EditIssueBody>>;
 
   getAuthenticatedUser(): Promise<GitHubResponse<UserResponse>>;
 
   getUser(username: string): Promise<GitHubResponse<UserResponse>>;
 
-  listAssignees(owner: string, repo: string): Promise<GitHubResponse<UserResponse[]>>;
+  listAssignees(
+    owner: string,
+    repo: string
+  ): Promise<GitHubResponse<UserResponse[]>>;
 
-  getIssueComments(owner: string, repo: string, number: number): Promise<GitHubResponse<IssueComment[]>>;
+  getIssueComments(
+    owner: string,
+    repo: string,
+    number: number
+  ): Promise<GitHubResponse<IssueComment[]>>;
 }
 
 export interface GitHubResponse<T> {
   status: number;
-  headers: {[name: string]: string[]};
+  headers: { [name: string]: string[] };
   body: T;
 }
 
@@ -95,7 +171,7 @@ export interface Issue {
 }
 
 export interface IssuesParameters {
-  milestone?: string|number;
+  milestone?: string | number;
   state?: 'closed' | 'all' | 'open';
   assignee?: string;
   sort?: 'created' | 'updated' | 'comments';
@@ -121,6 +197,7 @@ export interface GithubRepositoryStruct {
   allow_squash_merge?: boolean;
   allow_merge_commit?: boolean;
   html_url: string;
+  clone_url: string;
   parent?: GithubRepositoryStruct;
 }
 
@@ -173,18 +250,23 @@ export interface PullRequestStruct {
   head: {
     label: string;
     ref: string;
+    repo: GithubRepositoryStruct;
   };
   base: {
     label: string;
     ref: string;
+    repo: GithubRepositoryStruct;
   };
-  mergeable?: boolean|null;
+  mergeable?: boolean | null;
 }
 
-export function getClient(endpoint: string, token: string, logger: (message: string) => void,
-                          allowUnsafeSSL = false): GitHub {
-  return Pretend
-    .builder()
+export function getClient(
+  endpoint: string,
+  token: string,
+  logger: (message: string) => void,
+  allowUnsafeSSL = false
+): GitHub {
+  return Pretend.builder()
     .interceptor(impl.githubCache())
     .requestInterceptor(impl.githubTokenAuthenticator(token))
     .requestInterceptor(impl.githubHttpsAgent(!allowUnsafeSSL))
@@ -194,7 +276,6 @@ export function getClient(endpoint: string, token: string, logger: (message: str
 }
 
 export class GitHubError extends Error {
-
   public readonly response: Response;
 
   constructor(message: string, response: Response) {
@@ -204,9 +285,8 @@ export class GitHubError extends Error {
 }
 
 namespace impl {
-
   export function logger(logger: (message: string) => void): Interceptor {
-    return async(chain, request) => {
+    return async (chain, request) => {
       try {
         logger(`${request.options.method} ${request.url}`);
         // console.log('github-request: ', request);
@@ -224,8 +304,8 @@ namespace impl {
 
   export function githubCache(): Interceptor {
     // cache at most 100 requests
-    const cache = LRUCache<string, {etag: string, response: any}>(100);
-    return async(chain, request) => {
+    const cache = LRUCache<string, { etag: string; response: any }>(100);
+    return async (chain, request) => {
       const entry = cache.get(request.url);
       if (entry) {
         // when we have a cache hit, send etag
@@ -246,7 +326,9 @@ namespace impl {
     };
   }
 
-  export function githubTokenAuthenticator(token: string): IPretendRequestInterceptor {
+  export function githubTokenAuthenticator(
+    token: string
+  ): IPretendRequestInterceptor {
     return request => {
       request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('Authorization', `token ${token}`);
@@ -254,7 +336,9 @@ namespace impl {
     };
   }
 
-  export function githubHttpsAgent(rejectUnauthorized: boolean): IPretendRequestInterceptor {
+  export function githubHttpsAgent(
+    rejectUnauthorized: boolean
+  ): IPretendRequestInterceptor {
     return request => {
       if (!request.url.startsWith('https://')) {
         return request;
@@ -268,7 +352,10 @@ namespace impl {
     return async response => {
       if (response.status >= 400) {
         const body = await response.json();
-        throw new GitHubError(`${body.message || response.statusText}`, response);
+        throw new GitHubError(
+          `${body.message || response.statusText}`,
+          response
+        );
       }
       const headers = {};
       response.headers.forEach((value: string, index: number) => {
@@ -277,71 +364,110 @@ namespace impl {
       return {
         status: response.status,
         headers,
-        body: response.status >= 200 && response.status <= 300 ? await response.json() : undefined
+        body:
+          response.status >= 200 && response.status <= 300
+            ? await response.json()
+            : undefined
       };
     };
   }
 
   export class GitHubBlueprint implements GitHub {
     @Get('/user')
-    public getAuthenticatedUser(): any {/* */}
+    public getAuthenticatedUser(): any {
+      /* */
+    }
 
     @Get('/user/repos')
-    public getRepositories(): any {/* */}
+    public getRepositories(): any {
+      /* */
+    }
 
     @Header('Accept: application/vnd.github.polaris-preview')
     @Get('/repos/:owner/:repo')
-    public getRepository(): any {/* */}
+    public getRepository(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/pulls/:number')
-    public getPullRequest(): any {/* */}
+    public getPullRequest(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/pulls', true)
-    public listPullRequests(): any {/* */}
+    public listPullRequests(): any {
+      /* */
+    }
 
     @Post('/repos/:owner/:repo/pulls')
-    public createPullRequest(): any {/* */}
+    public createPullRequest(): any {
+      /* */
+    }
 
     @Patch('/repos/:owner/:repo/pulls/:number')
-    public updatePullRequest(): any {/* */}
+    public updatePullRequest(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/commits/:ref/status')
-    public getStatusForRef(): any {/* */}
+    public getStatusForRef(): any {
+      /* */
+    }
 
     @Header('Accept: application/vnd.github.polaris-preview+json')
     @Put('/repos/:owner/:repo/pulls/:number/merge')
-    public mergePullRequest(): any {/* */}
+    public mergePullRequest(): any {
+      /* */
+    }
 
     @Post('/repos/:owner/:repo/issues/:number/assignees')
-    public addAssignees(): any {/* */}
+    public addAssignees(): any {
+      /* */
+    }
 
     @Delete('/repos/:owner/:repo/issues/:number/assignees', true)
-    public removeAssignees(): any {/* */}
+    public removeAssignees(): any {
+      /* */
+    }
 
     @Post('/repos/:owner/:repo/pulls/:number/requested_reviewers')
-    public requestReview(): any {/* */}
+    public requestReview(): any {
+      /* */
+    }
 
     @Delete('/repos/:owner/:repo/pulls/:number/requested_reviewers', true)
-    public deleteReviewRequest(): any {/* */}
+    public deleteReviewRequest(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/issues', true)
-    public issues(): any {/* */}
+    public issues(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/pulls/:number/comments')
-    public getPullRequestComments(): any {/* */}
+    public getPullRequestComments(): any {
+      /* */
+    }
 
     @Patch('/repos/:owner/:repo/issues/:number')
-    public editIssue(): any {/* */}
+    public editIssue(): any {
+      /* */
+    }
 
     @Get('/users/:username')
-    public getUser(): any {/* */}
+    public getUser(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/assignees')
-    public listAssignees(): any {/* */}
+    public listAssignees(): any {
+      /* */
+    }
 
     @Get('/repos/:owner/:repo/issues/:number/comments')
-    public getIssueComments(): any {/* */}
-
+    public getIssueComments(): any {
+      /* */
+    }
   }
-
 }

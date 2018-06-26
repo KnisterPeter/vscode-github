@@ -13,7 +13,6 @@ import { GithubRepository } from './repository';
 import { GithubUser } from './user';
 
 export class GithubPullRequest implements PullRequest {
-
   private readonly client: GitHub;
   private readonly repository: GithubRepository;
   private readonly struct: PullRequestStruct;
@@ -54,7 +53,35 @@ export class GithubPullRequest implements PullRequest {
     return this.struct.mergeable;
   }
 
-  constructor(client: GitHub, repository: GithubRepository, struct: PullRequestStruct) {
+  get head(): { repository: GithubRepository } {
+    return {
+      repository: new GithubRepository(
+        undefined,
+        this.client,
+        this.struct.head.repo.owner.login,
+        this.struct.head.repo.name,
+        this.struct.head.repo
+      )
+    };
+  }
+
+  get base(): { repository: GithubRepository } {
+    return {
+      repository: new GithubRepository(
+        undefined,
+        this.client,
+        this.struct.base.repo.owner.login,
+        this.struct.base.repo.name,
+        this.struct.base.repo
+      )
+    };
+  }
+
+  constructor(
+    client: GitHub,
+    repository: GithubRepository,
+    struct: PullRequestStruct
+  ) {
     this.client = client;
     this.repository = repository;
     this.struct = struct;

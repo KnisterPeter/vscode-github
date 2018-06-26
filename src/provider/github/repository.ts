@@ -13,7 +13,6 @@ import { GithubPullRequest } from './pull-request';
 import { GithubUser } from './user';
 
 export class GithubRepository implements Repository {
-
   public readonly uri: vscode.Uri | undefined;
 
   private readonly client: GitHub;
@@ -64,13 +63,17 @@ export class GithubRepository implements Repository {
     return this.struct.html_url;
   }
 
+  public get cloneUrl(): string {
+    return this.struct.clone_url;
+  }
+
   constructor(
-      uri: vscode.Uri | undefined,
-      client: GitHub,
-      owner: string,
-      repository: string,
-      struct: GithubRepositoryStruct
-    ) {
+    uri: vscode.Uri | undefined,
+    client: GitHub,
+    owner: string,
+    repository: string,
+    struct: GithubRepositoryStruct
+  ) {
     this.uri = uri;
     this.client = client;
     this.owner = owner;
@@ -78,38 +81,63 @@ export class GithubRepository implements Repository {
     this.struct = struct;
   }
 
-  public async getPullRequests(parameters?: ListPullRequestsParameters | undefined):
-      Promise<Response<GithubPullRequest[]>> {
-    const response = await this.client.listPullRequests(this.owner, this.repository, parameters);
-    const body = response.body.map(pr => new GithubPullRequest(this.client, this, pr));
+  public async getPullRequests(
+    parameters?: ListPullRequestsParameters | undefined
+  ): Promise<Response<GithubPullRequest[]>> {
+    const response = await this.client.listPullRequests(
+      this.owner,
+      this.repository,
+      parameters
+    );
+    const body = response.body.map(
+      pr => new GithubPullRequest(this.client, this, pr)
+    );
     return {
       body
     };
   }
 
-  public async getPullRequest(id: number): Promise<Response<GithubPullRequest>> {
-    const response = await this.client.getPullRequest(this.owner, this.repository, id);
+  public async getPullRequest(
+    id: number
+  ): Promise<Response<GithubPullRequest>> {
+    const response = await this.client.getPullRequest(
+      this.owner,
+      this.repository,
+      id
+    );
     return {
       body: new GithubPullRequest(this.client, this, response.body)
     };
   }
 
-  public async createPullRequest(body: CreatePullRequestBody): Promise<Response<GithubPullRequest>> {
-    const result = await this.client.createPullRequest(this.owner, this.repository, {
-      head: `${this.owner}:${body.sourceBranch}`,
-      base: `${body.targetBranch}`,
-      title: body.title,
-      body: body.body
-    });
+  public async createPullRequest(
+    body: CreatePullRequestBody
+  ): Promise<Response<GithubPullRequest>> {
+    const result = await this.client.createPullRequest(
+      this.owner,
+      this.repository,
+      {
+        head: `${this.owner}:${body.sourceBranch}`,
+        base: `${body.targetBranch}`,
+        title: body.title,
+        body: body.body
+      }
+    );
     const expr = new RegExp(`https?://[^/:]+/repos/[^/]+/[^/]+/pulls/([0-9]+)`);
     const number = expr.exec(result.headers['location'][0]) as RegExpMatchArray;
-    const response = await this.client.getPullRequest(this.owner, this.repository, parseInt(number[1], 10));
+    const response = await this.client.getPullRequest(
+      this.owner,
+      this.repository,
+      parseInt(number[1], 10)
+    );
     return {
       body: new GithubPullRequest(this.client, this, response.body)
     };
   }
 
-  public async getIssues(parameters: IssuesParameters = {}): Promise<Response<Issue[]>> {
+  public async getIssues(
+    parameters: IssuesParameters = {}
+  ): Promise<Response<Issue[]>> {
     const response = await this.client.issues(this.owner, this.repository, {
       direction: parameters.direction,
       sort: parameters.sort,

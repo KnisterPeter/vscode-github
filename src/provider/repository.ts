@@ -13,10 +13,15 @@ export interface Repository {
   allowRebaseCommits: boolean;
   parent: Repository | undefined;
   url: string;
+  cloneUrl: string;
 
-  getPullRequests(parameters?: ListPullRequestsParameters): Promise<Response<PullRequest[]>>;
+  getPullRequests(
+    parameters?: ListPullRequestsParameters
+  ): Promise<Response<PullRequest[]>>;
   getPullRequest(id: number): Promise<Response<PullRequest>>;
-  createPullRequest(body: CreatePullRequestBody): Promise<Response<PullRequest>>;
+  createPullRequest(
+    body: CreatePullRequestBody
+  ): Promise<Response<PullRequest>>;
   getIssues(parameters?: IssuesParameters): Promise<Response<Issue[]>>;
   getUsers(): Promise<Response<User[]>>;
 }
