@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.30.0"></a>
+# [0.30.0](https://github.com/KnisterPeter/vscode-github/compare/v0.29.0...v0.30.0) (2018-06-26)
+
+
+### Bug Fixes
+
+* allow tokens to be updated during runtime ([d9aeb7f](https://github.com/KnisterPeter/vscode-github/commit/d9aeb7f)), closes [#395](https://github.com/KnisterPeter/vscode-github/issues/395)
+* uncolored statusbar ([f166cfd](https://github.com/KnisterPeter/vscode-github/commit/f166cfd)), closes [#301](https://github.com/KnisterPeter/vscode-github/issues/301)
+
+
+### Features
+
+* calculate git remote name ([a5b18cb](https://github.com/KnisterPeter/vscode-github/commit/a5b18cb)), closes [#407](https://github.com/KnisterPeter/vscode-github/issues/407)
+* detect external pull request and allow to pull it ([bf407f7](https://github.com/KnisterPeter/vscode-github/commit/bf407f7)), closes [#258](https://github.com/KnisterPeter/vscode-github/issues/258)
+* show and explain error for invalid git remotes ([4309190](https://github.com/KnisterPeter/vscode-github/commit/4309190)), closes [#402](https://github.com/KnisterPeter/vscode-github/issues/402)
+
+
+
 <a name="0.29.0"></a>
 # [0.29.0](https://github.com/KnisterPeter/vscode-github/compare/v0.28.1...v0.29.0) (2018-06-15)
 
