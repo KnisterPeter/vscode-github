@@ -12,8 +12,39 @@ export class Git {
   @inject('vscode.OutputChannel')
   private readonly channel!: vscode.OutputChannel;
 
-  private getRemoteName(uri: vscode.Uri): string {
+  private async calculateRemoteName(
+    uri: vscode.Uri
+  ): Promise<string | undefined> {
+    const ref = (await this.execute(
+      `git symbolic-ref -q HEAD`,
+      uri
+    )).stdout.trim();
+    const upstreamName = (await this.execute(
+      `git for-each-ref --format='%(upstream)' '${ref}'`,
+      uri
+    )).stdout.trim();
+    const match = upstreamName.match(/refs\/remotes\/([^/]+)\/.*/);
+    if (match) {
+      return match[1];
+    }
+    return undefined;
+  }
+
+  private getExplicitRemoteName(uri: vscode.Uri): string | undefined {
     return getConfiguration('github', uri).remoteName;
+  }
+
+  private async getRemoteName(uri: vscode.Uri): Promise<string> {
+    let remoteName = this.getExplicitRemoteName(uri);
+    if (remoteName) {
+      return remoteName;
+    }
+    remoteName = await this.calculateRemoteName(uri);
+    if (remoteName) {
+      return remoteName;
+    }
+    // fallback to origin which is a sane default
+    return 'origin';
   }
 
   private async getRemoteNames(uri: vscode.Uri): Promise<string[]> {
@@ -57,10 +88,11 @@ export class Git {
       'git branch --list --remotes --no-color',
       uri
     );
+    const remoteName = await this.getRemoteName(uri);
     return response.stdout
       .split('\n')
       .filter(line => !line.match('->'))
-      .map(line => line.replace(`${this.getRemoteName(uri)}/`, ''))
+      .map(line => line.replace(`${remoteName}/`, ''))
       .map(line => line.trim());
   }
 
@@ -94,7 +126,7 @@ export class Git {
   private async getGitProviderOwnerAndRepositoryFromGitConfig(
     uri: vscode.Uri
   ): Promise<string[]> {
-    const remoteName = this.getRemoteName(uri);
+    const remoteName = await this.getRemoteName(uri);
     try {
       const remote = (await this.execute(
         `git config --local --get remote.${remoteName}.url`,

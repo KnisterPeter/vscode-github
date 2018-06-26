@@ -4,7 +4,7 @@ export interface Configuration {
   gitCommand?: string;
   preferedMergeMethod?: MergeMethod;
   refreshPullRequestStatus: number;
-  remoteName: string;
+  remoteName?: string;
   upstream?: string;
   customPullRequestTitle: boolean;
   customPullRequestDescription: 'off' | 'singleLine' | 'gitEditor';
