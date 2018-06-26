@@ -4,8 +4,17 @@ import * as vscode from 'vscode';
 import { Git } from './git';
 import { createClient, Client } from './provider/client';
 import { Issue, IssueComment } from './provider/issue';
-import { PullRequest, MergeBody, MergeMethod, Comment } from './provider/pull-request';
-import { Repository, ListPullRequestsParameters, CreatePullRequestBody } from './provider/repository';
+import {
+  PullRequest,
+  MergeBody,
+  MergeMethod,
+  Comment
+} from './provider/pull-request';
+import {
+  Repository,
+  ListPullRequestsParameters,
+  CreatePullRequestBody
+} from './provider/repository';
 import { User } from './provider/user';
 import { getTokens } from './tokens';
 
@@ -20,26 +29,33 @@ export interface Tokens {
 
 @component
 export class WorkflowManager {
-
-  @inject({name: 'vscode.ExtensionContext'})
+  @inject({ name: 'vscode.ExtensionContext' })
   private readonly context!: vscode.ExtensionContext;
 
   @inject('vscode.OutputChannel')
   private readonly channel!: vscode.OutputChannel;
 
-  @inject
-  private readonly git!: Git;
+  @inject private readonly git!: Git;
 
-  private readonly providers: {[cwd: string]: Client} = {};
+  private readonly providers: { [cwd: string]: Client } = {};
 
   private async connect(uri: vscode.Uri): Promise<void> {
     const logger = (message: string) => this.log(message);
-    const provider = await createClient(this.git, getTokens(this.context.globalState), uri, logger);
+    const provider = await createClient(
+      this.git,
+      getTokens(this.context.globalState),
+      uri,
+      logger
+    );
     try {
       await provider.test();
     } catch (e) {
-      throw new Error(`Connection with ${provider.name} failed. Please make sure your git executable`
-        + `is setup correct, and your token has enought access rights.`);
+      throw new Error(
+        `Connection with ${
+          provider.name
+        } failed. Please make sure your git executable` +
+          `is setup correct, and your token has enought access rights.`
+      );
     }
     this.log(`Connected with provider ${provider.name}`);
     this.providers[uri.fsPath] = provider;
@@ -53,23 +69,26 @@ export class WorkflowManager {
   }
 
   private log(message: string, obj?: any): void {
-    const formatted = `${message} ` + (obj ? JSON.stringify(obj, undefined, ' ') : '');
+    const formatted =
+      `${message} ` + (obj ? JSON.stringify(obj, undefined, ' ') : '');
     this.channel.appendLine(formatted);
     console.log(formatted);
   }
 
-  public async canConnect(uri: vscode.Uri): Promise<boolean> {
+  public async canConnect(uri: vscode.Uri): Promise<true | Error> {
     try {
       await this.getProvider(uri);
       return true;
     } catch (e) {
       this.log(`Failed to connect to provider`, e.message);
-      return false;
+      return e;
     }
   }
 
   public async getRepository(uri: vscode.Uri): Promise<Repository> {
-    const [owner, repository] = await this.git.getGitProviderOwnerAndRepository(uri);
+    const [owner, repository] = await this.git.getGitProviderOwnerAndRepository(
+      uri
+    );
     const provider = await this.getProvider(uri);
     return (await provider.getRepository(uri, `${owner}/${repository}`)).body;
   }
@@ -78,7 +97,9 @@ export class WorkflowManager {
     return (await this.getRepository(uri)).defaultBranch;
   }
 
-  public async getEnabledMergeMethods(uri: vscode.Uri): Promise<Set<MergeMethod>> {
+  public async getEnabledMergeMethods(
+    uri: vscode.Uri
+  ): Promise<Set<MergeMethod>> {
     const repo = await this.getRepository(uri);
     const set = new Set();
     if (repo.allowMergeCommits) {
@@ -93,9 +114,13 @@ export class WorkflowManager {
     return set;
   }
 
-  public async getPullRequestForCurrentBranch(uri: vscode.Uri): Promise<PullRequest|undefined> {
+  public async getPullRequestForCurrentBranch(
+    uri: vscode.Uri
+  ): Promise<PullRequest | undefined> {
     const branch = await this.git.getCurrentBranch(uri);
-    const list = (await this.listPullRequests(uri)).filter(pr => pr.sourceBranch === branch);
+    const list = (await this.listPullRequests(uri)).filter(
+      pr => pr.sourceBranch === branch
+    );
     if (list.length !== 1) {
       return undefined;
     }
@@ -103,12 +128,16 @@ export class WorkflowManager {
     return (await repository.getPullRequest(list[0].number)).body;
   }
 
-  public async hasPullRequestForCurrentBranch(uri: vscode.Uri): Promise<boolean> {
+  public async hasPullRequestForCurrentBranch(
+    uri: vscode.Uri
+  ): Promise<boolean> {
     return Boolean(await this.getPullRequestForCurrentBranch(uri));
   }
 
-  public async createPullRequest(uri: vscode.Uri, upstream?: {owner: string, repository: string, branch: string}):
-      Promise<PullRequest|undefined> {
+  public async createPullRequest(
+    uri: vscode.Uri,
+    upstream?: { owner: string; repository: string; branch: string }
+  ): Promise<PullRequest | undefined> {
     if (await this.hasPullRequestForCurrentBranch(uri)) {
       return undefined;
     }
@@ -118,19 +147,25 @@ export class WorkflowManager {
     }
     const defaultBranch = await this.getDefaultBranch(uri);
     this.log(`Create pull request on branch '${branch}'`);
-    const firstCommit = await this.git.getFirstCommitOnBranch(branch, defaultBranch, uri);
+    const firstCommit = await this.git.getFirstCommitOnBranch(
+      branch,
+      defaultBranch,
+      uri
+    );
     this.log(`First commit on branch '${firstCommit}'`);
     const requestBody = await this.git.getPullRequestBody(firstCommit, uri);
     if (requestBody === undefined) {
       vscode.window.showWarningMessage(
-        `For some unknown reason no pull request body could be build; Aborting operation`);
+        `For some unknown reason no pull request body could be build; Aborting operation`
+      );
       return undefined;
     }
 
     const requestTitle = await this.git.getPullRequestTitle(firstCommit, uri);
     if (requestTitle === undefined) {
       vscode.window.showWarningMessage(
-        `For some unknown reason no pull request title could be build; Aborting operation`);
+        `For some unknown reason no pull request title could be build; Aborting operation`
+      );
       return undefined;
     }
 
@@ -147,22 +182,21 @@ export class WorkflowManager {
   }
 
   public async createPullRequestFromData(
-      {
-        upstream,
-        sourceBranch,
-        targetBranch,
-        title,
-        body
-      }:
-      {
-        upstream?: {owner: string, repository: string};
-        sourceBranch: string;
-        targetBranch: string;
-        title: string;
-        body?: string;
-      },
-      uri: vscode.Uri
-  ): Promise<PullRequest|undefined> {
+    {
+      upstream,
+      sourceBranch,
+      targetBranch,
+      title,
+      body
+    }: {
+      upstream?: { owner: string; repository: string };
+      sourceBranch: string;
+      targetBranch: string;
+      title: string;
+      body?: string;
+    },
+    uri: vscode.Uri
+  ): Promise<PullRequest | undefined> {
     if (await this.hasPullRequestForCurrentBranch(uri)) {
       return undefined;
     }
@@ -175,10 +209,13 @@ export class WorkflowManager {
     };
     this.log('pull request body:', pullRequestBody);
 
-    const getRepository = async() => {
+    const getRepository = async () => {
       if (upstream) {
         const provider = await this.getProvider(uri);
-        return (await provider.getRepository(uri, `${upstream.owner}/${upstream.repository}`)).body;
+        return (await provider.getRepository(
+          uri,
+          `${upstream.owner}/${upstream.repository}`
+        )).body;
       } else {
         return this.getRepository(uri);
       }
@@ -186,8 +223,10 @@ export class WorkflowManager {
     return this.doCreatePullRequest(await getRepository(), pullRequestBody);
   }
 
-  private async doCreatePullRequest(repository: Repository,
-      body: CreatePullRequestBody): Promise<PullRequest> {
+  private async doCreatePullRequest(
+    repository: Repository,
+    body: CreatePullRequestBody
+  ): Promise<PullRequest> {
     try {
       return (await repository.createPullRequest(body)).body;
     } catch (e) {
@@ -198,7 +237,10 @@ export class WorkflowManager {
     }
   }
 
-  public async updatePullRequest(pullRequest: PullRequest, uri: vscode.Uri): Promise<void> {
+  public async updatePullRequest(
+    pullRequest: PullRequest,
+    uri: vscode.Uri
+  ): Promise<void> {
     if (await this.hasPullRequestForCurrentBranch(uri)) {
       return undefined;
     }
@@ -207,12 +249,17 @@ export class WorkflowManager {
       throw new Error('No current branch');
     }
     this.log(`Update pull request on branch '${branch}'`);
-    const firstCommit = await this.git.getFirstCommitOnBranch(branch, pullRequest.targetBranch, uri);
+    const firstCommit = await this.git.getFirstCommitOnBranch(
+      branch,
+      pullRequest.targetBranch,
+      uri
+    );
     this.log(`First commit on branch '${firstCommit}'`);
     const requestBody = await this.git.getPullRequestBody(firstCommit, uri);
     if (requestBody === undefined) {
       vscode.window.showWarningMessage(
-        `For some unknown reason no pull request body could be build; Aborting operation`);
+        `For some unknown reason no pull request body could be build; Aborting operation`
+      );
       return undefined;
     }
     if (requestBody !== pullRequest.body) {
@@ -231,7 +278,10 @@ export class WorkflowManager {
     return (await repository.getPullRequests(parameters)).body;
   }
 
-  public async mergePullRequest(pullRequest: PullRequest, method: MergeMethod): Promise<boolean|undefined> {
+  public async mergePullRequest(
+    pullRequest: PullRequest,
+    method: MergeMethod
+  ): Promise<boolean | undefined> {
     try {
       if (pullRequest.mergeable) {
         const body: MergeBody = {
@@ -258,18 +308,26 @@ export class WorkflowManager {
     return repository.url;
   }
 
-  public async getIssueUrl(uri: vscode.Uri, id: string): Promise<string | undefined> {
+  public async getIssueUrl(
+    uri: vscode.Uri,
+    id: string
+  ): Promise<string | undefined> {
     const hostname = await this.git.getGitHostname(uri);
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
     return `https://${hostname}/${owner}/${repo}/issues/${id}`;
   }
 
-  public async getGithubFileUrl(uri: vscode.Uri, file: string, line = 0): Promise<string> {
+  public async getGithubFileUrl(
+    uri: vscode.Uri,
+    file: string,
+    line = 0
+  ): Promise<string> {
     const hostname = await this.git.getGitHostname(uri);
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
     const branch = await this.git.getCurrentBranch(uri);
     const currentFile = file.replace(/^\//, '');
-    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${line + 1}`;
+    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${line +
+      1}`;
   }
 
   public async getAssignees(uri: vscode.Uri): Promise<User[]> {
@@ -282,7 +340,11 @@ export class WorkflowManager {
     }
   }
 
-  public async addAssignee(pullRequest: PullRequest, name: string, uri: vscode.Uri): Promise<void> {
+  public async addAssignee(
+    pullRequest: PullRequest,
+    name: string,
+    uri: vscode.Uri
+  ): Promise<void> {
     this.log('Add assignee', { pullRequest, name });
     const provider = await this.getProvider(uri);
     const user = await provider.getUserByUsername(name);
@@ -294,7 +356,11 @@ export class WorkflowManager {
     await pullRequest.unassign();
   }
 
-  public async requestReview(issue: number, name: string, uri: vscode.Uri): Promise<void> {
+  public async requestReview(
+    issue: number,
+    name: string,
+    uri: vscode.Uri
+  ): Promise<void> {
     const repository = await this.getRepository(uri);
     const pullRequest = await repository.getPullRequest(issue);
     await pullRequest.body.requestReview({
@@ -302,7 +368,11 @@ export class WorkflowManager {
     });
   }
 
-  public async deleteReviewRequest(issue: number, name: string, uri: vscode.Uri): Promise<void> {
+  public async deleteReviewRequest(
+    issue: number,
+    name: string,
+    uri: vscode.Uri
+  ): Promise<void> {
     const repository = await this.getRepository(uri);
     const pullRequest = await repository.getPullRequest(issue);
     await pullRequest.body.cancelReview({
@@ -310,7 +380,10 @@ export class WorkflowManager {
     });
   }
 
-  public async issues(uri: vscode.Uri, state: 'closed' | 'all' | 'open' = 'all'): Promise<Issue[]> {
+  public async issues(
+    uri: vscode.Uri,
+    state: 'closed' | 'all' | 'open' = 'all'
+  ): Promise<Issue[]> {
     const repository = await this.getRepository(uri);
     const result = await repository.getIssues({
       sort: 'updated',
@@ -320,12 +393,13 @@ export class WorkflowManager {
     return result.body;
   }
 
-  public async getPullRequestReviewComments(pullRequest: PullRequest): Promise<Comment[]> {
+  public async getPullRequestReviewComments(
+    pullRequest: PullRequest
+  ): Promise<Comment[]> {
     return (await pullRequest.getComments()).body;
   }
 
   public async getIssueComments(issue: Issue): Promise<IssueComment[]> {
     return (await issue.comments()).body;
   }
-
 }

@@ -9,5 +9,6 @@
     "editor.rulers": [
       120
     ],
-    "github.autoPublish": true
+    "github.autoPublish": true,
+    "editor.formatOnSave": true
 }

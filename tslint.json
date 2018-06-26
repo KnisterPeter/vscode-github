@@ -2,6 +2,7 @@
   "extends": "@knisterpeter/standard-tslint",
   "rules": {
     "await-promise": [true, "Thenable"],
-    "no-implicit-dependencies": [true, "dev"]
+    "no-implicit-dependencies": [true, "dev"],
+    "space-before-function-paren": false
   }
 }
