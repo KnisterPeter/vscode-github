@@ -9,17 +9,13 @@ import { Git } from './git';
 import { HoverProvider } from './issues';
 import { GitHubError } from './provider/github/api';
 import { StatusBarManager } from './status-bar-manager';
-import { migrateToken } from './tokens';
-import { Tokens } from './workflow-manager';
+import { migrateToken, Tokens } from './tokens';
 
 @component
 export class Extension {
+  @inject private readonly tsdi!: TSDI;
 
-  @inject
-  private readonly tsdi!: TSDI;
-
-  @inject
-  private readonly reporter!: TelemetryReporter;
+  @inject private readonly reporter!: TelemetryReporter;
 
   @inject('vscode.ExtensionContext')
   private readonly context!: vscode.ExtensionContext;
@@ -27,8 +23,7 @@ export class Extension {
   @inject('vscode.OutputChannel')
   private readonly channel!: vscode.OutputChannel;
 
-  @inject
-  private readonly git!: Git;
+  @inject private readonly git!: Git;
 
   @initialize
   protected async init(): Promise<void> {
@@ -46,9 +41,11 @@ export class Extension {
       if (!vscode.workspace.workspaceFolders) {
         return;
       }
-      if (!await this.git.checkExistence(vscode.Uri.file(process.cwd()))) {
-        vscode.window.showWarningMessage('No git executable found. Please install git '
-          + "and if required set it in your path. You may also set 'gitCommand'");
+      if (!(await this.git.checkExistence(vscode.Uri.file(process.cwd())))) {
+        vscode.window.showWarningMessage(
+          'No git executable found. Please install git ' +
+            "and if required set it in your path. You may also set 'gitCommand'"
+        );
       }
     } catch (e) {
       this.logAndShowError(e);
@@ -56,14 +53,25 @@ export class Extension {
     }
   }
 
-  private async checkVersionAndToken(context: vscode.ExtensionContext, tokens: Tokens | undefined): Promise<void> {
-    const content = await sander.readFile(join(context.extensionPath, 'package.json'));
+  private async checkVersionAndToken(
+    context: vscode.ExtensionContext,
+    tokens: Tokens | undefined
+  ): Promise<void> {
+    const content = await sander.readFile(
+      join(context.extensionPath, 'package.json')
+    );
     const version = JSON.parse(content.toString()).version as string;
-    const storedVersion = context.globalState.get<string | undefined>('version-test');
-    if (version !== storedVersion && (!tokens || Object.keys(tokens).length === 0)) {
+    const storedVersion = context.globalState.get<string | undefined>(
+      'version-test'
+    );
+    if (
+      version !== storedVersion &&
+      (!tokens || Object.keys(tokens).length === 0)
+    ) {
       context.globalState.update('version-test', version);
       vscode.window.showInformationMessage(
-        'To enable the Visual Studio Code GitHub Support, please set a Personal Access Token');
+        'To enable the Visual Studio Code GitHub Support, please set a Personal Access Token'
+      );
     }
   }
 
@@ -86,5 +94,4 @@ export class Extension {
   public dispose(): void {
     //
   }
-
 }

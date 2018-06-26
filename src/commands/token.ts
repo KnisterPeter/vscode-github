@@ -4,14 +4,16 @@ import * as vscode from 'vscode';
 import { Command } from '../command';
 import { getHostname } from '../helper';
 import { getTokens, listTokenHosts, removeToken } from '../tokens';
+import { WorkflowManager } from '../workflow-manager';
 
-@component({eager: true})
+@component({ eager: true })
 export class SetGithubToken extends Command {
-
   public id = 'vscode-github.setGitHubToken';
 
   @inject('vscode.ExtensionContext')
   private readonly context!: vscode.ExtensionContext;
+
+  @inject private readonly workflowManager!: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -28,18 +30,19 @@ export class SetGithubToken extends Command {
         provider: 'github'
       };
       this.context.globalState.update('tokens', tokens);
+      this.workflowManager.resetProviders();
     }
   }
-
 }
 
-@component({eager: true})
+@component({ eager: true })
 export class SetGithubEnterpriseToken extends Command {
-
   public id = 'vscode-github.setGitHubEnterpriseToken';
 
   @inject('vscode.ExtensionContext')
   private readonly context!: vscode.ExtensionContext;
+
+  @inject private readonly workflowManager!: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -60,19 +63,20 @@ export class SetGithubEnterpriseToken extends Command {
           provider: 'github'
         };
         this.context.globalState.update('tokens', tokens);
+        this.workflowManager.resetProviders();
       }
     }
   }
-
 }
 
-@component({eager: true})
+@component({ eager: true })
 export class SetGitLabToken extends Command {
-
   public id = 'vscode-github.setGitlabToken';
 
   @inject('vscode.ExtensionContext')
   private readonly context!: vscode.ExtensionContext;
+
+  @inject private readonly workflowManager!: WorkflowManager;
 
   public async run(): Promise<void> {
     this.track('execute');
@@ -93,28 +97,32 @@ export class SetGitLabToken extends Command {
           provider: 'gitlab'
         };
         this.context.globalState.update('tokens', tokens);
+        this.workflowManager.resetProviders();
       }
     }
   }
-
 }
 
-@component({eager: true})
+@component({ eager: true })
 export class ClearToken extends Command {
-
   public id = 'vscode-github.clearToken';
 
   @inject('vscode.ExtensionContext')
   private readonly context!: vscode.ExtensionContext;
 
+  @inject private readonly workflowManager!: WorkflowManager;
+
   public async run(): Promise<void> {
     this.track('execute');
-    const host = await vscode.window.showQuickPick(listTokenHosts(this.context.globalState), {
-      placeHolder: 'Token to remove'
-    });
+    const host = await vscode.window.showQuickPick(
+      listTokenHosts(this.context.globalState),
+      {
+        placeHolder: 'Token to remove'
+      }
+    );
     if (host) {
       removeToken(this.context.globalState, host);
+      this.workflowManager.resetProviders();
     }
   }
-
 }
