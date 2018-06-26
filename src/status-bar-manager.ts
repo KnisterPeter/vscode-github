@@ -104,6 +104,8 @@ export class StatusBarManager {
     this.statusBar.text = `${githubPullRequestIcon} ...`;
     if (this.colored) {
       this.statusBar.color = colors.none;
+    } else {
+      this.statusBar.color = undefined;
     }
     this.context.subscriptions.push(this.statusBar);
 
@@ -177,6 +179,8 @@ export class StatusBarManager {
     this.statusBar.show();
     if (this.colored) {
       this.statusBar.color = colors.none;
+    } else {
+      this.statusBar.color = undefined;
     }
     this.statusBar.text = `${githubPullRequestIcon}`;
     if (!this.customStatusBarCommand) {
@@ -211,6 +215,8 @@ export class StatusBarManager {
     const status = await this.calculateMergableStatus(pullRequest);
     if (this.colored) {
       this.statusBar.color = colors[status];
+    } else {
+      this.statusBar.color = undefined;
     }
     this.statusBar.text = this.getPullRequestStautsText(pullRequest, status);
     if (!this.customStatusBarCommand) {
@@ -247,6 +253,8 @@ export class StatusBarManager {
   private showCreatePullRequestStatus(): void {
     if (this.colored) {
       this.statusBar.color = colors.none;
+    } else {
+      this.statusBar.color = undefined;
     }
     this.statusBar.text = `${githubPullRequestIcon} Create PR`;
     if (!this.customStatusBarCommand) {
