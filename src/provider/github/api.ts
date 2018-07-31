@@ -1,16 +1,16 @@
 import * as https from 'https';
 import * as LRUCache from 'lru-cache';
 import {
-  Pretend,
-  Get,
-  Post,
-  Put,
-  Patch,
   Delete,
+  Get,
   Headers as Header,
   Interceptor,
+  IPretendDecoder,
   IPretendRequestInterceptor,
-  IPretendDecoder
+  Patch,
+  Post,
+  Pretend,
+  Put
 } from 'pretend';
 
 export interface GitHub {
@@ -358,8 +358,8 @@ namespace impl {
         );
       }
       const headers = {};
-      response.headers.forEach((value: string, index: number) => {
-        headers[index] = [...(headers[index] || []), value];
+      response.headers.forEach((value, key) => {
+        headers[key] = [...(headers[key] || []), value];
       });
       return {
         status: response.status,
