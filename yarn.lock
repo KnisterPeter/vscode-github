@@ -18,9 +18,9 @@
   version "5.2.5"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
 
-"@types/node@9.6.25":
-  version "9.6.25"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.25.tgz#2009ab5432ed1f5e1918f7c6b000bc778549b216"
+"@types/node@9.6.26":
+  version "9.6.26"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.26.tgz#cd9d021f3e43f16a62e1b1cfa38b00ae4cfbebac"
 
 JSONStream@^1.0.4:
   version "1.3.2"
