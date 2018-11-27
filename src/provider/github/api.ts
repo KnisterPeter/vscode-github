@@ -304,7 +304,7 @@ namespace impl {
 
   export function githubCache(): Interceptor {
     // cache at most 100 requests
-    const cache = LRUCache<string, { etag: string; response: any }>(100);
+    const cache = new LRUCache<string, { etag: string; response: any }>(100);
     return async (chain, request) => {
       const entry = cache.get(request.url);
       if (entry) {
