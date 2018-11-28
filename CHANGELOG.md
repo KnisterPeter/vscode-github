@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.30.1"></a>
+## [0.30.1](https://github.com/KnisterPeter/vscode-github/compare/v0.30.0...v0.30.1) (2018-11-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency execa to v0.11.0 ([1cb7884](https://github.com/KnisterPeter/vscode-github/commit/1cb7884))
+* **deps:** update dependency execa to v1 ([27c331d](https://github.com/KnisterPeter/vscode-github/commit/27c331d))
+* **deps:** update dependency lru-cache to v5 ([8c0b74b](https://github.com/KnisterPeter/vscode-github/commit/8c0b74b))
+* **deps:** update dependency pretend to v2 ([c1fe692](https://github.com/KnisterPeter/vscode-github/commit/c1fe692))
+* **deps:** update dependency vscode-extension-telemetry to v0.0.18 ([a13873a](https://github.com/KnisterPeter/vscode-github/commit/a13873a))
+* **deps:** update dependency vscode-extension-telemetry to v0.0.20 ([be0b081](https://github.com/KnisterPeter/vscode-github/commit/be0b081))
+* **deps:** update dependency vscode-extension-telemetry to v0.0.22 ([7d553d2](https://github.com/KnisterPeter/vscode-github/commit/7d553d2))
+* **deps:** update dependency vscode-extension-telemetry to v0.1.0 ([3910d20](https://github.com/KnisterPeter/vscode-github/commit/3910d20))
+* create instance of LRUCache properly ([5de0679](https://github.com/KnisterPeter/vscode-github/commit/5de0679))
+* use correct type for header foreach ([934e043](https://github.com/KnisterPeter/vscode-github/commit/934e043))
+
+
+
 <a name="0.30.0"></a>
 # [0.30.0](https://github.com/KnisterPeter/vscode-github/compare/v0.29.0...v0.30.0) (2018-06-26)
 
