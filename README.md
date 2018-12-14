@@ -7,6 +7,8 @@
 
 This vscode extension integrates with GitHub.
 
+**Note: I recommend to use [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) instead of this, because most usecases are supported and there is a team at Microsoft/GitHub supporting development**
+
 ## Features
 
 Currently it is possible to do the following:
