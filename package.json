@@ -256,7 +256,7 @@
     "pretend": "2.0.0",
     "sander": "0.6.0",
     "tsdi": "0.20.3",
-    "vscode-extension-telemetry": "0.1.0"
+    "vscode-extension-telemetry": "0.1.1"
   },
   "repository": {
     "type": "git",
