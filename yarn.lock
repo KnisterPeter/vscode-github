@@ -799,9 +799,9 @@ cycle@1.0.x:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/cycle/-/cycle-1.0.3.tgz#21e80b2be8580f98b468f379430662b046c34ad2"
 
-cz-customizable@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-5.3.0.tgz#ef2f2f2cf406c99b9213fbfb047364684566368c"
+cz-customizable@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-5.4.0.tgz#9632e3424ab2be9b54a8af7462a52463f466cd48"
   dependencies:
     editor "1.0.0"
     find-config "0.3.0"
