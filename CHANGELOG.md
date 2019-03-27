@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name=""></a>
+# [](https://github.com/KnisterPeter/vscode-github/compare/v0.30.1...v) (2019-03-27)
+
+
+### Bug Fixes
+
+* disble issue scanning for now ([ce8a84d](https://github.com/KnisterPeter/vscode-github/commit/ce8a84d))
+* **deps:** update dependency vscode-extension-telemetry to v0.1.1 ([b8a5d35](https://github.com/KnisterPeter/vscode-github/commit/b8a5d35))
+
+
+
 <a name="0.30.1"></a>
 ## [0.30.1](https://github.com/KnisterPeter/vscode-github/compare/v0.30.0...v0.30.1) (2018-11-28)
 
