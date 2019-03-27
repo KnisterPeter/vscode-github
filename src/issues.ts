@@ -1,42 +1,49 @@
 import { stripIndents } from 'common-tags';
-import { component, inject, initialize } from 'tsdi';
+import { component, initialize, inject } from 'tsdi';
 import * as vscode from 'vscode';
 import { WorkflowManager } from './workflow-manager';
 
 @component
-export class HoverProvider implements vscode.DocumentLinkProvider, vscode.HoverProvider {
-
+export class HoverProvider
+  implements vscode.DocumentLinkProvider, vscode.HoverProvider {
   @inject('vscode.ExtensionContext')
   private readonly context!: vscode.ExtensionContext;
 
   @inject
   private readonly workflowManager!: WorkflowManager;
 
-  private hoverContent: {[target: string]: string} = {};
+  private hoverContent: { [target: string]: string } = {};
 
   @initialize
   protected init(): void {
+    // fixme #443: This provider causes high cpu load and
+    // is annoying to users. This need to be reimplemented
+    return;
     this.context.subscriptions.push(
       vscode.languages.registerDocumentLinkProvider('*', this),
       vscode.languages.registerHoverProvider('*', this)
     );
-    vscode.window.onDidChangeActiveTextEditor(() => this.hoverContent = {});
+    vscode.window.onDidChangeActiveTextEditor(() => (this.hoverContent = {}));
   }
 
-  public async provideDocumentLinks(document: vscode.TextDocument)
-      : Promise<vscode.DocumentLink[]> {
+  public async provideDocumentLinks(
+    document: vscode.TextDocument
+  ): Promise<vscode.DocumentLink[]> {
     const folder = vscode.workspace.getWorkspaceFolder(document.uri);
     if (!folder) {
       return [];
     }
-    const lines = document
-      .getText()
-      .split('\n');
-    return (await Promise.all(lines.map(async(line, no) => this.getMatchesOnLine(folder.uri, line, no))))
-      .reduce((akku, links) => [...akku, ...links], []);
+    const lines = document.getText().split('\n');
+    return (await Promise.all(
+      lines.map(async (line, no) => this.getMatchesOnLine(folder.uri, line, no))
+    )).reduce((akku, links) => [...akku, ...links], []);
   }
 
-  private async getMatchesOnLine(uri: vscode.Uri, line: string, lineNo: number): Promise<vscode.DocumentLink[]> {
+  private async getMatchesOnLine(
+    uri: vscode.Uri,
+    line: string,
+    lineNo: number
+  ): Promise<vscode.DocumentLink[]> {
     const expr = new RegExp(`#\\d+`, 'gi');
     let match;
     const matches = [];
@@ -49,7 +56,10 @@ export class HoverProvider implements vscode.DocumentLinkProvider, vscode.HoverP
         new vscode.Position(lineNo, match.index),
         new vscode.Position(lineNo, match.index + match[0].length)
       );
-      const url = await this.workflowManager.getIssueUrl(uri, match[0].substr(1));
+      const url = await this.workflowManager.getIssueUrl(
+        uri,
+        match[0].substr(1)
+      );
       if (url) {
         matches.push({
           range,
@@ -60,8 +70,10 @@ export class HoverProvider implements vscode.DocumentLinkProvider, vscode.HoverP
     return matches;
   }
 
-  public async provideHover(document: vscode.TextDocument, position: vscode.Position)
-      : Promise<vscode.Hover | undefined> {
+  public async provideHover(
+    document: vscode.TextDocument,
+    position: vscode.Position
+  ): Promise<vscode.Hover | undefined> {
     const folder = vscode.workspace.getWorkspaceFolder(document.uri);
     if (!folder) {
       return undefined;
@@ -94,5 +106,4 @@ export class HoverProvider implements vscode.DocumentLinkProvider, vscode.HoverP
     this.hoverContent[target] = content;
     return new vscode.Hover(content, link.range);
   }
-
 }
