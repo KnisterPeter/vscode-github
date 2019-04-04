@@ -787,13 +787,14 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-cz-customizable@5.5.3:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-5.5.3.tgz#0e424deab6adbe07c579aaa0f8b9aa4c3ecbc877"
+cz-customizable@5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-5.7.0.tgz#43aa664d3ed7d5ecbb295233f6ba5fe72f255287"
   dependencies:
     editor "1.0.0"
     find-config "^1.0.0"
     inquirer "^6.2.2"
+    lodash "^4.17.11"
     temp "^0.9.0"
     word-wrap "^1.2.3"
 
