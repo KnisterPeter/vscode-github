@@ -787,9 +787,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-cz-customizable@5.7.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-5.7.0.tgz#43aa664d3ed7d5ecbb295233f6ba5fe72f255287"
+cz-customizable@5.9.0:
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-5.9.0.tgz#a1bfa3115e8aa438d9279cc4096ad3e4f24821ff"
   dependencies:
     editor "1.0.0"
     find-config "^1.0.0"
