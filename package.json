@@ -243,7 +243,7 @@
     "standard-version": "5.0.2",
     "tslint": "5.16.0",
     "typescript": "3.4.5",
-    "vscode": "1.1.18"
+    "vscode": "1.1.33"
   },
   "dependencies": {
     "common-tags": "1.8.0",
