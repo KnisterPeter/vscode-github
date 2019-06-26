@@ -777,9 +777,9 @@ esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
 
-execa@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/execa/-/execa-2.0.0.tgz#5524c9739710e603e97c6dfc3f6ff6bff2819885"
+execa@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-2.0.1.tgz#546a5be56388953409cbf24972d2fd1bb36dbfcd"
   dependencies:
     cross-spawn "^6.0.5"
     get-stream "^5.0.0"
