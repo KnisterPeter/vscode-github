@@ -1,25 +1,23 @@
 import { component, inject } from 'tsdi';
 import * as vscode from 'vscode';
-
 import { Git } from './git';
 import { getConfiguration } from './helper';
-import { createClient, Client } from './provider/client';
+import { Client, createClient } from './provider/client';
+import { GitHubError } from './provider/github/api';
 import { Issue, IssueComment } from './provider/issue';
 import {
-  PullRequest,
+  Comment,
   MergeBody,
   MergeMethod,
-  Comment
+  PullRequest
 } from './provider/pull-request';
 import {
-  Repository,
+  CreatePullRequestBody,
   ListPullRequestsParameters,
-  CreatePullRequestBody
+  Repository
 } from './provider/repository';
 import { User } from './provider/user';
 import { getTokens } from './tokens';
-
-import { GitHubError } from './provider/github/api';
 
 @component
 export class WorkflowManager {
@@ -99,7 +97,7 @@ export class WorkflowManager {
     uri: vscode.Uri
   ): Promise<Set<MergeMethod>> {
     const repo = await this.getRepository(uri);
-    const set = new Set();
+    const set = new Set<MergeMethod>();
     if (repo.allowMergeCommits) {
       set.add('merge');
     }
@@ -179,10 +177,15 @@ export class WorkflowManager {
     );
   }
 
-  private async getTitle(firstCommit: string, uri: vscode.Uri): Promise<string | undefined> {
+  private async getTitle(
+    firstCommit: string,
+    uri: vscode.Uri
+  ): Promise<string | undefined> {
     const customTitle = getConfiguration('github', uri).customPullRequestTitle;
     if (customTitle) {
-      const title = await vscode.window.showInputBox({ prompt: 'Pull request title' });
+      const title = await vscode.window.showInputBox({
+        prompt: 'Pull request title'
+      });
       if (!title) {
         return undefined;
       }
