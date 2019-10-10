@@ -2,6 +2,8 @@ sudo: false
 language: node_js
 node_js:
   - '10'
+services:
+  - xvfb
 os:
   # - osx # still too slow
   - linux
@@ -24,11 +26,6 @@ env:
   - CODE_TESTS_WORKSPACE=/tmp/test-workspace
 
 before_install:
-  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-    export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:99.0;
-    sh -e /etc/init.d/xvfb start;
-    sleep 3;
-    fi
   - mkdir /tmp/test-workspace && cd /tmp/test-workspace && git init && cd -
 install:
   - yarn
