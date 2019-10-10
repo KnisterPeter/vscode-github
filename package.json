@@ -253,7 +253,7 @@
     "https": "1.0.0",
     "isomorphic-fetch": "2.2.1",
     "lru-cache": "5.1.1",
-    "pretend": "2.0.0",
+    "pretend": "3.0.0",
     "sander": "0.6.0",
     "tsdi": "0.20.3",
     "vscode-extension-telemetry": "0.1.2"

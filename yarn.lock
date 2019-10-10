@@ -2008,9 +2008,9 @@ pos@0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/pos/-/pos-0.4.2.tgz#20e9c77fbeedcc356823cea63c7585cace93be2a"
 
-pretend@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pretend/-/pretend-2.0.0.tgz#9c7ff2222cb042df96e0b45a2a64e33dff1b9e4f"
+pretend@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/pretend/-/pretend-3.0.0.tgz#5efae2fa50bdd88643f13062714ccd911f4e2a8a"
   optionalDependencies:
     isomorphic-fetch "2.2.1"
     isomorphic-form-data "2.0.0"
