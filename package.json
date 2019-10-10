@@ -241,7 +241,7 @@
     "husky": "3.0.0",
     "mocha": "6.1.4",
     "standard-version": "7.0.0",
-    "tslint": "5.18.0",
+    "tslint": "5.20.0",
     "typescript": "3.6.4",
     "vscode": "1.1.36"
   },
