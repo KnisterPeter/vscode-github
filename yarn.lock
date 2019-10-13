@@ -2085,9 +2085,9 @@ redent@^2.0.0:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
 
-reflect-metadata@0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.12.tgz#311bf0c6b63cd782f228a81abe146a2bfa9c56f2"
+reflect-metadata@0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
 
 regenerator-runtime@^0.10.0:
   version "0.10.5"
@@ -2531,12 +2531,11 @@ trim-off-newlines@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-off-newlines/-/trim-off-newlines-1.0.1.tgz#9f9ba9d9efa8764c387698bcbfeb2c848f11adb3"
 
-tsdi@0.20.3:
-  version "0.20.3"
-  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.20.3.tgz#b4da8d853d6328d0c63d24e982d12277489a18cc"
+tsdi@0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.21.0.tgz#00b6324dbd8e355e84dda2b061d037a840427464"
   dependencies:
-    debug "3.1.0"
-    reflect-metadata "0.1.12"
+    reflect-metadata "0.1.13"
 
 tslib@^1.8.0, tslib@^1.8.1:
   version "1.9.0"
