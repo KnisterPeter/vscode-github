@@ -333,14 +333,15 @@ export class WorkflowManager {
   public async getGithubFileUrl(
     uri: vscode.Uri,
     file: string,
-    line = 0
+    line = 0,
+    endLine = 0
   ): Promise<string> {
     const hostname = await this.git.getGitHostname(uri);
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
     const branch = await this.git.getCurrentBranch(uri);
     const currentFile = file.replace(/^\//, '');
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${line +
-      1}`;
+      1}:L${endLine + 1}`;
   }
 
   public async getAssignees(uri: vscode.Uri): Promise<User[]> {
