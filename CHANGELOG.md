@@ -1,6 +1,24 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.30.3](https://github.com/KnisterPeter/vscode-github/compare/v0.30.2...v0.30.3) (2019-10-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency execa to v2 ([17c54b2](https://github.com/KnisterPeter/vscode-github/commit/17c54b2ad3070bbddac60bd7bea137ff3834c1d0))
+* **deps:** update dependency execa to v2.0.1 ([bf6e46c](https://github.com/KnisterPeter/vscode-github/commit/bf6e46c7f96e80b8a3eba150d63bff5031dde6ca))
+* **deps:** update dependency execa to v2.0.2 ([99b63bf](https://github.com/KnisterPeter/vscode-github/commit/99b63bf6ff214cdbd93fd73ce10c4e09f5bc19ce))
+* **deps:** update dependency execa to v2.0.3 ([ddf5f2d](https://github.com/KnisterPeter/vscode-github/commit/ddf5f2d6041ab6b42ab72871a1a89fd3928dc2af))
+* **deps:** update dependency execa to v2.1.0 ([acc7729](https://github.com/KnisterPeter/vscode-github/commit/acc7729165479b8e573001b9c17d77cfc5644a2d))
+* **deps:** update dependency execa to v3 ([4c8bd15](https://github.com/KnisterPeter/vscode-github/commit/4c8bd15625d82b4c3eeaa5a1859e3cd3fa12043c))
+* **deps:** update dependency execa to v3.1.0 ([8fb1985](https://github.com/KnisterPeter/vscode-github/commit/8fb198552bf205a0d5df164fd338aa3975a52605))
+* **deps:** update dependency execa to v3.2.0 ([64c0119](https://github.com/KnisterPeter/vscode-github/commit/64c0119e60680646fea706a40edfb18b494ef6cf))
+* **deps:** update dependency pretend to v3 ([fc96d28](https://github.com/KnisterPeter/vscode-github/commit/fc96d28c442e6dd1ea0fb9a92ddd35157a37a5ba))
+* **deps:** update dependency tsdi to v0.21.0 ([44eaf49](https://github.com/KnisterPeter/vscode-github/commit/44eaf492c449fcda8ec9a0ec232a736d54933f42))
+* **deps:** update dependency vscode-extension-telemetry to v0.1.2 ([9fc4689](https://github.com/KnisterPeter/vscode-github/commit/9fc468908c0c0336b57424112936d411e0848681))
+* add missing generic parameter ([d8c53d7](https://github.com/KnisterPeter/vscode-github/commit/d8c53d7d47be9cb2c6a13f9200a7d0f17ed441ca))
 
 <a name=""></a>
 # [](https://github.com/KnisterPeter/vscode-github/compare/v0.30.1...v) (2019-03-27)
