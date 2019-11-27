@@ -366,7 +366,7 @@ export class MergePullRequest extends PullRequestCommand {
       }
     } else {
       vscode.window.showWarningMessage(
-        'Either no pull request for current brach, or the pull request is not mergable'
+        'Either no pull request for current branch, or the pull request is not mergable'
       );
     }
   }
