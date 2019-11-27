@@ -63,7 +63,7 @@ export class AddAssignee extends UserCommand {
         vscode.window.showInformationMessage(`Successfully assigned ${user} to the pull request`);
       }
     } else {
-      vscode.window.showWarningMessage('No pull request for current brach');
+      vscode.window.showWarningMessage('No pull request for current branch');
     }
   }
 
