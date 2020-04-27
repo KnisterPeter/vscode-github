@@ -2464,9 +2464,9 @@ tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
-tslint@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/tslint/-/tslint-6.1.1.tgz#ac03fbd17f85bfefaae348b353b25a88efe10cde"
+tslint@6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/tslint/-/tslint-6.1.2.tgz#2433c248512cc5a7b2ab88ad44a6b1b34c6911cf"
   dependencies:
     "@babel/code-frame" "^7.0.0"
     builtin-modules "^1.1.1"
