@@ -2524,9 +2524,9 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vscode-extension-telemetry@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/vscode-extension-telemetry/-/vscode-extension-telemetry-0.1.5.tgz#661f9112238fd52f60bdd9aa30e262a6573177f1"
+vscode-extension-telemetry@0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/vscode-extension-telemetry/-/vscode-extension-telemetry-0.1.6.tgz#048b70c93243413036a8315cda493b8e7342980c"
   dependencies:
     applicationinsights "1.7.4"
 
