@@ -2044,9 +2044,10 @@ pos@0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/pos/-/pos-0.4.2.tgz#20e9c77fbeedcc356823cea63c7585cace93be2a"
 
-pretend@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/pretend/-/pretend-3.0.0.tgz#5efae2fa50bdd88643f13062714ccd911f4e2a8a"
+pretend@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/pretend/-/pretend-3.0.2.tgz#164d2a0ce171aca540f779b804dc4541c97438c9"
+  integrity sha512-cxQu1TB8ImJ+AJit2QtlzrcKUcLeKr+V8s76W/JPlOJNszydRwLV5+JXyFFQPlJVtpJ7Q3y98DRw8CtszHaSlw==
   optionalDependencies:
     isomorphic-fetch "2.2.1"
     isomorphic-form-data "2.0.0"
