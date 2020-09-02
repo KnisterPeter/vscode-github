@@ -51,10 +51,10 @@
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-7.0.2.tgz#b17f16cf933597e10d6d78eae3251e692ce8b0ce"
 
-"@types/node@9.6.57":
-  version "9.6.57"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.57.tgz#ff4c4ffab747783c0c2ba2e2c20e670da2cbee8d"
-  integrity sha512-588MBlPWKeJFshLmnYbqMEaM3NaJFCVZFgpQ5rQxKCVXMNw2Gs7sTORvCDlaPBP6AabiIvmd22eT9fcIvTeZUw==
+"@types/node@9.6.58":
+  version "9.6.58"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.58.tgz#cb568ffde093c29949dce776dfc250df76b7a995"
+  integrity sha512-I5B2ZIvr5G5qW6VUZgMk284p/41/U5x3Lqyz3Hz9va3bmxgV7p5CBnDPGv/lGFgGDP4415pqZXLsa4cKA3BHAg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
