@@ -238,7 +238,7 @@
     "@types/node": "9.6.58",
     "conventional-changelog-lint": "2.1.1",
     "cz-customizable": "6.3.0",
-    "husky": "4.2.5",
+    "husky": "4.3.0",
     "mocha": "8.0.1",
     "standard-version": "9.0.0",
     "tslint": "6.1.3",
