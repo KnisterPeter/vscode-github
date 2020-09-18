@@ -68,9 +68,9 @@ export class BrowseCurrentFile extends TokenCommand {
       }
       const root = await this.git.getGitRoot(folder.uri);
       const file = editor.document.fileName.substring(root.length);
-      const line = editor.selection.active.line;
+      const startLine = editor.selection.start.line;
       const endLine = editor.selection.end.line;
-      const uri = vscode.Uri.parse(await this.workflowManager.getGithubFileUrl(folder.uri, file, line, endLine));
+      const uri = vscode.Uri.parse(await this.workflowManager.getGithubFileUrl(folder.uri, file, startLine, endLine));
       vscode.commands.executeCommand('vscode.open', uri);
     }
   }
