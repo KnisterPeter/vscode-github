@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.30.4](https://github.com/KnisterPeter/vscode-github/compare/v0.30.3...v0.30.4) (2020-09-21)
+
+
+### Bug Fixes
+
+* use startLine instead of line in browse cmd ([72a34f9](https://github.com/KnisterPeter/vscode-github/commit/72a34f9d705795a139f47369f78aa035d0717021))
+* **deps:** update dependency execa to v3.3.0 ([1a2c724](https://github.com/KnisterPeter/vscode-github/commit/1a2c72420f3b905ea7922f19f78a65b07ebac251))
+* **deps:** update dependency execa to v3.4.0 ([02785e0](https://github.com/KnisterPeter/vscode-github/commit/02785e05eb779889e810d62e7f5deb435a7ec095))
+* **deps:** update dependency execa to v4.0.3 ([e65e20b](https://github.com/KnisterPeter/vscode-github/commit/e65e20b1dc6d6f23ab79df5b4d059c2006c95a49))
+* **deps:** update dependency lru-cache to v6 ([c3089c8](https://github.com/KnisterPeter/vscode-github/commit/c3089c812f7d3ba2bbba5c3560418f3988e20a44))
+* **deps:** update dependency pretend to v3.1.0 ([0a6f922](https://github.com/KnisterPeter/vscode-github/commit/0a6f922ec40588cd2503dc537a530e95c4029657))
+* **deps:** update dependency tsdi to v0.23.0 ([71fd40a](https://github.com/KnisterPeter/vscode-github/commit/71fd40afb0fa70bb47753bbf310d0c9a95fd1c54))
+
 ### [0.30.3](https://github.com/KnisterPeter/vscode-github/compare/v0.30.2...v0.30.3) (2019-10-27)
 
 
