@@ -2826,10 +2826,10 @@ trim-off-newlines@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-off-newlines/-/trim-off-newlines-1.0.1.tgz#9f9ba9d9efa8764c387698bcbfeb2c848f11adb3"
 
-tsdi@0.24.1:
-  version "0.24.1"
-  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.24.1.tgz#27ad2c2633b9c6ebcf2fd0f2c2baf67bd2c5e47d"
-  integrity sha512-uO3dkdV/njAbpgN9oIexqeIMWx39Nf1GIJS8FXLCR9VG3tNMC5uXPrQHMrL1AQkVnOSvOeJUEPDOstRKCgt/5g==
+tsdi@0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/tsdi/-/tsdi-0.25.0.tgz#34c95c12c07caf608428fea59865eeaaaa16d0c1"
+  integrity sha512-CDTY8XJNgbsT67kJexjA2/N66FlF8D/oa9EO5VcGNghBrAD1kTCNaac6RBcDy49GySKMv3A/yvUfpg06EZEjmA==
   dependencies:
     reflect-metadata "0.1.13"
 
