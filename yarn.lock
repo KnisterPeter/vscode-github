@@ -45,10 +45,10 @@
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-7.0.2.tgz#b17f16cf933597e10d6d78eae3251e692ce8b0ce"
 
-"@types/node@9.6.60":
-  version "9.6.60"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.60.tgz#e0fa5243cf9c4793053a6ae64f0f27d44b77dacb"
-  integrity sha512-yoi9MNxtIwaN23LlUnqFiEjS13gg8tgYMCBR8AV34haAFuLswIdCpaYmOcoKLmhhOPwngbs0ZQG7I0EqWTsaRA==
+"@types/node@9.6.61":
+  version "9.6.61"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.61.tgz#29f124eddd41c4c74281bd0b455d689109fc2a2d"
+  integrity sha512-/aKAdg5c8n468cYLy2eQrcR5k6chlbNwZNGUj3TboyPa2hcO2QAJcfymlqPzMiRj8B6nYKXjzQz36minFE0RwQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
