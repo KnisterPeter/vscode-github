@@ -249,7 +249,7 @@
     "common-tags": "1.8.0",
     "conventional-changelog-lint-config-angular": "1.0.0",
     "decko": "1.2.0",
-    "execa": "4.1.0",
+    "execa": "5.0.0",
     "https": "1.0.0",
     "isomorphic-fetch": "3.0.0",
     "lru-cache": "6.0.0",
