@@ -62,7 +62,7 @@ suite('vscode-github extension tests', () => {
     assert.equal(repo, 'repo-name');
   });
 
-  test('should migrate tokens to a provider structure', (done: MochaDone) => {
+  test('should migrate tokens to a provider structure', (done) => {
     tokens.migrateToken({
       get(name: string): any {
         if (name === 'tokens') {
