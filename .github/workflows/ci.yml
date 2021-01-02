@@ -1,0 +1,41 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-yarn-
+      - run: |
+          sudo apt-get install xvfb libsecret-1-0
+          export DISPLAY=:99.0
+          Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
+          mkdir /tmp/test-workspace
+          (cd /tmp/test-workspace && git init)
+          yarn install
+          yarn vscode:prepublish
+      - run: |
+          yarn linter
+      - run: |
+          xvfb-run --auto-servernum yarn test
+        env:
+          CODE_TESTS_WORKSPACE: /tmp/test-workspace
