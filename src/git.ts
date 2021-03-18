@@ -49,7 +49,7 @@ export class Git {
 
   private async getRemoteNames(uri: vscode.Uri): Promise<string[]> {
     const remotes = (await this.execute(
-      `git config --local --get-regexp ^remote.*.url`,
+      `git config --local --get-regexp "^remote.*.url"`,
       uri
     )).stdout.trim();
     return remotes
