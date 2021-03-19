@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.30.5](https://github.com/KnisterPeter/vscode-github/compare/v0.30.4...v0.30.5) (2021-03-19)
+
+
+### Bug Fixes
+
+* change remote regex for zsh ([f2a3047](https://github.com/KnisterPeter/vscode-github/commit/f2a30471fa315d1628f366d5cffb9c83e6cc1057))
+* **deps:** update dependency vscode-extension-telemetry to v0.1.7 ([f22090e](https://github.com/KnisterPeter/vscode-github/commit/f22090e905067770bd9406d513996281a2288dbd))
+* do not use abstract with async ([0911cf8](https://github.com/KnisterPeter/vscode-github/commit/0911cf894c5347deb9b9a1765390704432955bad))
+* **deps:** update dependency execa to v4.1.0 ([1b2fbb2](https://github.com/KnisterPeter/vscode-github/commit/1b2fbb20625a7802df9d6784bf982d21cc782aa7))
+* **deps:** update dependency execa to v5 ([7ac486a](https://github.com/KnisterPeter/vscode-github/commit/7ac486af121b33a8d0c9436bc966b6171e9467ea))
+* **deps:** update dependency isomorphic-fetch to v3 ([d3fef69](https://github.com/KnisterPeter/vscode-github/commit/d3fef6946e5aa8cf0ebe6c539e10a339eb7fd7e4))
+* **deps:** update dependency tsdi to v0.24.1 ([4109a7f](https://github.com/KnisterPeter/vscode-github/commit/4109a7f01201eccf3722e1e848a0f62d7d4cc688))
+* **deps:** update dependency tsdi to v0.25.0 ([c717d4a](https://github.com/KnisterPeter/vscode-github/commit/c717d4af79242420aa5dc27ae8bbda001406c804))
+
 ### [0.30.4](https://github.com/KnisterPeter/vscode-github/compare/v0.30.3...v0.30.4) (2020-09-21)
 
 
