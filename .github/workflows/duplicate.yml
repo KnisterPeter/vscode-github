@@ -1,12 +1,10 @@
 name: "duplicate issue"
 
-on:
-  issues:
-    types: [opened, edited]
+on: [issues]
 
 jobs:
   flag:
-    if: github.event.issue.title == 'Extension causes high cpu load'
+    if: (github.event.action == 'opened' || github.event.action == 'edited') && github.event.issue.title == 'Extension causes high cpu load'
 
     runs-on: ubuntu-latest
 
