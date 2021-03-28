@@ -1,0 +1,21 @@
+name: duplicate-issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  flag:
+    if: |
+      (github.event.issue.title == 'Extension causes high cpu load'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Comment and close as duplicate
+        run: |
+          gh issue comment "$NUMBER" --body "Duplicate of #443"
+          gh issue close "$NUMBER"
+        env:
+          NUMBER: ${{github.event.issue.number}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
