@@ -117,6 +117,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vincentvanderweele",
+      "name": "Vincent van der Weele",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9002093?v=4",
+      "profile": "https://github.com/vincentvanderweele",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
