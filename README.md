@@ -125,6 +125,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/vincentvanderweele"><img src="https://avatars.githubusercontent.com/u/9002093?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vincent van der Weele</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=vincentvanderweele" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ivanmilov"><img src="https://avatars.githubusercontent.com/u/522518?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ivanmilov</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=ivanmilov" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://stackoverflow.com/users/1366033"><img src="https://avatars.githubusercontent.com/u/4307307?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kyle</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=KyleMit" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
