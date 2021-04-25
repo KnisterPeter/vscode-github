@@ -45,7 +45,7 @@ abstract class PullRequestCommand extends TokenCommand {
       } else {
         vscode.window.showWarningMessage(
           `Cannot create pull request without remote branch. ` +
-            `Please push your local branch before creating pull request.`
+          `Please push your local branch before creating pull request.`
         );
       }
     }
@@ -282,6 +282,7 @@ export class CreatePullRequest extends PullRequestCommand {
     uri: vscode.Uri
   ): Promise<string | undefined> {
     // sort default branch up
+    const currentBranch = await this.git.getCurrentBranch(uri)
     const picks = (await this.git.getRemoteBranches(uri)).sort((b1, b2) => {
       if (b1 === defaultBranch) {
         return -1;
@@ -289,10 +290,10 @@ export class CreatePullRequest extends PullRequestCommand {
         return 1;
       }
       return b1.localeCompare(b2);
-    });
+    }).filter(branch => branch !== currentBranch);
     return vscode.window.showQuickPick(picks, {
       ignoreFocusOut: true,
-      placeHolder: 'Select a branch to create the pull request for'
+      placeHolder: `Select the branch you would like to merge ${currentBranch} into`
     });
   }
 }
