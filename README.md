@@ -109,6 +109,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://about.me/knisterpeter"><img src="https://avatars.githubusercontent.com/u/327445?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Markus Wolf</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=KnisterPeter" title="Code">💻</a></td>
+    <td align="center"><a href="https://valler.dev/"><img src="https://avatars.githubusercontent.com/u/3588000?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ross Valler</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=RossValler" title="Code">💻</a></td>
   </tr>
 </table>
 
