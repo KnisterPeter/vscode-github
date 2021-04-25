@@ -127,6 +127,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://stackoverflow.com/users/1366033"><img src="https://avatars.githubusercontent.com/u/4307307?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kyle</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=KyleMit" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/lihuanshuai"><img src="https://avatars.githubusercontent.com/u/4586647?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Li Huanshuai</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=lihuanshuai" title="Code">💻</a></td>
   </tr>
 </table>
 
