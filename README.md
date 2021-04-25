@@ -114,6 +114,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/sasial-dev"><img src="https://avatars.githubusercontent.com/u/44125644?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sasial</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=sasial-dev" title="Code">💻</a></td>
     <td align="center"><a href="https://www.timhaintz.com.au/"><img src="https://avatars.githubusercontent.com/u/19178488?v=4?s=100" width="100px;" alt=""/><br /><sub><b>timhaintz</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=timhaintz" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.codependentcodr.com/"><img src="https://avatars.githubusercontent.com/u/414933?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Parkin</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=pzelnip" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://duk.im/"><img src="https://avatars.githubusercontent.com/u/3122655?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andreas Holley</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=dukky" title="Code">💻</a></td>
   </tr>
 </table>
 

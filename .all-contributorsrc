@@ -63,6 +63,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "dukky",
+      "name": "Andreas Holley",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3122655?v=4",
+      "profile": "http://duk.im/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
