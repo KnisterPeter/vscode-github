@@ -282,7 +282,7 @@ export class CreatePullRequest extends PullRequestCommand {
     uri: vscode.Uri
   ): Promise<string | undefined> {
     // sort default branch up
-    const currentBranch = await this.git.getCurrentBranch(uri)
+    const currentBranch = await this.git.getCurrentBranch(uri);
     const picks = (await this.git.getRemoteBranches(uri)).sort((b1, b2) => {
       if (b1 === defaultBranch) {
         return -1;
