@@ -49,7 +49,7 @@ export class Git {
 
   private async getRemoteNames(uri: vscode.Uri): Promise<string[]> {
     const remotes = (await this.execute(
-      `git config --local --get-regexp "^remote.*.url"`,
+      `git config --local --get-regexp ^remote.*.url`,
       uri
     )).stdout.trim();
     return remotes
@@ -142,7 +142,7 @@ export class Git {
         this.logAndShowError(e);
 
         this.channel.appendLine(
-          '\n\nYour configuration contains an invalid remoteName. You should probably use one of these:\n'
+          '\n\nYour configuration contains an invalid remoteName. Consider setting the `github.remoteName` setting with one of these:\n'
         );
         this.channel.appendLine(remotes.join('\n') + '\n');
       }
