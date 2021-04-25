@@ -45,6 +45,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "timhaintz",
+      "name": "timhaintz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19178488?v=4",
+      "profile": "https://www.timhaintz.com.au/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
