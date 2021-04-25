@@ -116,6 +116,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.codependentcodr.com/"><img src="https://avatars.githubusercontent.com/u/414933?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Parkin</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=pzelnip" title="Documentation">📖</a></td>
     <td align="center"><a href="http://duk.im/"><img src="https://avatars.githubusercontent.com/u/3122655?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andreas Holley</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=dukky" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://stanislas.blog/"><img src="https://avatars.githubusercontent.com/u/11699655?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Stanislas</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=angristan" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
