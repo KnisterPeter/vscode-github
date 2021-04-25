@@ -119,6 +119,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://stanislas.blog/"><img src="https://avatars.githubusercontent.com/u/11699655?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Stanislas</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=angristan" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Drarig29"><img src="https://avatars.githubusercontent.com/u/9317502?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Corentin Girard</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=Drarig29" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mmorhun"><img src="https://avatars.githubusercontent.com/u/15607393?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mykola Morhun</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=mmorhun" title="Code">💻</a></td>
   </tr>
 </table>
 
