@@ -122,6 +122,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mmorhun"><img src="https://avatars.githubusercontent.com/u/15607393?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mykola Morhun</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=mmorhun" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/NicholasMata"><img src="https://avatars.githubusercontent.com/u/8304095?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nicholas Mata</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=NicholasMata" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ishitatsuyuki"><img src="https://avatars.githubusercontent.com/u/12389383?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tatsuyuki Ishi</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=ishitatsuyuki" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/vincentvanderweele"><img src="https://avatars.githubusercontent.com/u/9002093?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vincent van der Weele</b></sub></a><br /><a href="https://github.com/KnisterPeter/vscode-github/commits?author=vincentvanderweele" title="Code">💻</a></td>
   </tr>
 </table>
 
