@@ -135,6 +135,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "KyleMit",
+      "name": "Kyle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4307307?v=4",
+      "profile": "https://stackoverflow.com/users/1366033",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
