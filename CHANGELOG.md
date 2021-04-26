@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.30.6](https://github.com/KnisterPeter/vscode-github/compare/v0.30.5...v0.30.6) (2021-04-26)
+
+
+### Bug Fixes
+
+* revert [#774](https://github.com/KnisterPeter/vscode-github/issues/774) and change user message ([7fa3742](https://github.com/KnisterPeter/vscode-github/commit/7fa3742ca493808bb28a067fa3976e6b0d9b9cfb))
+
 ### [0.30.5](https://github.com/KnisterPeter/vscode-github/compare/v0.30.4...v0.30.5) (2021-03-19)
 
 
