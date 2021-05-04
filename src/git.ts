@@ -190,9 +190,8 @@ export class Git {
   }
 
   public async getCurrentBranch(uri: vscode.Uri): Promise<string | undefined> {
-    const stdout = (await this.execute('git branch', uri)).stdout;
-    const match = stdout.match(/^\* (.*)$/m);
-    return match ? match[1] : undefined;
+    const branch = (await this.execute('git rev-parse --abbrev-ref HEAD', uri)).stdout;
+    return branch ? branch : undefined;
   }
 
   public async getCommitMessage(sha: string, uri: vscode.Uri): Promise<string> {
