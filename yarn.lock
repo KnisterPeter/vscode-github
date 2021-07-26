@@ -3010,10 +3010,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vscode-extension-telemetry@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/vscode-extension-telemetry/-/vscode-extension-telemetry-0.2.1.tgz#63884c8dc497a60dae5711affbcc75e8c4129874"
-  integrity sha512-moh0QG9FjxiEIMx6rNUdzo6cP9vyQXdk7AtBQuE+EWrnkrH78r36aWOIOQxZnEuAQlaGssjq3EGxskSzgoliSA==
+vscode-extension-telemetry@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/vscode-extension-telemetry/-/vscode-extension-telemetry-0.2.2.tgz#f33787573bdf552460bbff276dcaa05ef8fbd818"
+  integrity sha512-WiEpeFuguVWB/Ezizq24dFYB/miAuLozATYkhO5/OcLWChqnRQ/rtTvHfAeDoyJX4SFJ4KR9qNpynppi9ZF6Ow==
   dependencies:
     "@microsoft/applicationinsights-web" "^2.6.4"
     applicationinsights "2.1.4"
