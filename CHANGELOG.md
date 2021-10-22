@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.30.7](https://github.com/KnisterPeter/vscode-github/compare/v0.30.6...v0.30.7) (2021-10-22)
+
+
+### Bug Fixes
+
+* 'browse file' url encoding issue ([07e2306](https://github.com/KnisterPeter/vscode-github/commit/07e230682e9f171b684e44ae5dea5e62c481e25b)), closes [#729](https://github.com/KnisterPeter/vscode-github/issues/729)
+* **deps:** update dependency execa to v5.0.1 ([55a1dc8](https://github.com/KnisterPeter/vscode-github/commit/55a1dc88d3ac3edf5dd3ab8c3bd646c5f7f3d1d2))
+* **deps:** update dependency execa to v5.1.1 ([b526763](https://github.com/KnisterPeter/vscode-github/commit/b52676366e0b5374e0c97c4062e5098b1c32f9e6))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.0 ([1d00448](https://github.com/KnisterPeter/vscode-github/commit/1d00448d841c5fe151a7db2a59abf9eadc7c2f29))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.1 ([8e0a7ca](https://github.com/KnisterPeter/vscode-github/commit/8e0a7caddf93d58d8626c0b4de2cb0710d8bccb5))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.2 ([c93d4a2](https://github.com/KnisterPeter/vscode-github/commit/c93d4a2301dffb4f71b48575ec1141ceea7a9a3e))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.4 ([612d765](https://github.com/KnisterPeter/vscode-github/commit/612d76581efe8a171687d211fc019766a5767602))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.6 ([90da04c](https://github.com/KnisterPeter/vscode-github/commit/90da04c49cd92c2f5b2c0718a6e78815c62c2942))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.7 ([7b58940](https://github.com/KnisterPeter/vscode-github/commit/7b589407e457ae042ee5ea7d46d1c8ffc409de38))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.8 ([481a1a9](https://github.com/KnisterPeter/vscode-github/commit/481a1a982339f748b6d4e116470c6f90e2444e3f))
+* **deps:** update dependency vscode-extension-telemetry to v0.2.9 ([08e6226](https://github.com/KnisterPeter/vscode-github/commit/08e62261d21386e8438ea17c7451010cff3814f3))
+* **deps:** update dependency vscode-extension-telemetry to v0.3.2 ([cd673c3](https://github.com/KnisterPeter/vscode-github/commit/cd673c3019aae3d1059c62152ba322bd70f0c540))
+* **deps:** update dependency vscode-extension-telemetry to v0.4.1 ([4133755](https://github.com/KnisterPeter/vscode-github/commit/413375550d27028f8568d25e0ab7df9e0d287f0e))
+* **deps:** update dependency vscode-extension-telemetry to v0.4.2 ([11f7ca3](https://github.com/KnisterPeter/vscode-github/commit/11f7ca395c7b4e89db1f165c134b160e2c8004e3))
+
 ### [0.30.6](https://github.com/KnisterPeter/vscode-github/compare/v0.30.5...v0.30.6) (2021-04-26)
 
 
