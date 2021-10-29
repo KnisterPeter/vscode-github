@@ -2,7 +2,6 @@ import * as execa from 'execa';
 import { resolve } from 'path';
 import { readFile, unlink } from 'sander';
 import { component, inject } from 'tsdi';
-import { parse } from 'url';
 import * as vscode from 'vscode';
 
 import { getConfiguration } from './helper';
@@ -15,14 +14,15 @@ export class Git {
   private async calculateRemoteName(
     uri: vscode.Uri
   ): Promise<string | undefined> {
-    const ref = (await this.execute(
-      `git symbolic-ref -q HEAD`,
-      uri
-    )).stdout.trim();
-    const upstreamName = (await this.execute(
-      `git for-each-ref --format='%(upstream)' '${ref}'`,
-      uri
-    )).stdout.trim();
+    const ref = (
+      await this.execute(`git symbolic-ref -q HEAD`, uri)
+    ).stdout.trim();
+    const upstreamName = (
+      await this.execute(
+        `git for-each-ref --format='%(upstream)' '${ref}'`,
+        uri
+      )
+    ).stdout.trim();
     const match = upstreamName.match(/refs\/remotes\/([^/]+)\/.*/);
     if (match) {
       return match[1];
@@ -48,15 +48,14 @@ export class Git {
   }
 
   private async getRemoteNames(uri: vscode.Uri): Promise<string[]> {
-    const remotes = (await this.execute(
-      `git config --local --get-regexp ^remote.*.url`,
-      uri
-    )).stdout.trim();
+    const remotes = (
+      await this.execute(`git config --local --get-regexp ^remote.*.url`, uri)
+    ).stdout.trim();
     return remotes
       .split('\n')
-      .map(line => new RegExp('^remote.([^.]+).url.*').exec(line))
-      .map(match => match && match[1])
-      .filter(name => Boolean(name)) as string[];
+      .map((line) => new RegExp('^remote.([^.]+).url.*').exec(line))
+      .map((match) => match && match[1])
+      .filter((name) => Boolean(name)) as string[];
   }
 
   private async execute(
@@ -91,9 +90,9 @@ export class Git {
     const remoteName = await this.getRemoteName(uri);
     return response.stdout
       .split('\n')
-      .filter(line => !line.match('->'))
-      .map(line => line.replace(`${remoteName}/`, ''))
-      .map(line => line.trim());
+      .filter((line) => !line.match('->'))
+      .map((line) => line.replace(`${remoteName}/`, ''))
+      .map((line) => line.trim());
   }
 
   /**
@@ -110,9 +109,9 @@ export class Git {
     if (defaultUpstream) {
       return Promise.resolve(defaultUpstream.split('/'));
     }
-    return (await this.getGitProviderOwnerAndRepositoryFromGitConfig(
-      uri
-    )).slice(2, 4);
+    return (
+      await this.getGitProviderOwnerAndRepositoryFromGitConfig(uri)
+    ).slice(2, 4);
   }
 
   public async getGitHostname(uri: vscode.Uri): Promise<string> {
@@ -128,23 +127,27 @@ export class Git {
   ): Promise<string[]> {
     const remoteName = await this.getRemoteName(uri);
     try {
-      const remote = (await this.execute(
-        `git config --local --get remote.${remoteName}.url`,
-        uri
-      )).stdout.trim();
+      const remote = (
+        await this.execute(
+          `git config --local --get remote.${remoteName}.url`,
+          uri
+        )
+      ).stdout.trim();
       if (!remote.length) {
         throw new Error('Git remote is empty!');
       }
       return this.parseGitUrl(remote);
     } catch (e) {
-      const remotes = await this.getRemoteNames(uri);
-      if (!remotes.includes(remoteName)) {
-        this.logAndShowError(e);
+      if (e instanceof Error) {
+        const remotes = await this.getRemoteNames(uri);
+        if (!remotes.includes(remoteName)) {
+          this.logAndShowError(e);
 
-        this.channel.appendLine(
-          '\n\nYour configuration contains an invalid remoteName. Consider setting the `github.remoteName` setting with one of these:\n'
-        );
-        this.channel.appendLine(remotes.join('\n') + '\n');
+          this.channel.appendLine(
+            '\n\nYour configuration contains an invalid remoteName. Consider setting the `github.remoteName` setting with one of these:\n'
+          );
+          this.channel.appendLine(remotes.join('\n') + '\n');
+        }
       }
       throw e;
     }
@@ -177,7 +180,7 @@ export class Git {
     remote: string
   ): string[] {
     // it must be http or https based remote
-    const { protocol = 'https:', hostname, pathname } = parse(remote);
+    const { protocol = 'https:', hostname, pathname } = new URL(remote);
     // domain names are not case-sensetive
     if (!hostname || !pathname) {
       throw new Error('Not a Provider remote!');
@@ -190,15 +193,15 @@ export class Git {
   }
 
   public async getCurrentBranch(uri: vscode.Uri): Promise<string | undefined> {
-    const branch = (await this.execute('git rev-parse --abbrev-ref HEAD', uri)).stdout;
+    const branch = (await this.execute('git rev-parse --abbrev-ref HEAD', uri))
+      .stdout;
     return branch ? branch : undefined;
   }
 
   public async getCommitMessage(sha: string, uri: vscode.Uri): Promise<string> {
-    return (await this.execute(
-      `git log -n 1 --format=%s ${sha}`,
-      uri
-    )).stdout.trim();
+    return (
+      await this.execute(`git log -n 1 --format=%s ${sha}`, uri)
+    ).stdout.trim();
   }
 
   public async getFirstCommitOnBranch(
@@ -206,10 +209,9 @@ export class Git {
     defaultBranch: string,
     uri: vscode.Uri
   ): Promise<string> {
-    const sha = (await this.execute(
-      `git rev-list ^${defaultBranch} ${branch}`,
-      uri
-    )).stdout
+    const sha = (
+      await this.execute(`git rev-list ^${defaultBranch} ${branch}`, uri)
+    ).stdout
       .trim()
       .split('\n')[0];
     if (!sha) {
@@ -219,18 +221,19 @@ export class Git {
   }
 
   private async getCommitBody(sha: string, uri: vscode.Uri): Promise<string> {
-    return (await this.execute(
-      `git log --format=%b -n 1 ${sha}`,
-      uri
-    )).stdout.trim();
+    return (
+      await this.execute(`git log --format=%b -n 1 ${sha}`, uri)
+    ).stdout.trim();
   }
 
   public async getPullRequestBody(
     sha: string,
     uri: vscode.Uri
   ): Promise<string | undefined> {
-    const bodyMethod = getConfiguration('github', uri)
-      .customPullRequestDescription;
+    const bodyMethod = getConfiguration(
+      'github',
+      uri
+    ).customPullRequestDescription;
 
     switch (bodyMethod) {
       case 'singleLine':
@@ -250,11 +253,9 @@ export class Git {
   private async getGitEditorPullRequestBody(uri: vscode.Uri): Promise<string> {
     const path = resolve(uri.fsPath, 'PR_EDITMSG');
 
-    const [editorName, ...params] = (await execa('git', [
-      'config',
-      '--get',
-      'core.editor'
-    ])).stdout.split(' ');
+    const [editorName, ...params] = (
+      await execa('git', ['config', '--get', 'core.editor'])
+    ).stdout.split(' ');
     await execa(editorName, [...params, path]);
 
     const fileContents = (await readFile(path)).toString();
@@ -269,10 +270,9 @@ export class Git {
     uri: vscode.Uri
   ): Promise<string | undefined> {
     try {
-      return (await this.execute(
-        `git config --get branch.${branch}.merge`,
-        uri
-      )).stdout
+      return (
+        await this.execute(`git config --get branch.${branch}.merge`, uri)
+      ).stdout
         .trim()
         .split('\n')[0];
     } catch (e) {
