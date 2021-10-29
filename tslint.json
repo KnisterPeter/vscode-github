@@ -3,6 +3,7 @@
   "rules": {
     "await-promise": [true, "Thenable"],
     "no-implicit-dependencies": [true, "dev"],
-    "space-before-function-paren": false
+    "space-before-function-paren": false,
+    "trailing-comma": false
   }
 }
