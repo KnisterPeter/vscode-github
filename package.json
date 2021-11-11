@@ -246,7 +246,7 @@
     "vscode": "1.1.37"
   },
   "dependencies": {
-    "common-tags": "1.8.0",
+    "common-tags": "1.8.1",
     "conventional-changelog-lint-config-angular": "1.0.0",
     "decko": "1.2.0",
     "execa": "5.1.1",
