@@ -79,6 +79,12 @@
           "default": false,
           "scope": "resource"
         },
+        "github.urlLineSeparator": {
+          "type": "string",
+          "description": "Overrides the default line separator when constructing URLs. Defaults to ':'.",
+          "scope": "window",
+          "default": ":"
+        },
         "github.statusbar.enabled": {
           "type": "boolean",
           "description": "True if the statusbar integration should be enabled. Defaults to true",

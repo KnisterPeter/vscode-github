@@ -340,8 +340,9 @@ export class WorkflowManager {
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
     const branch = await this.git.getCurrentBranch(uri);
     const currentFile = file.replace(/^\//, '');
+    const lineSeparator = getConfiguration('github', uri).urlLineSeparator
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${line +
-      1}:L${endLine + 1}`;
+      1}${lineSeparator}L${endLine + 1}`;
   }
 
   public async getAssignees(uri: vscode.Uri): Promise<User[]> {

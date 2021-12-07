@@ -11,6 +11,7 @@ export interface Configuration {
   autoPublish?: boolean;
   allowUnsafeSSL?: boolean;
   statusBarCommand: string | null;
+  urlLineSeparator: string;
   statusbar: {
     enabled: boolean;
     refresh: number;
