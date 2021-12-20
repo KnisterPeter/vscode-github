@@ -10,7 +10,7 @@ import {
   Patch,
   Post,
   Pretend,
-  Put
+  Put,
 } from 'pretend';
 
 export interface GitHub {
@@ -295,7 +295,9 @@ namespace impl {
         return response;
       } catch (e) {
         if ((e as GitHubError).response) {
-          logger(`${(e as GitHubError).response.status} ${e.message}`);
+          logger(
+            `${(e as GitHubError).response.status} ${(e as Error).message}`
+          );
         }
         throw e;
       }
@@ -317,7 +319,7 @@ namespace impl {
         // if no cache hit or response modified, cache and respond
         cache.set(request.url, {
           etag: response.headers.etag,
-          response
+          response,
         });
         return response;
       }
@@ -329,7 +331,7 @@ namespace impl {
   export function githubTokenAuthenticator(
     token: string
   ): IPretendRequestInterceptor {
-    return request => {
+    return (request) => {
       request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('Authorization', `token ${token}`);
       return request;
@@ -339,7 +341,7 @@ namespace impl {
   export function githubHttpsAgent(
     rejectUnauthorized: boolean
   ): IPretendRequestInterceptor {
-    return request => {
+    return (request) => {
       if (!request.url.startsWith('https://')) {
         return request;
       }
@@ -349,7 +351,7 @@ namespace impl {
   }
 
   export function githubDecoder(): IPretendDecoder {
-    return async response => {
+    return async (response) => {
       if (response.status >= 400) {
         const body = await response.json();
         throw new GitHubError(
@@ -367,7 +369,7 @@ namespace impl {
         body:
           response.status >= 200 && response.status <= 300
             ? await response.json()
-            : undefined
+            : undefined,
       };
     };
   }

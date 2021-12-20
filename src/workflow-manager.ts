@@ -9,12 +9,12 @@ import {
   Comment,
   MergeBody,
   MergeMethod,
-  PullRequest
+  PullRequest,
 } from './provider/pull-request';
 import {
   CreatePullRequestBody,
   ListPullRequestsParameters,
-  Repository
+  Repository,
 } from './provider/repository';
 import { User } from './provider/user';
 import { getTokens } from './tokens';
@@ -43,9 +43,7 @@ export class WorkflowManager {
       await provider.test();
     } catch (e) {
       throw new Error(
-        `Connection with ${
-          provider.name
-        } failed. Please make sure your git executable` +
+        `Connection with ${provider.name} failed. Please make sure your git executable` +
           `is setup correct, and your token has enought access rights.`
       );
     }
@@ -76,8 +74,8 @@ export class WorkflowManager {
       await this.getProvider(uri);
       return true;
     } catch (e) {
-      this.log(`Failed to connect to provider`, e.message);
-      return e;
+      this.log(`Failed to connect to provider`, (e as Error).message);
+      return e as Error;
     }
   }
 
@@ -115,7 +113,7 @@ export class WorkflowManager {
   ): Promise<PullRequest | undefined> {
     const branch = await this.git.getCurrentBranch(uri);
     const list = (await this.listPullRequests(uri)).filter(
-      pr => pr.sourceBranch === branch
+      (pr) => pr.sourceBranch === branch
     );
     if (list.length !== 1) {
       return undefined;
@@ -171,7 +169,7 @@ export class WorkflowManager {
         sourceBranch: branch,
         targetBranch: upstream ? upstream.branch : defaultBranch,
         title: requestTitle,
-        body: requestBody
+        body: requestBody,
       },
       uri
     );
@@ -184,7 +182,7 @@ export class WorkflowManager {
     const customTitle = getConfiguration('github', uri).customPullRequestTitle;
     if (customTitle) {
       const title = await vscode.window.showInputBox({
-        prompt: 'Pull request title'
+        prompt: 'Pull request title',
       });
       if (!title) {
         return undefined;
@@ -200,7 +198,7 @@ export class WorkflowManager {
       sourceBranch,
       targetBranch,
       title,
-      body
+      body,
     }: {
       upstream?: { owner: string; repository: string };
       sourceBranch: string;
@@ -218,17 +216,19 @@ export class WorkflowManager {
       sourceBranch,
       targetBranch,
       title,
-      body
+      body,
     };
     this.log('pull request body:', pullRequestBody);
 
     const getRepository = async () => {
       if (upstream) {
         const provider = await this.getProvider(uri);
-        return (await provider.getRepository(
-          uri,
-          `${upstream.owner}/${upstream.repository}`
-        )).body;
+        return (
+          await provider.getRepository(
+            uri,
+            `${upstream.owner}/${upstream.repository}`
+          )
+        ).body;
       } else {
         return this.getRepository(uri);
       }
@@ -278,7 +278,7 @@ export class WorkflowManager {
     if (requestBody !== pullRequest.body) {
       await pullRequest.update({
         title: await this.git.getCommitMessage(firstCommit, uri),
-        body: requestBody
+        body: requestBody,
       });
     }
   }
@@ -286,7 +286,7 @@ export class WorkflowManager {
   public async listPullRequests(uri: vscode.Uri): Promise<PullRequest[]> {
     const repository = await this.getRepository(uri);
     const parameters: ListPullRequestsParameters = {
-      state: 'open'
+      state: 'open',
     };
     return (await repository.getPullRequests(parameters)).body;
   }
@@ -298,7 +298,7 @@ export class WorkflowManager {
     try {
       if (pullRequest.mergeable) {
         const body: MergeBody = {
-          mergeMethod: method
+          mergeMethod: method,
         };
         const result = await pullRequest.merge(body);
         return result.body.merged;
@@ -340,8 +340,9 @@ export class WorkflowManager {
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
     const branch = await this.git.getCurrentBranch(uri);
     const currentFile = file.replace(/^\//, '');
-    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${line +
-      1}:L${endLine + 1}`;
+    return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${
+      line + 1
+    }:L${endLine + 1}`;
   }
 
   public async getAssignees(uri: vscode.Uri): Promise<User[]> {
@@ -349,7 +350,7 @@ export class WorkflowManager {
     try {
       return (await repository.getUsers()).body;
     } catch (e) {
-      this.log(e.message);
+      this.log((e as Error).message);
       return [];
     }
   }
@@ -378,7 +379,7 @@ export class WorkflowManager {
     const repository = await this.getRepository(uri);
     const pullRequest = await repository.getPullRequest(issue);
     await pullRequest.body.requestReview({
-      reviewers: [name]
+      reviewers: [name],
     });
   }
 
@@ -390,7 +391,7 @@ export class WorkflowManager {
     const repository = await this.getRepository(uri);
     const pullRequest = await repository.getPullRequest(issue);
     await pullRequest.body.cancelReview({
-      reviewers: [name]
+      reviewers: [name],
     });
   }
 
@@ -402,7 +403,7 @@ export class WorkflowManager {
     const result = await repository.getIssues({
       sort: 'updated',
       direction: 'desc',
-      state
+      state,
     });
     return result.body;
   }

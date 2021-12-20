@@ -15,7 +15,7 @@ export abstract class Command {
   protected track(message: string): void {
     const properties = {
       id: this.id.replace('vscode-github.', ''),
-      message
+      message,
     };
     this.reporter.sendTelemetryEvent('vscode-github.command', properties);
   }
@@ -70,7 +70,7 @@ export abstract class TokenCommand extends Command {
       try {
         await this.runWithToken(...args);
       } catch (e) {
-        this.logAndShowError(e);
+        this.logAndShowError(e as Error);
       }
     } finally {
       this.uri = undefined as any;
