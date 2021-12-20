@@ -6,7 +6,7 @@ import {
   IPretendRequestInterceptor,
   Post,
   Pretend,
-  Put
+  Put,
 } from 'pretend';
 
 export interface GitLab {
@@ -180,7 +180,7 @@ namespace impl {
         // console.log('response', response);
         return response;
       } catch (e) {
-        logger(`${(e as GitLabError).response.status} ${e.message}`);
+        logger(`${(e as GitLabError).response.status} ${(e as Error).message}`);
         throw e;
       }
     };
@@ -189,7 +189,7 @@ namespace impl {
   export function gitlabTokenAuthenticator(
     token: string
   ): IPretendRequestInterceptor {
-    return request => {
+    return (request) => {
       request.options.headers = new Headers(request.options.headers);
       request.options.headers.set('PRIVATE-TOKEN', `${token}`);
       return request;
@@ -199,7 +199,7 @@ namespace impl {
   export function gitlabHttpsAgent(
     rejectUnauthorized: boolean
   ): IPretendRequestInterceptor {
-    return request => {
+    return (request) => {
       if (!request.url.startsWith('https://')) {
         return request;
       }
@@ -209,7 +209,7 @@ namespace impl {
   }
 
   export function formEncoding(): IPretendRequestInterceptor {
-    return request => {
+    return (request) => {
       if (request.options.method !== 'GET') {
         request.options.headers = new Headers(request.options.headers);
         request.options.headers.set(
@@ -231,7 +231,7 @@ namespace impl {
   }
 
   export function gitlabDecoder(): IPretendDecoder {
-    return async response => {
+    return async (response) => {
       if (response.status >= 400) {
         const body = await response.json();
         throw new GitLabError(`${body.error || response.statusText}`, response);
@@ -246,7 +246,7 @@ namespace impl {
         body:
           response.status >= 200 && response.status <= 300
             ? await response.json()
-            : undefined
+            : undefined,
       };
     };
   }

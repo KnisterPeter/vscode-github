@@ -48,7 +48,7 @@ export class Extension {
         );
       }
     } catch (e) {
-      this.logAndShowError(e);
+      this.logAndShowError(e as Error);
       throw e;
     }
   }
@@ -79,7 +79,7 @@ export class Extension {
     if (this.channel) {
       this.channel.appendLine(e.message);
       if (e.stack) {
-        e.stack.split('\n').forEach(line => this.channel.appendLine(line));
+        e.stack.split('\n').forEach((line) => this.channel.appendLine(line));
       }
     }
     if (e instanceof GitHubError) {
