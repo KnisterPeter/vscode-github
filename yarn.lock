@@ -1522,10 +1522,10 @@ loud-rejection@^1.0.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
-lru-cache@7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.0.1.tgz#aa4d4a97a176e1cff29504ce125ede5630078aae"
-  integrity sha512-A6xsa0F6rWat7YXjt0gOEIK6uEjP0DBet4si4IY1+vkYPmcfyfTqdjU8GLRWcoQU3x3YlQ8m3kUlLfYvlg4WRA==
+lru-cache@7.3.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.3.0.tgz#475ed4a39610204d8d23b243e902ed074dd8052d"
+  integrity sha512-itGqsGM9i3Jt0ZbEkYRKQ3K/Q61vOLNuUkmK0jyjt1VH76gfcvjHmPC6e9uvjSrKOP2aN3T9L1vN0nxQSkrAjA==
 
 lru-cache@^6.0.0:
   version "6.0.0"
