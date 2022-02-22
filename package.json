@@ -252,7 +252,7 @@
     "execa": "5.1.1",
     "https": "1.0.0",
     "isomorphic-fetch": "3.0.0",
-    "lru-cache": "7.3.1",
+    "lru-cache": "7.4.0",
     "pretend": "3.1.1",
     "sander": "0.6.0",
     "tsdi": "0.25.0",
