@@ -233,7 +233,7 @@
   "devDependencies": {
     "@knisterpeter/standard-tslint": "1.7.2",
     "@types/common-tags": "1.8.1",
-    "@types/lru-cache": "5.1.1",
+    "@types/lru-cache": "7.10.9",
     "@types/mocha": "9.1.1",
     "@types/node": "16.11.47",
     "conventional-changelog-lint": "2.1.1",
@@ -252,7 +252,7 @@
     "execa": "5.1.1",
     "https": "1.0.0",
     "isomorphic-fetch": "3.0.0",
-    "lru-cache": "7.4.0",
+    "lru-cache": "7.14.0",
     "pretend": "3.1.1",
     "sander": "0.6.0",
     "tsdi": "0.25.0",
