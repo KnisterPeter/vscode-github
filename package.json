@@ -235,7 +235,7 @@
     "@types/common-tags": "1.8.1",
     "@types/lru-cache": "5.1.1",
     "@types/mocha": "9.1.1",
-    "@types/node": "16.11.54",
+    "@types/node": "16.11.56",
     "conventional-changelog-lint": "2.1.1",
     "cz-customizable": "6.9.2",
     "husky": "8.0.1",
