@@ -665,10 +665,10 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-cz-customizable@6.9.2:
-  version "6.9.2"
-  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-6.9.2.tgz#94ac9d30f88ecc97992306a17610abdff4d03d14"
-  integrity sha512-33Y0eHAp40sb7K346Shm07X+ZIckPKV8pBHUH5Lh2tI4fi0mjHkrYDrwQyJMS8095Ri+H+xkxOmblzQ64wT/Fg==
+cz-customizable@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cz-customizable/-/cz-customizable-7.0.0.tgz#2a291010bae48936cb2d917447bf83b67fa497df"
+  integrity sha512-pQKkGSm+8SY9VY/yeJqDOla1MjrGaG7WG4EYLLEV4VNctGO7WdzdGtWEr2ydKSkrpmTs7f8fmBksg/FaTrUAyw==
   dependencies:
     editor "1.0.0"
     find-config "^1.0.0"
