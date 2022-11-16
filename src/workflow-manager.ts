@@ -339,7 +339,8 @@ export class WorkflowManager {
     const hostname = await this.git.getGitHostname(uri);
     const [owner, repo] = await this.git.getGitProviderOwnerAndRepository(uri);
     const branch = await this.git.getCurrentBranch(uri);
-    const currentFile = file.replace(/^\//, '');
+    const linuxStylePaths = file.replaceAll('\\', '/');
+    const currentFile = linuxStylePaths.replace(/^\//, '');
     return `https://${hostname}/${owner}/${repo}/blob/${branch}/${currentFile}#L${
       line + 1
     }:L${endLine + 1}`;
