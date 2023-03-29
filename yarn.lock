@@ -1995,10 +1995,10 @@ pos@0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/pos/-/pos-0.4.2.tgz#20e9c77fbeedcc356823cea63c7585cace93be2a"
 
-pretend@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/pretend/-/pretend-3.1.1.tgz#8b1424918529f7a2be4e40ea4ef2cd6858a3d351"
-  integrity sha512-yT9+Jhs8JXrpXH9n7snh/nOwDzJbrO3hsSE4knL6mqd1PBzu/MRQJApjTus8/AAU/Qiw4RZqUfQxJ0AY8R+eGQ==
+pretend@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/pretend/-/pretend-4.0.0.tgz#0a6b8e49da6a5e35769a8dbd28787fde7285d6bf"
+  integrity sha512-Xksj0iVHvi0rU8r+xrXT2AgKrIVgCKF7+2rcLKIKNcEJ8p7NSaIt4nd2CLssbMFIksbWFGCcwY5UKoNg19wccA==
   optionalDependencies:
     isomorphic-fetch "3.0.0"
     isomorphic-form-data "2.0.0"
