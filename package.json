@@ -234,7 +234,7 @@
     "@knisterpeter/standard-tslint": "1.7.2",
     "@types/common-tags": "1.8.1",
     "@types/lru-cache": "5.1.1",
-    "@types/mocha": "10.0.1",
+    "@types/mocha": "10.0.6",
     "@types/node": "18.11.17",
     "conventional-changelog-lint": "2.1.1",
     "cz-customizable": "7.0.0",
